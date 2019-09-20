@@ -34,7 +34,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.4.0">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.4.2">
     
     
       
@@ -42,7 +42,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/application.0284f74d.css">
+      <link rel="stylesheet" href="../assets/stylesheets/application.30686662.css">
       
       
     
@@ -171,7 +171,7 @@
         
       
       
-      <main class="md-main">
+      <main class="md-main" role="main">
         <div class="md-main__inner md-grid" data-md-component="container">
           
             
@@ -252,6 +252,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../environment_variables/" title="Environment Variables" class="md-nav__link">
+      Environment Variables
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
     <a href="../parallel/" title="Parallel Requests" class="md-nav__link">
       Parallel Requests
     </a>
@@ -315,56 +327,56 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#main-interface" title="Main Interface" class="md-nav__link">
-    Main Interface
+  <a href="#helper-functions" class="md-nav__link">
+    Helper Functions
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#client" title="Client" class="md-nav__link">
+  <a href="#client" class="md-nav__link">
     Client
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#response" title="Response" class="md-nav__link">
+  <a href="#response" class="md-nav__link">
     Response
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#request" title="Request" class="md-nav__link">
+  <a href="#request" class="md-nav__link">
     Request
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#url" title="URL" class="md-nav__link">
+  <a href="#url" class="md-nav__link">
     URL
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#origin" title="Origin" class="md-nav__link">
+  <a href="#origin" class="md-nav__link">
     Origin
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#headers" title="Headers" class="md-nav__link">
+  <a href="#headers" class="md-nav__link">
     Headers
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#cookies" title="Cookies" class="md-nav__link">
+  <a href="#cookies" class="md-nav__link">
     Cookies
   </a>
   
@@ -414,56 +426,56 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#main-interface" title="Main Interface" class="md-nav__link">
-    Main Interface
+  <a href="#helper-functions" class="md-nav__link">
+    Helper Functions
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#client" title="Client" class="md-nav__link">
+  <a href="#client" class="md-nav__link">
     Client
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#response" title="Response" class="md-nav__link">
+  <a href="#response" class="md-nav__link">
     Response
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#request" title="Request" class="md-nav__link">
+  <a href="#request" class="md-nav__link">
     Request
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#url" title="URL" class="md-nav__link">
+  <a href="#url" class="md-nav__link">
     URL
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#origin" title="Origin" class="md-nav__link">
+  <a href="#origin" class="md-nav__link">
     Origin
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#headers" title="Headers" class="md-nav__link">
+  <a href="#headers" class="md-nav__link">
     Headers
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#cookies" title="Cookies" class="md-nav__link">
+  <a href="#cookies" class="md-nav__link">
     Cookies
   </a>
   
@@ -487,19 +499,27 @@
                 
                 
                 <h1 id="developer-interface">Developer Interface</h1>
-<h2 id="main-interface">Main Interface</h2>
+<h2 id="helper-functions">Helper Functions</h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only use these functions if you're testing HTTPX in a console
+or making a small number of requests. Using a <code>Client</code> will
+enable HTTP/2 and connection pooling for more efficient and
+long-lived connections.</p>
+</div>
 <ul>
-<li><code>get(url, [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout])</code></li>
-<li><code>options(url, [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout])</code></li>
-<li><code>head(url, [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout])</code></li>
-<li><code>post(url, [data], [json], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout])</code></li>
-<li><code>put(url, [data], [json], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout])</code></li>
-<li><code>patch(url, [data], [json], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout])</code></li>
-<li><code>delete(url, [data], [json], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout])</code></li>
-<li><code>request(method, url, [data], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout])</code></li>
+<li><code>get(url, [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
+<li><code>options(url, [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
+<li><code>head(url, [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
+<li><code>post(url, [data], [json], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
+<li><code>put(url, [data], [json], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
+<li><code>patch(url, [data], [json], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
+<li><code>delete(url, [data], [json], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
+<li><code>request(method, url, [data], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
+<li><code>build_request(method, url, [data], [files], [json], [params], [headers], [cookies])</code></li>
 </ul>
 <h2 id="client"><code>Client</code></h2>
-<p><em>An HTTP client, with connection pooling, redirects, cookie persistence, etc.</em></p>
+<p><em>An HTTP client, with connection pooling, HTTP/2, redirects, cookie persistence, etc.</em></p>
 <div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://example.org&#39;</span><span class="p">)</span>
 </pre></div>
@@ -507,15 +527,18 @@
 
 <ul>
 <li><code>def __init__([auth], [headers], [cookies], [verify], [cert], [timeout], [pool_limits], [max_redirects], [app], [dispatch])</code></li>
-<li><code>def .get(url, [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout])</code></li>
-<li><code>def .options(url, [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout])</code></li>
-<li><code>def .head(url, [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout])</code></li>
-<li><code>def .post(url, [data], [json], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout])</code></li>
-<li><code>def .put(url, [data], [json], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout])</code></li>
-<li><code>def .patch(url, [data], [json], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout])</code></li>
-<li><code>def .delete(url, [data], [json], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout])</code></li>
-<li><code>def .request(method, url, [data], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout])</code></li>
-<li><code>def .send(request, [stream], [allow_redirects], [verify], [cert], [timeout])</code></li>
+<li><code>.headers</code> - <strong>Headers</strong></li>
+<li><code>.cookies</code> - <strong>Cookies</strong></li>
+<li><code>def .get(url, [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
+<li><code>def .options(url, [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
+<li><code>def .head(url, [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
+<li><code>def .post(url, [data], [json], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
+<li><code>def .put(url, [data], [json], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
+<li><code>def .patch(url, [data], [json], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
+<li><code>def .delete(url, [data], [json], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
+<li><code>def .request(method, url, [data], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
+<li><code>def .build_request(method, url, [data], [files], [json], [params], [headers], [cookies])</code></li>
+<li><code>def .send(request, [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
 <li><code>def .close()</code></li>
 </ul>
 <h2 id="response"><code>Response</code></h2>
@@ -524,7 +547,7 @@
 <li><code>def __init__(...)</code></li>
 <li><code>.status_code</code> - <strong>int</strong></li>
 <li><code>.reason_phrase</code> - <strong>str</strong></li>
-<li><code>.protocol</code> - <code>"HTTP/2"</code> or <code>"HTTP/1.1"</code></li>
+<li><code>.http_version</code> - <code>"HTTP/2"</code> or <code>"HTTP/1.1"</code></li>
 <li><code>.url</code> - <strong>URL</strong></li>
 <li><code>.headers</code> - <strong>Headers</strong></li>
 <li><code>.content</code> - <strong>bytes</strong></li>
@@ -534,6 +557,11 @@
 <li><code>.request</code> - <strong>Request</strong></li>
 <li><code>.cookies</code> - <strong>Cookies</strong></li>
 <li><code>.history</code> - <strong>List[Response]</strong></li>
+<li><code>.elapsed</code> - <strong><a href="https://docs.python.org/3/library/datetime.html">timedelta</a></strong></li>
+<li>The amount of time elapsed between sending the first byte and parsing the headers (not including time spent reading
+  the response).  Use
+  <a href="https://docs.python.org/3/library/datetime.html#datetime.timedelta.total_seconds">total_seconds()</a> to correctly get
+  the total elapsed seconds.</li>
 <li><code>def .raise_for_status()</code> - <strong>None</strong></li>
 <li><code>def .json()</code> - <strong>Any</strong></li>
 <li><code>def .read()</code> - <strong>bytes</strong></li>
@@ -695,7 +723,7 @@ what gets sent over the wire.</em></p>
       
     </div>
     
-      <script src="../assets/javascripts/application.245445c6.js"></script>
+      <script src="../assets/javascripts/application.c648116f.js"></script>
       
       <script>app.initialize({version:"1.0.4",url:{base:".."}})</script>
       

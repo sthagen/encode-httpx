@@ -34,7 +34,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.4.0">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.4.2">
     
     
       
@@ -42,7 +42,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/application.0284f74d.css">
+      <link rel="stylesheet" href="../assets/stylesheets/application.30686662.css">
       
       
     
@@ -171,7 +171,7 @@
         
       
       
-      <main class="md-main">
+      <main class="md-main" role="main">
         <div class="md-main__inner md-grid" data-md-component="container">
           
             
@@ -252,6 +252,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../environment_variables/" title="Environment Variables" class="md-nav__link">
+      Environment Variables
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
     <a href="../parallel/" title="Parallel Requests" class="md-nav__link">
       Parallel Requests
     </a>
@@ -291,14 +303,14 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#making-async-requests" title="Making Async requests" class="md-nav__link">
+  <a href="#making-async-requests" class="md-nav__link">
     Making Async requests
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#api-differences" title="API Differences" class="md-nav__link">
+  <a href="#api-differences" class="md-nav__link">
     API Differences
   </a>
   
@@ -372,14 +384,14 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#making-async-requests" title="Making Async requests" class="md-nav__link">
+  <a href="#making-async-requests" class="md-nav__link">
     Making Async requests
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#api-differences" title="API Differences" class="md-nav__link">
+  <a href="#api-differences" class="md-nav__link">
     API Differences
   </a>
   
@@ -412,21 +424,29 @@ long-lived network connections such as WebSockets.</p>
 async client for sending outgoing HTTP requests.</p>
 <h2 id="making-async-requests">Making Async requests</h2>
 <p>To make asynchronous requests, you'll need an <code>AsyncClient</code>.</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://www.example.com/&#39;</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">async</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+<span class="o">&gt;&gt;&gt;</span>     <span class="n">r</span> <span class="o">=</span> <span class="n">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://www.example.com/&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span>
+<span class="o">&lt;</span><span class="n">Response</span> <span class="p">[</span><span class="mi">200</span> <span class="n">OK</span><span class="p">]</span><span class="o">&gt;</span>
 </pre></div>
 
 
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Use <a href="https://ipython.readthedocs.io/en/stable/">IPython</a> to try this code interactively, as it supports executing <code>async</code>/<code>await</code> expressions in the console.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code>async with</code> syntax ensures that all active connections are closed on exit.</p>
+<p>It is safe to access response content (e.g. <code>r.text</code>) both inside and outside the <code>async with</code> block, unless you are using response streaming. In that case, you should <code>.read()</code>, <code>.stream()</code>, or <code>.close()</code> the response <em>inside</em> the <code>async with</code> block.</p>
+</div>
 <h2 id="api-differences">API Differences</h2>
 <p>If you're using streaming responses then there are a few bits of API that
 use async methods:</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://www.example.com/&#39;</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">try</span><span class="p">:</span>
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">async</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+<span class="o">&gt;&gt;&gt;</span>     <span class="n">r</span> <span class="o">=</span> <span class="n">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://www.example.com/&#39;</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span>     <span class="n">async</span> <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">stream</span><span class="p">():</span>
 <span class="o">&gt;&gt;&gt;</span>         <span class="o">...</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">finally</span><span class="p">:</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="n">await</span> <span class="n">r</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 
 
@@ -437,13 +457,13 @@ use async methods:</p>
 <li><code>.raw()</code></li>
 <li><code>.close()</code></li>
 </ul>
-<p>If you're making parallel requests, then you'll also need to use an async API:</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">async</span> <span class="k">with</span> <span class="n">client</span><span class="o">.</span><span class="n">parallel</span><span class="p">()</span> <span class="k">as</span> <span class="n">parallel</span><span class="p">:</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="n">pending_one</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://example.com/1&#39;</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="n">pending_two</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://example.com/2&#39;</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="n">response_one</span> <span class="o">=</span> <span class="n">await</span> <span class="n">pending_one</span><span class="o">.</span><span class="n">get_response</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="n">response_two</span> <span class="o">=</span> <span class="n">await</span> <span class="n">pending_two</span><span class="o">.</span><span class="n">get_response</span><span class="p">()</span>
+<p>If you're making <a href="/parallel/">parallel requests</a>, then you'll also need to use an async API:</p>
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">async</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+<span class="o">&gt;&gt;&gt;</span>     <span class="n">async</span> <span class="k">with</span> <span class="n">client</span><span class="o">.</span><span class="n">parallel</span><span class="p">()</span> <span class="k">as</span> <span class="n">parallel</span><span class="p">:</span>
+<span class="o">&gt;&gt;&gt;</span>         <span class="n">pending_one</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://example.com/1&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span>         <span class="n">pending_two</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://example.com/2&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span>         <span class="n">response_one</span> <span class="o">=</span> <span class="n">await</span> <span class="n">pending_one</span><span class="o">.</span><span class="n">get_response</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span>         <span class="n">response_two</span> <span class="o">=</span> <span class="n">await</span> <span class="n">pending_two</span><span class="o">.</span><span class="n">get_response</span><span class="p">()</span>
 </pre></div>
 
 
@@ -522,7 +542,7 @@ use async methods:</p>
       
     </div>
     
-      <script src="../assets/javascripts/application.245445c6.js"></script>
+      <script src="../assets/javascripts/application.c648116f.js"></script>
       
       <script>app.initialize({version:"1.0.4",url:{base:".."}})</script>
       
