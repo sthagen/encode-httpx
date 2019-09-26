@@ -366,6 +366,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#releasing" class="md-nav__link">
+    Releasing
+  </a>
+  
+</li>
+      
       
       
       
@@ -421,6 +428,13 @@
         <li class="md-nav__item">
   <a href="#documenting" class="md-nav__link">
     Documenting
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#releasing" class="md-nav__link">
+    Releasing
   </a>
   
 </li>
@@ -541,6 +555,27 @@ Make sure this isn't being used, so the tests can run properly.</p>
 <p>To spawn the docs server run:</p>
 <div class="codehilite"><pre><span></span>$ mkdocs serve
 </pre></div>
+
+
+<h2 id="releasing">Releasing</h2>
+<p><em>This section is targeted at HTTPX maintainers.</em></p>
+<p>Before releasing a new version, create a pull request that includes:</p>
+<ul>
+<li><strong>An update to the changelog</strong>:<ul>
+<li>We follow the format from <a href="https://keepachangelog.com/en/1.0.0/">keepachangelog</a>.</li>
+<li><a href="https://github.com/encode/httpx/compare/">Compare</a> <code>master</code> with the tag of the latest release, and list all entries that are of interest to our users:<ul>
+<li>Things that <strong>must</strong> go in the changelog: added, changed, deprecated or removed features, and bug fixes.</li>
+<li>Things that <strong>should not</strong> go in the changelog: changes to documentation, tests or tooling.</li>
+<li>Try sorting entries in descending order of impact / importance.</li>
+<li>Keep it concise and to-the-point. 🎯</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>A version bump</strong>: see <code>__version__.py</code>.</li>
+</ul>
+<p>For an example, see <a href="https://github.com/encode/httpx/pull/362">#362</a>.</p>
+<p>Once the release PR is merged, run <code>$ scripts/publish</code> to publish the new release to PyPI.</p>
                 
                   
                 

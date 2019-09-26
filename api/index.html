@@ -526,7 +526,8 @@ long-lived connections.</p>
 
 
 <ul>
-<li><code>def __init__([auth], [headers], [cookies], [verify], [cert], [timeout], [pool_limits], [max_redirects], [app], [dispatch])</code></li>
+<li><code>def __init__([auth], [params], [headers], [cookies], [verify], [cert], [timeout], [pool_limits], [max_redirects], [app], [dispatch])</code></li>
+<li><code>.params</code> - <strong>QueryParams</strong></li>
 <li><code>.headers</code> - <strong>Headers</strong></li>
 <li><code>.cookies</code> - <strong>Cookies</strong></li>
 <li><code>def .get(url, [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>

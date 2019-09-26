@@ -316,6 +316,33 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#supported-async-libraries" class="md-nav__link">
+    Supported async libraries
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#asyncio-default" class="md-nav__link">
+    asyncio (Default)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trio" class="md-nav__link">
+    trio
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
       
       
       
@@ -397,6 +424,33 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#supported-async-libraries" class="md-nav__link">
+    Supported async libraries
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#asyncio-default" class="md-nav__link">
+    asyncio (Default)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trio" class="md-nav__link">
+    trio
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
       
       
       
@@ -473,6 +527,43 @@ use async methods:</p>
 <li><code>.get_response()</code></li>
 <li><code>.next_response()</code></li>
 </ul>
+<h2 id="supported-async-libraries">Supported async libraries</h2>
+<p>You can use <code>AsyncClient</code> with any of the following async libraries.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>You will typically be using <code>AsyncClient</code> in async programs that run on <code>asyncio</code>. If that's the case, or if you're not sure what this is all about, you can safely ignore this section.</p>
+</div>
+<h3 id="asyncio-default"><a href="https://docs.python.org/3/library/asyncio.html">asyncio</a> (Default)</h3>
+<p>By default, <code>AsyncClient</code> uses <code>asyncio</code> to perform asynchronous operations and I/O calls.</p>
+<div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">httpx</span>
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">async</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+        <span class="o">...</span>
+
+<span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</pre></div>
+
+
+<h3 id="trio"><a href="https://github.com/python-trio/trio">trio</a></h3>
+<p>To make asynchronous requests in <code>trio</code> programs, pass a <code>TrioBackend</code> to the <code>AsyncClient</code>:</p>
+<div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">trio</span>
+<span class="kn">import</span> <span class="nn">httpx</span>
+<span class="kn">from</span> <span class="nn">httpx.concurrency.trio</span> <span class="kn">import</span> <span class="n">TrioBackend</span>
+
+<span class="n">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">async</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="n">TrioBackend</span><span class="p">())</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+        <span class="o">...</span>
+
+<span class="n">trio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
+</pre></div>
+
+
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p><code>trio</code> must be installed to import and use the <code>TrioBackend</code>.</p>
+</div>
                 
                   
                 

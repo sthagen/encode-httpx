@@ -293,6 +293,20 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#ssl_cert_file" class="md-nav__link">
+    SSL_CERT_FILE
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ssl_cert_dir" class="md-nav__link">
+    SSL_CERT_DIR
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#http_proxy-https_proxy-all_proxy" class="md-nav__link">
     HTTP_PROXY, HTTPS_PROXY, ALL_PROXY
   </a>
@@ -405,6 +419,20 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#ssl_cert_file" class="md-nav__link">
+    SSL_CERT_FILE
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ssl_cert_dir" class="md-nav__link">
+    SSL_CERT_DIR
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#http_proxy-https_proxy-all_proxy" class="md-nav__link">
     HTTP_PROXY, HTTPS_PROXY, ALL_PROXY
   </a>
@@ -430,7 +458,13 @@
                 
                 <h1 id="environment-variables">Environment Variables</h1>
 <p>The HTTPX library can be configured via environment variables.
-Here is a list of environment variables that HTTPX recognizes
+Environment variables are used by default. To ignore environment variables, <code>trust_env</code> has to be set <code>False</code>.
+There are two ways to set <code>trust_env</code> to disable environment variables:</p>
+<ul>
+<li>On the client via <code>httpx.Client(trust_env=False)</code></li>
+<li>Per request via <code>client.get("&lt;url&gt;", trust_env=False)</code></li>
+</ul>
+<p>Here is a list of environment variables that HTTPX recognizes
 and what function they serve:</p>
 <h2 id="httpx_debug"><code>HTTPX_DEBUG</code></h2>
 <p>Valid values: <code>1</code>, <code>true</code></p>
@@ -492,6 +526,26 @@ over the wire and to which location.</p>
 <span class="go">SERVER_TRAFFIC_SECRET_0 XXXX</span>
 <span class="go">CLIENT_HANDSHAKE_TRAFFIC_SECRET XXXX</span>
 <span class="go">CLIENT_TRAFFIC_SECRET_0 XXXX</span>
+</pre></div>
+
+
+<h2 id="ssl_cert_file"><code>SSL_CERT_FILE</code></h2>
+<p>Valid values: a filename</p>
+<p>if this environment variable is set then HTTPX will load
+CA certificate from the specified file instead of the default
+location.</p>
+<p>Example:</p>
+<div class="codehilite"><pre><span></span><span class="go">SSL_CERT_FILE=/path/to/ca-certs/ca-bundle.crt python -c &quot;import httpx; httpx.get(&#39;https://example.com&#39;)&quot;</span>
+</pre></div>
+
+
+<h2 id="ssl_cert_dir"><code>SSL_CERT_DIR</code></h2>
+<p>Valid values: a directory</p>
+<p>if this environment variable is set then HTTPX will load
+CA certificates from the specified location instead of the default
+location.</p>
+<p>Example:</p>
+<div class="codehilite"><pre><span></span><span class="go">SSL_CERT_DIR=/path/to/ca-certs/ python -c &quot;import httpx; httpx.get(&#39;https://example.com&#39;)&quot;</span>
 </pre></div>
 
 
