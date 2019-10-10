@@ -288,8 +288,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#specify-the-version-of-http-protocol" class="md-nav__link">
-    Specify the version of HTTP protocol
+  <a href="#specify-the-version-of-the-http-protocol" class="md-nav__link">
+    Specify the version of the HTTP protocol
   </a>
   
 </li>
@@ -433,8 +433,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#specify-the-version-of-http-protocol" class="md-nav__link">
-    Specify the version of HTTP protocol
+  <a href="#specify-the-version-of-the-http-protocol" class="md-nav__link">
+    Specify the version of the HTTP protocol
   </a>
   
 </li>
@@ -475,20 +475,20 @@
 <p>Using a Client instance to make requests will give you HTTP connection pooling,
 will provide cookie persistence, and allows you to apply configuration across
 all outgoing requests.</p>
+<p>A Client instance is equivalent to a Session instance in <code>requests</code>.</p>
 <div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://example.org/&#39;</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span>
 <span class="o">&lt;</span><span class="n">Response</span> <span class="p">[</span><span class="mi">200</span> <span class="n">OK</span><span class="p">]</span><span class="o">&gt;</span>
 </pre></div>
 
-
 <h2 id="calling-into-python-web-apps">Calling into Python Web Apps</h2>
 <p>You can configure an <code>httpx</code> client to call directly into a Python web
-application, using either the WSGI or ASGI protocol.</p>
+application using either the WSGI or ASGI protocol.</p>
 <p>This is particularly useful for two main use-cases:</p>
 <ul>
-<li>Using <code>httpx</code> as a client, inside test cases.</li>
-<li>Mocking out external services, during tests or in dev/staging environments.</li>
+<li>Using <code>httpx</code> as a client inside test cases.</li>
+<li>Mocking out external services during tests or in dev/staging environments.</li>
 </ul>
 <p>Here's an example of integrating against a Flask application:</p>
 <div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
@@ -507,20 +507,18 @@ application, using either the WSGI or ASGI protocol.</p>
 <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="s2">&quot;Hello World!&quot;</span>
 </pre></div>
 
-
 <p>For some more complex cases you might need to customize the WSGI or ASGI
 dispatch. This allows you to:</p>
 <ul>
-<li>Inspect 500 error responses, rather than raise exceptions, by setting <code>raise_app_exceptions=False</code>.</li>
-<li>Mount the WSGI or ASGI application at a subpath, by setting <code>script_name</code> (WSGI) or <code>root_path</code> (ASGI).</li>
-<li>Use a given the client address for requests, by setting <code>remote_addr</code> (WSGI) or <code>client</code> (ASGI).</li>
+<li>Inspect 500 error responses rather than raise exceptions by setting <code>raise_app_exceptions=False</code>.</li>
+<li>Mount the WSGI or ASGI application at a subpath by setting <code>script_name</code> (WSGI) or <code>root_path</code> (ASGI).</li>
+<li>Use a given client address for requests by setting <code>remote_addr</code> (WSGI) or <code>client</code> (ASGI).</li>
 </ul>
 <p>For example:</p>
 <div class="codehilite"><pre><span></span><span class="c1"># Instantiate a client that makes WSGI requests with a client IP of &quot;1.2.3.4&quot;.</span>
-<span class="n">dispatch</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">WSGIDispatch</span><span class="p">(</span><span class="n">app</span><span class="o">=</span><span class="n">app</span><span class="p">,</span> <span class="n">remote_addr</span><span class="o">=</span><span class="s2">&quot;1.2.3.4&quot;</span><span class="p">)</span>
+<span class="n">dispatch</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">dispatch</span><span class="o">.</span><span class="n">WSGIDispatch</span><span class="p">(</span><span class="n">app</span><span class="o">=</span><span class="n">app</span><span class="p">,</span> <span class="n">remote_addr</span><span class="o">=</span><span class="s2">&quot;1.2.3.4&quot;</span><span class="p">)</span>
 <span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">dispatch</span><span class="o">=</span><span class="n">dispatch</span><span class="p">)</span>
 </pre></div>
-
 
 <h2 id="build-request">Build Request</h2>
 <p>You can use <code>Client.build_request()</code> to build a request and
@@ -532,9 +530,8 @@ make modifications before sending the request.</p>
 <span class="o">&lt;</span><span class="n">Response</span> <span class="p">[</span><span class="mi">200</span> <span class="n">OK</span><span class="p">]</span><span class="o">&gt;</span>
 </pre></div>
 
-
-<h2 id="specify-the-version-of-http-protocol">Specify the version of HTTP protocol</h2>
-<p>One can set the version of HTTP protocol for the client in case you want to make the requests using specific version.</p>
+<h2 id="specify-the-version-of-the-http-protocol">Specify the version of the HTTP protocol</h2>
+<p>One can set the version of the HTTP protocol for the client in case you want to make the requests using a specific version.</p>
 <p>For example:</p>
 <div class="codehilite"><pre><span></span><span class="n">h11_client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">http_versions</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;HTTP/1.1&quot;</span><span class="p">])</span>
 <span class="n">h11_response</span> <span class="o">=</span> <span class="n">h11_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://myserver.com&quot;</span><span class="p">)</span>
@@ -543,32 +540,25 @@ make modifications before sending the request.</p>
 <span class="n">h2_response</span> <span class="o">=</span> <span class="n">h2_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://myserver.com&quot;</span><span class="p">)</span>
 </pre></div>
 
-
 <h2 id="netrc-support">.netrc Support</h2>
 <p>HTTPX supports .netrc file. In <code>trust_env=True</code> cases, if auth parameter is
 not defined, HTTPX tries to add auth into request's header from .netrc file.</p>
-<p>As default <code>trust_env</code> is true. To set false:</p>
+<p>As default <code>trust_env</code> is true. To set false:
 <div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://example.org/&#39;</span><span class="p">,</span> <span class="n">trust_env</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-</pre></div>
-
-
+</pre></div></p>
 <p>If <code>NETRC</code> environment is empty, HTTPX tries to use default files.
 (<code>~/.netrc</code>, <code>~/_netrc</code>)</p>
-<p>To change <code>NETRC</code> environment:</p>
+<p>To change <code>NETRC</code> environment:
 <div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">os</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;NETRC&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;my_default_folder/.my_netrc&quot;</span>
-</pre></div>
-
-
-<p>.netrc file content example:</p>
+</pre></div></p>
+<p>.netrc file content example:
 <div class="codehilite"><pre><span></span><span class="n">machine</span> <span class="n">netrcexample</span><span class="p">.</span><span class="n">org</span>
 <span class="n">login</span> <span class="n">example</span><span class="o">-</span><span class="n">username</span>
 <span class="n">password</span> <span class="n">example</span><span class="o">-</span><span class="n">password</span>
 
 <span class="p">...</span>
-</pre></div>
-
-
+</pre></div></p>
 <h2 id="http-proxying">HTTP Proxying</h2>
 <p>HTTPX supports setting up proxies the same way that Requests does via the <code>proxies</code> parameter.
 For example to forward all HTTP traffic to <code>http://127.0.0.1:3080</code> and all HTTPS traffic
@@ -578,7 +568,6 @@ to <code>http://127.0.0.1:3081</code> your <code>proxies</code> config would loo
   <span class="s2">&quot;https&quot;</span><span class="p">:</span> <span class="s2">&quot;http://127.0.0.1:3081&quot;</span>
 <span class="p">})</span>
 </pre></div>
-
 
 <p>Proxies can be configured for a specific scheme and host, all schemes of a host,
 all hosts for a scheme, or for all requests. When determining which proxy configuration
@@ -591,7 +580,6 @@ to use for a given request this same order is used.</p>
 <span class="p">})</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">proxies</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">)</span>  <span class="c1"># Shortcut for &#39;all&#39;</span>
 </pre></div>
-
 
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -609,7 +597,7 @@ regardless of the <code>proxy_url</code> being <code>http</code> or <code>https<
 <span class="p">)</span>
 <span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">proxies</span><span class="o">=</span><span class="n">proxy</span><span class="p">)</span>
 
-<span class="c1"># This request will be tunnelled instead of forwarded.</span>
+<span class="c1"># This request will be tunneled instead of forwarded.</span>
 <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;http://example.com&quot;</span><span class="p">)</span>
 </pre></div>
                 

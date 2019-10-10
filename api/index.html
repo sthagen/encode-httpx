@@ -511,11 +511,11 @@ long-lived connections.</p>
 <li><code>get(url, [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
 <li><code>options(url, [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
 <li><code>head(url, [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
-<li><code>post(url, [data], [json], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
-<li><code>put(url, [data], [json], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
-<li><code>patch(url, [data], [json], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
-<li><code>delete(url, [data], [json], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
-<li><code>request(method, url, [data], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
+<li><code>post(url, [data], [files], [json], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
+<li><code>put(url, [data], [files], [json], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
+<li><code>patch(url, [data], [files], [json], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
+<li><code>delete(url, [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
+<li><code>request(method, url, [data], [files], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
 <li><code>build_request(method, url, [data], [files], [json], [params], [headers], [cookies])</code></li>
 </ul>
 <h2 id="client"><code>Client</code></h2>
@@ -523,7 +523,6 @@ long-lived connections.</p>
 <div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://example.org&#39;</span><span class="p">)</span>
 </pre></div>
-
 
 <ul>
 <li><code>def __init__([auth], [params], [headers], [cookies], [verify], [cert], [timeout], [pool_limits], [max_redirects], [app], [dispatch])</code></li>
@@ -533,11 +532,11 @@ long-lived connections.</p>
 <li><code>def .get(url, [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
 <li><code>def .options(url, [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
 <li><code>def .head(url, [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
-<li><code>def .post(url, [data], [json], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
-<li><code>def .put(url, [data], [json], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
-<li><code>def .patch(url, [data], [json], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
-<li><code>def .delete(url, [data], [json], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
-<li><code>def .request(method, url, [data], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
+<li><code>def .post(url, [data], [files], [json], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
+<li><code>def .put(url, [data], [files], [json], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
+<li><code>def .patch(url, [data], [files], [json], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
+<li><code>def .delete(url, [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
+<li><code>def .request(method, url, [data], [files], [params], [headers], [cookies], [auth], [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
 <li><code>def .build_request(method, url, [data], [files], [json], [params], [headers], [cookies])</code></li>
 <li><code>def .send(request, [stream], [allow_redirects], [verify], [cert], [timeout], [proxies])</code></li>
 <li><code>def .close()</code></li>
@@ -578,7 +577,6 @@ what gets sent over the wire.</em></p>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
 </pre></div>
 
-
 <ul>
 <li><code>def __init__(method, url, [params], [data], [json], [headers], [cookies])</code></li>
 <li><code>.method</code> - <strong>str</strong></li>
@@ -593,7 +591,6 @@ what gets sent over the wire.</em></p>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">url</span><span class="o">.</span><span class="n">host</span>
 <span class="s1">&#39;example.org&#39;</span>
 </pre></div>
-
 
 <ul>
 <li><code>def __init__(url, allow_relative=False, params=None)</code></li>
@@ -618,7 +615,6 @@ what gets sent over the wire.</em></p>
 <span class="bp">True</span>
 </pre></div>
 
-
 <ul>
 <li><code>def __init__(url)</code></li>
 <li><code>.scheme</code> - <strong>str</strong></li>
@@ -633,7 +629,6 @@ what gets sent over the wire.</em></p>
 <span class="s1">&#39;application/json&#39;</span>
 </pre></div>
 
-
 <ul>
 <li><code>def __init__(self, headers)</code></li>
 </ul>
@@ -642,7 +637,6 @@ what gets sent over the wire.</em></p>
 <div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">cookies</span> <span class="o">=</span> <span class="n">Cookies</span><span class="p">()</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">cookies</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="s2">&quot;example.org&quot;</span><span class="p">)</span>
 </pre></div>
-
 
 <ul>
 <li><code>def __init__(cookies: [dict, Cookies, CookieJar])</code></li>

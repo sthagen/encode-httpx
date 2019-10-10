@@ -480,7 +480,6 @@ over the wire and to which location.</p>
 <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://google.com&quot;</span><span class="p">)</span>
 </pre></div>
 
-
 <div class="codehilite"><pre><span></span><span class="gp">user@host:~$</span> <span class="nv">HTTPX_DEBUG</span><span class="o">=</span><span class="m">1</span> python test_script.py
 <span class="go">20:54:17.585 - httpx.dispatch.connection_pool - acquire_connection origin=Origin(scheme=&#39;https&#39; host=&#39;www.google.com&#39; port=443)</span>
 <span class="go">20:54:17.585 - httpx.dispatch.connection_pool - new_connection connection=HTTPConnection(origin=Origin(scheme=&#39;https&#39; host=&#39;www.google.com&#39; port=443))</span>
@@ -499,7 +498,6 @@ over the wire and to which location.</p>
 <span class="go">20:54:17.743 - httpx.dispatch.connection_pool - release_connection connection=HTTPConnection(origin=Origin(scheme=&#39;https&#39; host=&#39;www.google.com&#39; port=443))</span>
 </pre></div>
 
-
 <h2 id="sslkeylogfile"><code>SSLKEYLOGFILE</code></h2>
 <p>Valid values: a filename</p>
 <p>If this environment variable is set, TLS keys will be appended to the specified file, creating it if it doesn't exist, whenever key material is generated or received. The keylog file is designed for debugging purposes only.</p>
@@ -511,7 +509,6 @@ over the wire and to which location.</p>
 <span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span>
 <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://google.com&quot;</span><span class="p">)</span>
 </pre></div>
-
 
 <div class="codehilite"><pre><span></span><span class="go">SSLKEYLOGFILE=test.log python test_script.py</span>
 <span class="go">cat test.log</span>
@@ -528,7 +525,6 @@ over the wire and to which location.</p>
 <span class="go">CLIENT_TRAFFIC_SECRET_0 XXXX</span>
 </pre></div>
 
-
 <h2 id="ssl_cert_file"><code>SSL_CERT_FILE</code></h2>
 <p>Valid values: a filename</p>
 <p>if this environment variable is set then HTTPX will load
@@ -538,7 +534,6 @@ location.</p>
 <div class="codehilite"><pre><span></span><span class="go">SSL_CERT_FILE=/path/to/ca-certs/ca-bundle.crt python -c &quot;import httpx; httpx.get(&#39;https://example.com&#39;)&quot;</span>
 </pre></div>
 
-
 <h2 id="ssl_cert_dir"><code>SSL_CERT_DIR</code></h2>
 <p>Valid values: a directory</p>
 <p>if this environment variable is set then HTTPX will load
@@ -547,7 +542,6 @@ location.</p>
 <p>Example:</p>
 <div class="codehilite"><pre><span></span><span class="go">SSL_CERT_DIR=/path/to/ca-certs/ python -c &quot;import httpx; httpx.get(&#39;https://example.com&#39;)&quot;</span>
 </pre></div>
-
 
 <h2 id="http_proxy-https_proxy-all_proxy"><code>HTTP_PROXY</code>, <code>HTTPS_PROXY</code>, <code>ALL_PROXY</code></h2>
 <p>Valid values: A URL to a proxy</p>

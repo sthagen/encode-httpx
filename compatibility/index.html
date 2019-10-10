@@ -326,6 +326,19 @@
     Advanced Usage
   </a>
   
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#requestssession" class="md-nav__link">
+    requests.Session
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
       
@@ -395,6 +408,19 @@
     Advanced Usage
   </a>
   
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#requestssession" class="md-nav__link">
+    requests.Session
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
       
@@ -418,19 +444,26 @@
 <p>HTTPX aims to be compatible with the <code>requests</code> API wherever possible.</p>
 <p>This documentation outlines places where the API differs...</p>
 <h2 id="quickstart">QuickStart</h2>
-<p>Pretty much all the API mentioned in the <code>requests</code> QuickStart should be identical
+<p>Pretty much any API mentioned in the <code>requests</code> QuickStart should be identical
 to the API in our own documentation. The following exceptions apply:</p>
 <ul>
 <li><code>Response.url</code> - Returns a <code>URL</code> instance, rather than a string. Use <code>str(response.url)</code> if you need a string instance.</li>
 <li><code>httpx.codes</code> - In our documentation we prefer the uppercased versions, such as <code>codes.NOT_FOUND</code>,
 but also provide lower-cased versions for API compatibility with <code>requests</code>.</li>
 <li><code>stream=True</code>. - Streaming responses provide the <code>.stream()</code> and <code>.raw()</code> byte iterator interfaces, rather than the <code>.iter_content()</code> method and the <code>.raw</code> socket interface.</li>
+<li><code>.get</code>, <code>.delete</code>, <code>.head</code>, <code>.options</code> -  These methods do not support <code>files</code>, <code>data</code>, or <code>json</code> arguments. Use <code>.request</code> if you need to need to send data using these http methods.</li>
 </ul>
 <h2 id="advanced-usage">Advanced Usage</h2>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>TODO</p>
-</div>
+<h3 id="requestssession">requests.Session</h3>
+<p>The HTTPX equivalent of <code>requests.Session</code> is <code>httpx.Client</code>.</p>
+<div class="codehilite"><pre><span></span><span class="n">session</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+
+<p>is equivalent to</p>
+<div class="codehilite"><pre><span></span><span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+
+<p>More detailed documentation and usage of <code>Client</code> can be found in <a href="../advanced/">Advanced Usage</a>.</p>
                 
                   
                 

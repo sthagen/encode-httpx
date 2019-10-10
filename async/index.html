@@ -484,7 +484,6 @@ async client for sending outgoing HTTP requests.</p>
 <span class="o">&lt;</span><span class="n">Response</span> <span class="p">[</span><span class="mi">200</span> <span class="n">OK</span><span class="p">]</span><span class="o">&gt;</span>
 </pre></div>
 
-
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>Use <a href="https://ipython.readthedocs.io/en/stable/">IPython</a> to try this code interactively, as it supports executing <code>async</code>/<code>await</code> expressions in the console.</p>
@@ -503,7 +502,6 @@ use async methods:</p>
 <span class="o">&gt;&gt;&gt;</span>         <span class="o">...</span>
 </pre></div>
 
-
 <p>The async response methods are:</p>
 <ul>
 <li><code>.read()</code></li>
@@ -511,7 +509,7 @@ use async methods:</p>
 <li><code>.raw()</code></li>
 <li><code>.close()</code></li>
 </ul>
-<p>If you're making <a href="/parallel/">parallel requests</a>, then you'll also need to use an async API:</p>
+<p>If you're making <a href="../parallel/">parallel requests</a>, then you'll also need to use an async API:</p>
 <div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">async</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
 <span class="o">&gt;&gt;&gt;</span>     <span class="n">async</span> <span class="k">with</span> <span class="n">client</span><span class="o">.</span><span class="n">parallel</span><span class="p">()</span> <span class="k">as</span> <span class="n">parallel</span><span class="p">:</span>
 <span class="o">&gt;&gt;&gt;</span>         <span class="n">pending_one</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://example.com/1&#39;</span><span class="p">)</span>
@@ -519,7 +517,6 @@ use async methods:</p>
 <span class="o">&gt;&gt;&gt;</span>         <span class="n">response_one</span> <span class="o">=</span> <span class="n">await</span> <span class="n">pending_one</span><span class="o">.</span><span class="n">get_response</span><span class="p">()</span>
 <span class="o">&gt;&gt;&gt;</span>         <span class="n">response_two</span> <span class="o">=</span> <span class="n">await</span> <span class="n">pending_two</span><span class="o">.</span><span class="n">get_response</span><span class="p">()</span>
 </pre></div>
-
 
 <p>The async parallel methods are:</p>
 <ul>
@@ -545,7 +542,6 @@ use async methods:</p>
 <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
 </pre></div>
 
-
 <h3 id="trio"><a href="https://github.com/python-trio/trio">trio</a></h3>
 <p>To make asynchronous requests in <code>trio</code> programs, pass a <code>TrioBackend</code> to the <code>AsyncClient</code>:</p>
 <div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">trio</span>
@@ -558,7 +554,6 @@ use async methods:</p>
 
 <span class="n">trio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
 </pre></div>
-
 
 <div class="admonition important">
 <p class="admonition-title">Important</p>
