@@ -34,7 +34,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.4.2">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.4.3">
     
     
       
@@ -58,6 +58,8 @@
     
     <link rel="stylesheet" href="../assets/fonts/material-icons.css">
     
+    
+      <link rel="stylesheet" href="../css/custom.css">
     
     
       
@@ -462,6 +464,7 @@ requests without having to switch out to using async all the way through.</p>
 <span class="o">&gt;&gt;&gt;</span>     <span class="n">response_two</span> <span class="o">=</span> <span class="n">pending_two</span><span class="o">.</span><span class="n">get_response</span><span class="p">()</span>
 </pre></div>
 
+
 <p>If we're making lots of outgoing requests, we might not want to deal with the
 responses sequentially, but rather deal with each response that comes back
 as soon as it's available:</p>
@@ -472,6 +475,7 @@ as soon as it's available:</p>
 <span class="o">&gt;&gt;&gt;</span>         <span class="n">r</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">next_response</span><span class="p">()</span>
 </pre></div>
 
+
 <h2 id="exceptions-and-cancellations">Exceptions and Cancellations</h2>
 <p>The style of using <code>parallel</code> blocks ensures that you'll always have a well-defined exception and cancellation behaviors. Request exceptions are only ever
 raised when calling either <code>get_response</code> or <code>next_response</code> and any pending
@@ -480,21 +484,23 @@ requests are canceled on exiting the block.</p>
 <p>You can also call <code>parallel()</code> from a client instance, which allows you to
 control the authentication or dispatch behavior for all requests within the
 block.</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">with</span> <span class="n">client</span><span class="o">.</span><span class="n">parallel</span><span class="p">()</span> <span class="k">as</span> <span class="n">parallel</span><span class="p">:</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="o">...</span>
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+<span class="o">...</span>     <span class="k">with</span> <span class="n">client</span><span class="o">.</span><span class="n">parallel</span><span class="p">()</span> <span class="k">as</span> <span class="n">parallel</span><span class="p">:</span>
+<span class="o">...</span>         <span class="o">...</span>
 </pre></div>
+
 
 <h2 id="async-parallel-requests">Async parallel requests</h2>
 <p>If you're working within an async framework, then you'll want to use a fully
 async API for making requests.</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">async</span> <span class="k">with</span> <span class="n">client</span><span class="o">.</span><span class="n">parallel</span><span class="p">()</span> <span class="k">as</span> <span class="n">parallel</span><span class="p">:</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="n">pending_one</span> <span class="o">=</span> <span class="n">await</span> <span class="n">parallel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://example.com/1&#39;</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="n">pending_two</span> <span class="o">=</span> <span class="n">await</span> <span class="n">parallel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://example.com/2&#39;</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="n">response_one</span> <span class="o">=</span> <span class="n">await</span> <span class="n">pending_one</span><span class="o">.</span><span class="n">get_response</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="n">response_two</span> <span class="o">=</span> <span class="n">await</span> <span class="n">pending_two</span><span class="o">.</span><span class="n">get_response</span><span class="p">()</span>
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">async</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+<span class="o">...</span>     <span class="n">async</span> <span class="k">with</span> <span class="n">client</span><span class="o">.</span><span class="n">parallel</span><span class="p">()</span> <span class="k">as</span> <span class="n">parallel</span><span class="p">:</span>
+<span class="o">...</span>         <span class="n">pending_one</span> <span class="o">=</span> <span class="n">await</span> <span class="n">parallel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://example.com/1&#39;</span><span class="p">)</span>
+<span class="o">...</span>         <span class="n">pending_two</span> <span class="o">=</span> <span class="n">await</span> <span class="n">parallel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://example.com/2&#39;</span><span class="p">)</span>
+<span class="o">...</span>         <span class="n">response_one</span> <span class="o">=</span> <span class="n">await</span> <span class="n">pending_one</span><span class="o">.</span><span class="n">get_response</span><span class="p">()</span>
+<span class="o">...</span>         <span class="n">response_two</span> <span class="o">=</span> <span class="n">await</span> <span class="n">pending_two</span><span class="o">.</span><span class="n">get_response</span><span class="p">()</span>
 </pre></div>
+
 
 <p>See <a href="../async/">the Async Client documentation</a> for more details.</p>
                 
@@ -566,7 +572,7 @@ async API for making requests.</p>
       
     </div>
     
-      <script src="../assets/javascripts/application.c648116f.js"></script>
+      <script src="../assets/javascripts/application.ac79c3b0.js"></script>
       
       <script>app.initialize({version:"1.0.4",url:{base:".."}})</script>
       

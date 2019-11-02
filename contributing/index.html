@@ -34,7 +34,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.4.2">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.4.3">
     
     
       
@@ -58,6 +58,8 @@
     
     <link rel="stylesheet" href="../assets/fonts/material-icons.css">
     
+    
+      <link rel="stylesheet" href="../css/custom.css">
     
     
       
@@ -556,6 +558,7 @@ your GitHub username:</p>
 <div class="codehilite"><pre><span></span>$ git clone https://github.com/YOUR-USERNAME/httpx
 </pre></div>
 
+
 <p>With the repository cloned you can access its folder, set up the
 virtual environment, install the project requirements,
 and then install HTTPX on edit mode:</p>
@@ -565,6 +568,7 @@ $ <span class="nb">source</span> venv/bin/activate
 $ pip install -r test-requirements.txt
 $ pip install -e .
 </pre></div>
+
 
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -579,14 +583,17 @@ at your system before starting.</p>
 <div class="codehilite"><pre><span></span>$ python3 -m pip install --user nox
 </pre></div>
 
+
 <p>Alternatively, use <a href="https://github.com/pipxproject/pipx">pipx</a> if you prefer
 to keep it into an isolated environment:</p>
 <div class="codehilite"><pre><span></span>$ pipx install nox
 </pre></div>
 
+
 <p>Now, with nox installed, run the complete pipeline with:</p>
 <div class="codehilite"><pre><span></span>$ nox
 </pre></div>
+
 
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -597,19 +604,29 @@ Make sure this isn't being used, so the tests can run properly.</p>
 <div class="codehilite"><pre><span></span>$ nox -s lint
 </pre></div>
 
+
 <p>Also, if you need to run the tests only:</p>
 <div class="codehilite"><pre><span></span>$ nox -s <span class="nb">test</span>
 </pre></div>
+
 
 <p>You can also run a single test script like this:</p>
 <div class="codehilite"><pre><span></span>$ nox -s <span class="nb">test</span> -- tests/test_multipart.py
 </pre></div>
 
+
+<p>Lastly, to ensure you're on track to pass the CI build, run:</p>
+<div class="codehilite"><pre><span></span>$ scripts/test
+</pre></div>
+
+
+<p>This command is a light wrapper around <code>nox</code> that will run code style checks and test the code against all installed Python versions.</p>
 <h2 id="documenting">Documenting</h2>
 <p>Documentation pages are located under the <code>docs/</code> folder.</p>
 <p>To run the documentation site locally (useful for previewing changes), use:</p>
 <div class="codehilite"><pre><span></span>$ nox -s serve
 </pre></div>
+
 
 <h2 id="resolving-build-travis-failures">Resolving Build / Travis Failures</h2>
 <p>Once you've submitted your pull request, the test suite will automatically run, and the results will show up in GitHub.
@@ -718,7 +735,7 @@ for the pull request for help debugging coverage.</p>
       
     </div>
     
-      <script src="../assets/javascripts/application.c648116f.js"></script>
+      <script src="../assets/javascripts/application.ac79c3b0.js"></script>
       
       <script>app.initialize({version:"1.0.4",url:{base:".."}})</script>
       
