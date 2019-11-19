@@ -371,6 +371,40 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#ssl-certificates" class="md-nav__link">
+    SSL certificates
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#default-ca-bundle" class="md-nav__link">
+    Default CA bundle
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-a-custom-ca-bundle" class="md-nav__link">
+    Using a custom CA bundle
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#making-https-requests-to-a-local-server" class="md-nav__link">
+    Making HTTPS requests to a local server
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
       
       
       
@@ -574,6 +608,40 @@
   <a href="#multipart-file-encoding" class="md-nav__link">
     Multipart file encoding
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ssl-certificates" class="md-nav__link">
+    SSL certificates
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#default-ca-bundle" class="md-nav__link">
+    Default CA bundle
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-a-custom-ca-bundle" class="md-nav__link">
+    Using a custom CA bundle
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#making-https-requests-to-a-local-server" class="md-nav__link">
+    Making HTTPS requests to a local server
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -923,6 +991,33 @@ is set to <code>None</code> or it cannot be inferred from it, HTTPX will default
   <span class="p">},</span>
   <span class="o">...</span>
 <span class="p">}</span>
+</pre></div>
+
+
+<h2 id="ssl-certificates">SSL certificates</h2>
+<p>When making a request over HTTPS, HTTPX needs to verify the identity of the requested host. To do this, it uses a bundle of SSL certificates (a.k.a. CA bundle) delivered by a trusted certificate authority (CA).</p>
+<h3 id="default-ca-bundle">Default CA bundle</h3>
+<p>By default, HTTPX uses the CA bundle provided by <a href="https://pypi.org/project/certifi/">Certifi</a>. This is what you want in most cases, even though some advanced situations may require you to use a different set of certificates.</p>
+<h3 id="using-a-custom-ca-bundle">Using a custom CA bundle</h3>
+<p>If you'd like to use a custom CA bundle, you can use the <code>verify</code> parameter that is available on the high-level API as well as clients. For example:</p>
+<div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">httpx</span>
+
+<span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://example.org&quot;</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="s2">&quot;path/to/client.pem&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<h3 id="making-https-requests-to-a-local-server">Making HTTPS requests to a local server</h3>
+<p>When making requests to local servers, such as a development server running on <code>localhost</code>, you will typically be using unencrypted HTTP connections.</p>
+<p>If you do need to make HTTPS connections to a local server, for example to test an HTTPS-only service, you will need to create and use your own certificates. Here's one way to do it:</p>
+<ol>
+<li>Use <a href="https://github.com/sethmlarson/trustme-cli/">trustme-cli</a> to generate a pair of server key/cert files, and a client cert file.</li>
+<li>Pass the server key/cert files when starting your local server. (This depends on the particular web server you're using. For example, <a href="https://www.uvicorn.org">Uvicorn</a> provides the <code>--ssl-keyfile</code> and <code>--ssl-certfile</code> options.)</li>
+<li>Tell HTTPX to use the certificates stored in <code>client.pem</code>:</li>
+</ol>
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">httpx</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://localhost:8000&quot;</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="s2">&quot;/tmp/client.pem&quot;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span>
+<span class="n">Response</span> <span class="o">&lt;</span><span class="mi">200</span> <span class="n">OK</span><span class="o">&gt;</span>
 </pre></div>
                 
                   
