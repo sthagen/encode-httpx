@@ -264,30 +264,6 @@
       
       
 
-
-  <li class="md-nav__item">
-    <a href="../parallel/" title="Parallel Requests" class="md-nav__link">
-      Parallel Requests
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="../async/" title="Async Client" class="md-nav__link">
-      Async Client
-    </a>
-  </li>
-
-    
-      
-      
-      
-
   
 
 
@@ -476,9 +452,8 @@ but also provide lower-cased versions for API compatibility with <code>requests<
 </pre></div>
 
 
-<p>is equivalent to</p>
-<div class="codehilite"><pre><span></span><span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
-    <span class="o">...</span>
+<p>is generally equivalent to</p>
+<div class="codehilite"><pre><span></span><span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
 
 
@@ -505,7 +480,7 @@ but also provide lower-cased versions for API compatibility with <code>requests<
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../async/" title="Async Client" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../environment_variables/" title="Environment Variables" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -514,7 +489,7 @@ but also provide lower-cased versions for API compatibility with <code>requests<
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Async Client
+                Environment Variables
               </span>
             </div>
           </a>

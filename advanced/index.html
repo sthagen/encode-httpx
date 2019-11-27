@@ -324,6 +324,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#unix-domain-sockets" class="md-nav__link">
+    Unix Domain Sockets
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#http-proxying" class="md-nav__link">
     HTTP Proxying
   </a>
@@ -405,6 +412,33 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#support-async-environments" class="md-nav__link">
+    Support async environments
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#asyncio-default" class="md-nav__link">
+    asyncio (Default)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trio" class="md-nav__link">
+    trio
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
       
       
       
@@ -424,30 +458,6 @@
   <li class="md-nav__item">
     <a href="../environment_variables/" title="Environment Variables" class="md-nav__link">
       Environment Variables
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="../parallel/" title="Parallel Requests" class="md-nav__link">
-      Parallel Requests
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="../async/" title="Async Client" class="md-nav__link">
-      Async Client
     </a>
   </li>
 
@@ -564,6 +574,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#unix-domain-sockets" class="md-nav__link">
+    Unix Domain Sockets
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#http-proxying" class="md-nav__link">
     HTTP Proxying
   </a>
@@ -645,6 +662,33 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#support-async-environments" class="md-nav__link">
+    Support async environments
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#asyncio-default" class="md-nav__link">
+    asyncio (Default)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trio" class="md-nav__link">
+    trio
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
       
       
       
@@ -673,9 +717,9 @@ all outgoing requests.</p>
 </div>
 <h3 id="usage">Usage</h3>
 <p>The recommended way to use a <code>Client</code> is as a context manager. This will ensure that connections are properly cleaned up when leaving the <code>with</code> block:</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
-<span class="o">...</span>     <span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://example.com&#39;</span><span class="p">)</span>
-<span class="o">...</span> 
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">async</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+<span class="o">...</span>     <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://example.com&#39;</span><span class="p">)</span>
+<span class="o">...</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span>
 <span class="o">&lt;</span><span class="n">Response</span> <span class="p">[</span><span class="mi">200</span> <span class="n">OK</span><span class="p">]</span><span class="o">&gt;</span>
 </pre></div>
@@ -684,10 +728,10 @@ all outgoing requests.</p>
 <p>Alternatively, you can explicitly close the connection pool without block-usage using <code>.close()</code>:</p>
 <div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="k">try</span><span class="p">:</span>
-<span class="o">...</span>     <span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://example.com&#39;</span><span class="p">)</span>
+<span class="o">...</span>     <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://example.com&#39;</span><span class="p">)</span>
 <span class="o">...</span> <span class="k">finally</span><span class="p">:</span>
-<span class="o">...</span>     <span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-<span class="o">...</span> 
+<span class="o">...</span>     <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="o">...</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span>
 <span class="o">&lt;</span><span class="n">Response</span> <span class="p">[</span><span class="mi">200</span> <span class="n">OK</span><span class="p">]</span><span class="o">&gt;</span>
 </pre></div>
@@ -699,8 +743,8 @@ all outgoing requests.</p>
 <p>For example, to apply a set of custom headers on every request:</p>
 <div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://httpbin.org/headers&#39;</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;user-agent&#39;</span><span class="p">:</span> <span class="s1">&#39;my-app/0.0.1&#39;</span><span class="p">}</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
-<span class="o">...</span>     <span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">async</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+<span class="o">...</span>     <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
 <span class="o">...</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s1">&#39;headers&#39;</span><span class="p">][</span><span class="s1">&#39;User-Agent&#39;</span><span class="p">]</span>
 <span class="s1">&#39;my-app/0.0.1&#39;</span>
@@ -717,9 +761,9 @@ all outgoing requests.</p>
 </div>
 <p>Additionally, <code>Client</code> constructor accepts some parameters that aren't available at the request level.</p>
 <p>One particularly useful parameter is <code>base_url</code>, which allows you to define a base URL to prepend to all outgoing requests:</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="s1">&#39;http://httpbin.org&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
-<span class="o">...</span>     <span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/headers&#39;</span><span class="p">)</span>
-<span class="o">...</span> 
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">async</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="s1">&#39;http://httpbin.org&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+<span class="o">...</span>     <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/headers&#39;</span><span class="p">)</span>
+<span class="o">...</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">url</span>
 <span class="n">URL</span><span class="p">(</span><span class="s1">&#39;http://httpbin.org/headers&#39;</span><span class="p">)</span>
 </pre></div>
@@ -728,27 +772,32 @@ all outgoing requests.</p>
 <p>For a list of all available client-level parameters, see the <a href="/api/#client"><code>Client</code> API reference</a>.</p>
 <h2 id="calling-into-python-web-apps">Calling into Python Web Apps</h2>
 <p>You can configure an <code>httpx</code> client to call directly into a Python web
-application using either the WSGI or ASGI protocol.</p>
+application using either the ASGI protocol.</p>
 <p>This is particularly useful for two main use-cases:</p>
 <ul>
 <li>Using <code>httpx</code> as a client inside test cases.</li>
 <li>Mocking out external services during tests or in dev/staging environments.</li>
 </ul>
-<p>Here's an example of integrating against a Flask application:</p>
-<div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
-<span class="kn">import</span> <span class="nn">httpx</span>
+<p>Let's take this Starlette application as an example:</p>
+<div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">starlette.applications</span> <span class="kn">import</span> <span class="n">Starlette</span>
+<span class="kn">from</span> <span class="nn">starlette.responses</span> <span class="kn">import</span> <span class="n">HTMLResponse</span>
+<span class="kn">from</span> <span class="nn">starlette.routing</span> <span class="kn">import</span> <span class="n">Route</span>
 
 
-<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">HTMLResponse</span><span class="p">(</span><span class="s2">&quot;Hello World!&quot;</span><span class="p">)</span>
 
-<span class="nd">@app.route</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
-    <span class="k">return</span> <span class="s2">&quot;Hello World!&quot;</span>
 
-<span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">app</span><span class="o">=</span><span class="n">app</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;http://example/&#39;</span><span class="p">)</span>
-    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span>
-    <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="s2">&quot;Hello World!&quot;</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">Starlette</span><span class="p">(</span><span class="n">routes</span><span class="o">=</span><span class="p">[</span><span class="n">Route</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">hello</span><span class="p">)])</span>
+</pre></div>
+
+
+<p>We can make requests directly against the application, like so:</p>
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">httpx</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">async</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">app</span><span class="o">=</span><span class="n">app</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+<span class="o">...</span>     <span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;http://example/&#39;</span><span class="p">)</span>
+<span class="o">...</span>     <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span>
+<span class="o">...</span>     <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="s2">&quot;Hello World!&quot;</span>
 </pre></div>
 
 
@@ -756,13 +805,13 @@ application using either the WSGI or ASGI protocol.</p>
 dispatch. This allows you to:</p>
 <ul>
 <li>Inspect 500 error responses rather than raise exceptions by setting <code>raise_app_exceptions=False</code>.</li>
-<li>Mount the WSGI or ASGI application at a subpath by setting <code>script_name</code> (WSGI) or <code>root_path</code> (ASGI).</li>
-<li>Use a given client address for requests by setting <code>remote_addr</code> (WSGI) or <code>client</code> (ASGI).</li>
+<li>Mount the WSGI or ASGI application at a subpath by setting <code>root_path</code>.</li>
+<li>Use a given client address for requests by setting <code>client</code>.</li>
 </ul>
 <p>For example:</p>
 <div class="codehilite"><pre><span></span><span class="c1"># Instantiate a client that makes WSGI requests with a client IP of &quot;1.2.3.4&quot;.</span>
-<span class="n">dispatch</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">dispatch</span><span class="o">.</span><span class="n">WSGIDispatch</span><span class="p">(</span><span class="n">app</span><span class="o">=</span><span class="n">app</span><span class="p">,</span> <span class="n">remote_addr</span><span class="o">=</span><span class="s2">&quot;1.2.3.4&quot;</span><span class="p">)</span>
-<span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">dispatch</span><span class="o">=</span><span class="n">dispatch</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+<span class="n">dispatch</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">dispatch</span><span class="o">.</span><span class="n">ASGIDispatch</span><span class="p">(</span><span class="n">app</span><span class="o">=</span><span class="n">app</span><span class="p">,</span> <span class="n">remote_addr</span><span class="o">=</span><span class="s2">&quot;1.2.3.4&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">dispatch</span><span class="o">=</span><span class="n">dispatch</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
     <span class="o">...</span>
 </pre></div>
 
@@ -770,10 +819,10 @@ dispatch. This allows you to:</p>
 <h2 id="build-request">Build Request</h2>
 <p>You can use <code>Client.build_request()</code> to build a request and
 make modifications before sending the request.</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">async</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
 <span class="o">...</span>     <span class="n">req</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">build_request</span><span class="p">(</span><span class="s2">&quot;OPTIONS&quot;</span><span class="p">,</span> <span class="s2">&quot;https://example.com&quot;</span><span class="p">)</span>
 <span class="o">...</span>     <span class="n">req</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">full_path</span> <span class="o">=</span> <span class="s2">&quot;*&quot;</span>  <span class="c1"># Build an &#39;OPTIONS *&#39; request for CORS</span>
-<span class="o">...</span>     <span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+<span class="o">...</span>     <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
 <span class="o">...</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span>
 <span class="o">&lt;</span><span class="n">Response</span> <span class="p">[</span><span class="mi">200</span> <span class="n">OK</span><span class="p">]</span><span class="o">&gt;</span>
@@ -783,11 +832,11 @@ make modifications before sending the request.</p>
 <h2 id="specify-the-version-of-the-http-protocol">Specify the version of the HTTP protocol</h2>
 <p>One can set the version of the HTTP protocol for the client in case you want to make the requests using a specific version.</p>
 <p>For example:</p>
-<div class="codehilite"><pre><span></span><span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">http_versions</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;HTTP/1.1&quot;</span><span class="p">])</span> <span class="k">as</span> <span class="n">h11_client</span><span class="p">:</span>
-    <span class="n">h11_response</span> <span class="o">=</span> <span class="n">h11_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://myserver.com&quot;</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><span class="k">async</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">http_versions</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;HTTP/1.1&quot;</span><span class="p">])</span> <span class="k">as</span> <span class="n">h11_client</span><span class="p">:</span>
+    <span class="n">h11_response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">h11_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://myserver.com&quot;</span><span class="p">)</span>
 
-<span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">http_versions</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;HTTP/2&quot;</span><span class="p">])</span> <span class="k">as</span> <span class="n">h2_client</span><span class="p">:</span>
-    <span class="n">h2_response</span> <span class="o">=</span> <span class="n">h2_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://myserver.com&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">http_versions</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;HTTP/2&quot;</span><span class="p">])</span> <span class="k">as</span> <span class="n">h2_client</span><span class="p">:</span>
+    <span class="n">h2_response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">h2_client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://myserver.com&quot;</span><span class="p">)</span>
 </pre></div>
 
 
@@ -801,7 +850,7 @@ If you need to refresh the cache (e.g. because the NETRC file has changed),
 you should create a new client or restart the interpreter.</p>
 </div>
 <p>As default <code>trust_env</code> is true. To set false:</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://example.org/&#39;</span><span class="p">,</span> <span class="n">trust_env</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://example.org/&#39;</span><span class="p">,</span> <span class="n">trust_env</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 
 
@@ -822,6 +871,18 @@ you should create a new client or restart the interpreter.</p>
 </pre></div>
 
 
+<h2 id="unix-domain-sockets">Unix Domain Sockets</h2>
+<p>You can configure an <code>httpx</code> client to connect through a unix domain socket via the <code>uds</code> parameter. This is useful when making requests to a server that is bound to a socket file rather than an IP address.</p>
+<p>Here's an example requesting the Docker Engine API:</p>
+<div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">httpx</span>
+
+
+<span class="k">async</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">uds</span><span class="o">=</span><span class="s2">&quot;/var/run/docker.sock&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="c1"># This request will connect through the socket file.</span>
+    <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;http://localhost/version&quot;</span><span class="p">)</span>
+</pre></div>
+
+
 <h2 id="http-proxying">HTTP Proxying</h2>
 <p>HTTPX supports setting up proxies the same way that Requests does via the <code>proxies</code> parameter.
 For example to forward all HTTP traffic to <code>http://127.0.0.1:3080</code> and all HTTPS traffic
@@ -830,7 +891,7 @@ to <code>http://127.0.0.1:3081</code> your <code>proxies</code> config would loo
 <span class="o">...</span>     <span class="s2">&quot;http&quot;</span><span class="p">:</span> <span class="s2">&quot;http://127.0.0.1:3080&quot;</span><span class="p">,</span>
 <span class="o">...</span>     <span class="s2">&quot;https&quot;</span><span class="p">:</span> <span class="s2">&quot;http://127.0.0.1:3081&quot;</span>
 <span class="o">...</span> <span class="p">}</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">proxies</span><span class="o">=</span><span class="n">proxies</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">async</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">proxies</span><span class="o">=</span><span class="n">proxies</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
 <span class="o">...</span>     <span class="o">...</span>
 </pre></div>
 
@@ -844,11 +905,11 @@ to use for a given request this same order is used.</p>
 <span class="o">...</span>     <span class="s2">&quot;http&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>  <span class="c1"># Scheme</span>
 <span class="o">...</span>     <span class="s2">&quot;all&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>  <span class="c1"># All</span>
 <span class="o">...</span> <span class="p">}</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">proxies</span><span class="o">=</span><span class="n">proxies</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">async</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">proxies</span><span class="o">=</span><span class="n">proxies</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
 <span class="o">...</span>     <span class="o">...</span>
-<span class="o">...</span> 
+<span class="o">...</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">proxy</span> <span class="o">=</span> <span class="s2">&quot;...&quot;</span>  <span class="c1"># Shortcut for {&#39;all&#39;: &#39;...&#39;}</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">proxies</span><span class="o">=</span><span class="n">proxy</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">async</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">proxies</span><span class="o">=</span><span class="n">proxy</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
 <span class="o">...</span>     <span class="o">...</span>
 </pre></div>
 
@@ -867,9 +928,9 @@ regardless of the <code>proxy_url</code> being <code>http</code> or <code>https<
     <span class="n">proxy_url</span><span class="o">=</span><span class="s2">&quot;https://127.0.0.1&quot;</span><span class="p">,</span>
     <span class="n">proxy_mode</span><span class="o">=</span><span class="n">httpx</span><span class="o">.</span><span class="n">HTTPProxyMode</span><span class="o">.</span><span class="n">TUNNEL_ONLY</span>
 <span class="p">)</span>
-<span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">proxies</span><span class="o">=</span><span class="n">proxy</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+<span class="k">async</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">proxies</span><span class="o">=</span><span class="n">proxy</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
     <span class="c1"># This request will be tunneled instead of forwarded.</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;http://example.com&quot;</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;http://example.com&quot;</span><span class="p">)</span>
 </pre></div>
 
 
@@ -899,19 +960,19 @@ unable to receive data within this time frame, a <code>ReadTimeout</code> except
 <li>For a given request:</li>
 </ul>
 <div class="codehilite"><pre><span></span><span class="c1"># Using top-level API</span>
-<span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;http://example.com/api/v1/example&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;http://example.com/api/v1/example&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 
 <span class="c1"># Or, with a client:</span>
-<span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
-    <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;http://example.com/api/v1/example&quot;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;http://example.com/api/v1/example&quot;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 
 
 <ul>
 <li>On a client instance, which results in the given <code>timeout</code> being used as a default for requests made with this client:</li>
 </ul>
-<div class="codehilite"><pre><span></span><span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
-    <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;http://example.com/api/v1/example&#39;</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><span class="k">async</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;http://example.com/api/v1/example&#39;</span><span class="p">)</span>
 </pre></div>
 
 
@@ -926,7 +987,7 @@ unable to receive data within this time frame, a <code>ReadTimeout</code> except
     <span class="n">write_timeout</span><span class="o">=</span><span class="mi">15</span>
 <span class="p">)</span>
 
-<span class="n">resp</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;http://example.com/api/v1/example&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
+<span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;http://example.com/api/v1/example&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
 </pre></div>
 
 
@@ -937,19 +998,19 @@ unable to receive data within this time frame, a <code>ReadTimeout</code> except
 Note that currently this is not supported by the top-level API.</p>
 <div class="codehilite"><pre><span></span><span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;http://example.com/api/v1/delay/10&quot;</span>
 
-<span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>  <span class="c1"># Times out after 5s</span>
+<span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>  <span class="c1"># Times out after 5s</span>
 
 
-<span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
-    <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>  <span class="c1"># Does not timeout, returns after 10s</span>
+<span class="k">async</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>  <span class="c1"># Does not timeout, returns after 10s</span>
 
 
 <span class="n">timeout</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">TimeoutConfig</span><span class="p">(</span>
     <span class="n">connect_timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-    <span class="n">read_timeout</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+    <span class="n">read_timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">write_timeout</span><span class="o">=</span><span class="mi">5</span>
 <span class="p">)</span>
-<span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span> <span class="c1"># Does not timeout, returns after 10s</span>
+<span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span> <span class="c1"># Does not timeout, returns after 10s</span>
 </pre></div>
 
 
@@ -958,8 +1019,8 @@ Note that currently this is not supported by the top-level API.</p>
 multipart file encoding is available by passing a dictionary with the
 name of the payloads as keys and a tuple of elements as values.</p>
 <div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">files</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;upload-file&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;report.xls&#39;</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;report.xls&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">),</span> <span class="s1">&#39;application/vnd.ms-excel&#39;</span><span class="p">)}</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;https://httpbin.org/post&quot;</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="n">files</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;https://httpbin.org/post&quot;</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="n">files</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
 <span class="p">{</span>
   <span class="o">...</span>
   <span class="s2">&quot;files&quot;</span><span class="p">:</span> <span class="p">{</span>
@@ -980,9 +1041,9 @@ of the file being uploaded. If not specified HTTPX will attempt to guess the MIM
 based on the file name specified as the first element or the tuple, if that
 is set to <code>None</code> or it cannot be inferred from it, HTTPX will default to
 <code>applicaction/octet-stream</code>.</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">files</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;upload-file&#39;</span><span class="p">:</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="s1">&#39;text content&#39;</span><span class="p">,</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">)}</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;https://httpbin.org/post&quot;</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="n">files</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">files</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;upload-file&#39;</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;text content&#39;</span><span class="p">,</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">)}</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;https://httpbin.org/post&quot;</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="n">files</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
 <span class="p">{</span>
   <span class="o">...</span>
   <span class="s2">&quot;files&quot;</span><span class="p">:</span> <span class="p">{},</span>
@@ -1002,7 +1063,7 @@ is set to <code>None</code> or it cannot be inferred from it, HTTPX will default
 <p>If you'd like to use a custom CA bundle, you can use the <code>verify</code> parameter that is available on the high-level API as well as clients. For example:</p>
 <div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">httpx</span>
 
-<span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://example.org&quot;</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="s2">&quot;path/to/client.pem&quot;</span><span class="p">)</span>
+<span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://example.org&quot;</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="s2">&quot;path/to/client.pem&quot;</span><span class="p">)</span>
 </pre></div>
 
 
@@ -1015,10 +1076,33 @@ is set to <code>None</code> or it cannot be inferred from it, HTTPX will default
 <li>Tell HTTPX to use the certificates stored in <code>client.pem</code>:</li>
 </ol>
 <div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">httpx</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://localhost:8000&quot;</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="s2">&quot;/tmp/client.pem&quot;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://localhost:8000&quot;</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="s2">&quot;/tmp/client.pem&quot;</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span>
 <span class="n">Response</span> <span class="o">&lt;</span><span class="mi">200</span> <span class="n">OK</span><span class="o">&gt;</span>
 </pre></div>
+
+
+<h2 id="support-async-environments">Support async environments</h2>
+<h3 id="asyncio-default"><a href="https://docs.python.org/3/library/asyncio.html">asyncio</a> (Default)</h3>
+<p>By default, <code>AsyncClient</code> uses <code>asyncio</code> to perform asynchronous operations and I/O calls.</p>
+<h3 id="trio"><a href="https://github.com/python-trio/trio">trio</a></h3>
+<p>To make asynchronous requests in <code>trio</code> programs, pass a <code>TrioBackend</code> to the <code>AsyncClient</code>:</p>
+<div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">trio</span>
+<span class="kn">import</span> <span class="nn">httpx</span>
+<span class="kn">from</span> <span class="nn">httpx.concurrency.trio</span> <span class="kn">import</span> <span class="n">TrioBackend</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="n">TrioBackend</span><span class="p">())</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+        <span class="o">...</span>
+
+<span class="n">trio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
+</pre></div>
+
+
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p><code>trio</code> must be installed to import and use the <code>TrioBackend</code>.</p>
+</div>
                 
                   
                 

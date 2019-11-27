@@ -321,30 +321,6 @@
 
 
   <li class="md-nav__item">
-    <a href="parallel/" title="Parallel Requests" class="md-nav__link">
-      Parallel Requests
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="async/" title="Async Client" class="md-nav__link">
-      Async Client
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
     <a href="compatibility/" title="Requests Compatibility" class="md-nav__link">
       Requests Compatibility
     </a>
@@ -463,15 +439,22 @@ HTTPX
 <em>A next-generation HTTP client for Python.</em>
 </div>
 
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This project should be considered as an "alpha" release. It is substantially
-API complete, but there are still some areas that need more work.</p>
+<p>HTTPX is an asynchronous client library that supports HTTP/1.1 and HTTP/2.</p>
+<p>It can be used in high-performance async web frameworks, using either asyncio
+or trio, and is able to support making large numbers of concurrent requests.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The 0.8 release switched HTTPX into focusing exclusively on providing an async
+client. It is possible that we'll look at re-introducing a sync API at a
+later date.</p>
 </div>
 <hr />
 <p>Let's get started...</p>
+<p>The standard Python REPL does not allow top-level async statements.</p>
+<p>To run these async examples you'll probably want to either use <code>ipython</code>,
+or use Python 3.8 with <code>python -m asyncio</code>.</p>
 <div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">httpx</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://www.example.org/&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://www.example.org/&#39;</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span>
 <span class="o">&lt;</span><span class="n">Response</span> <span class="p">[</span><span class="mi">200</span> <span class="n">OK</span><span class="p">]</span><span class="o">&gt;</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span>
@@ -486,13 +469,12 @@ API complete, but there are still some areas that need more work.</p>
 
 
 <h2 id="features">Features</h2>
-<p>HTTPX builds on the well-established usability of <code>requests</code>, and gives you:</p>
+<p>HTTPX is a high performance asynchronous HTTP client, that builds on the
+well-established usability of <code>requests</code>, and gives you:</p>
 <ul>
-<li>A requests-compatible API.</li>
+<li>A broadly requests-compatible API.</li>
 <li>HTTP/2 and HTTP/1.1 support.</li>
-<li>Support for <a href="parallel/">issuing HTTP requests in parallel</a>. <em>(Coming soon)</em></li>
-<li>Standard synchronous interface, but <a href="async/">with <code>async</code>/<code>await</code> support if you need it</a>.</li>
-<li>Ability to <a href="advanced/#calling-into-python-web-apps">make requests directly to WSGI or ASGI applications</a>.</li>
+<li>Ability to <a href="advanced/#calling-into-python-web-apps">make requests directly to ASGI applications</a>.</li>
 <li>Strict timeouts everywhere.</li>
 <li>Fully type annotated.</li>
 <li>100% test coverage.</li>
@@ -509,7 +491,7 @@ API complete, but there are still some areas that need more work.</p>
 <li>Automatic Content Decoding</li>
 <li>Unicode Response Bodies</li>
 <li>Multipart File Uploads</li>
-<li>HTTP(S) Proxy Support <em>(TODO)</em></li>
+<li>HTTP(S) Proxy Support</li>
 <li>Connection Timeouts</li>
 <li>Streaming Downloads</li>
 <li>.netrc Support</li>
@@ -517,9 +499,7 @@ API complete, but there are still some areas that need more work.</p>
 </ul>
 <h2 id="documentation">Documentation</h2>
 <p>For a run-through of all the basics, head over to the <a href="quickstart/">QuickStart</a>.</p>
-<p>For more advanced topics, see the <a href="advanced/">Advanced Usage</a> section, or
-the specific topics on making <a href="parallel/">Parallel Requests</a> or using the
-<a href="async/">Async Client</a>.</p>
+<p>For more advanced topics, see the <a href="advanced/">Advanced Usage</a> section.</p>
 <p>The <a href="api/">Developer Interface</a> provides a comprehensive API reference.</p>
 <h2 id="dependencies">Dependencies</h2>
 <p>The HTTPX project relies on these excellent libraries:</p>
