@@ -252,6 +252,18 @@
       
       
 
+
+  <li class="md-nav__item">
+    <a href="../http2/" title="HTTP/2 Support" class="md-nav__link">
+      HTTP/2 Support
+    </a>
+  </li>
+
+    
+      
+      
+      
+
   
 
 
@@ -436,14 +448,12 @@
                 
                 <h1 id="environment-variables">Environment Variables</h1>
 <p>The HTTPX library can be configured via environment variables.
-Environment variables are used by default. To ignore environment variables, <code>trust_env</code> has to be set <code>False</code>.
-There are two ways to set <code>trust_env</code> to disable environment variables:</p>
+Environment variables are used by default. To ignore environment variables, <code>trust_env</code> has to be set <code>False</code>. There are two ways to set <code>trust_env</code> to disable environment variables:</p>
 <ul>
-<li>On the client via <code>httpx.Client(trust_env=False)</code></li>
-<li>Per request via <code>client.get("&lt;url&gt;", trust_env=False)</code></li>
+<li>On the client via <code>httpx.Client(trust_env=False)</code>.</li>
+<li>Using the top-level API, such as <code>httpx.get("&lt;url&gt;", trust_env=False)</code>.</li>
 </ul>
-<p>Here is a list of environment variables that HTTPX recognizes
-and what function they serve:</p>
+<p>Here is a list of environment variables that HTTPX recognizes and what function they serve:</p>
 <h2 id="httpx_log_level"><code>HTTPX_LOG_LEVEL</code></h2>
 <p>Valid values: <code>debug</code>, <code>trace</code> (case-insensitive)</p>
 <p>If set to <code>debug</code>, then HTTP requests will be logged to <code>stderr</code>. This is useful for general purpose reporting of network activity.</p>
@@ -470,7 +480,7 @@ and what function they serve:</p>
 <span class="go">TRACE [2019-11-06 19:18:56] httpx.dispatch.connection_pool - new_connection connection=HTTPConnection(origin=Origin(scheme=&#39;https&#39; host=&#39;google.com&#39; port=443))</span>
 <span class="go">TRACE [2019-11-06 19:18:56] httpx.config - load_ssl_context verify=True cert=None trust_env=True http_versions=HTTPVersionConfig([&#39;HTTP/1.1&#39;, &#39;HTTP/2&#39;])</span>
 <span class="go">TRACE [2019-11-06 19:18:56] httpx.config - load_verify_locations cafile=/Users/florimond/Developer/python-projects/httpx/venv/lib/python3.8/site-packages/certifi/cacert.pem</span>
-<span class="go">TRACE [2019-11-06 19:18:56] httpx.dispatch.connection - start_connect host=&#39;google.com&#39; port=443 timeout=TimeoutConfig(timeout=5.0)</span>
+<span class="go">TRACE [2019-11-06 19:18:56] httpx.dispatch.connection - start_connect host=&#39;google.com&#39; port=443 timeout=Timeout(timeout=5.0)</span>
 <span class="go">TRACE [2019-11-06 19:18:56] httpx.dispatch.connection - connected http_version=&#39;HTTP/2&#39;</span>
 <span class="go">TRACE [2019-11-06 19:18:56] httpx.dispatch.http2 - send_headers stream_id=1 method=&#39;GET&#39; target=&#39;/&#39; headers=[(b&#39;:method&#39;, b&#39;GET&#39;), (b&#39;:authority&#39;, b&#39;google.com&#39;), (b&#39;:scheme&#39;, b&#39;https&#39;), (b&#39;:path&#39;, b&#39;/&#39;), (b&#39;user-agent&#39;, b&#39;python-httpx/0.7.6&#39;), (b&#39;accept&#39;, b&#39;*/*&#39;), (b&#39;accept-encoding&#39;, b&#39;gzip, deflate, br&#39;), (b&#39;connection&#39;, b&#39;keep-alive&#39;)]</span>
 <span class="go">TRACE [2019-11-06 19:18:56] httpx.dispatch.http2 - end_stream stream_id=1</span>
@@ -483,7 +493,7 @@ and what function they serve:</p>
 <span class="go">TRACE [2019-11-06 19:18:56] httpx.dispatch.connection_pool - new_connection connection=HTTPConnection(origin=Origin(scheme=&#39;https&#39; host=&#39;www.google.com&#39; port=443))</span>
 <span class="go">TRACE [2019-11-06 19:18:56] httpx.config - load_ssl_context verify=True cert=None trust_env=True http_versions=HTTPVersionConfig([&#39;HTTP/1.1&#39;, &#39;HTTP/2&#39;])</span>
 <span class="go">TRACE [2019-11-06 19:18:56] httpx.config - load_verify_locations cafile=/Users/florimond/Developer/python-projects/httpx/venv/lib/python3.8/site-packages/certifi/cacert.pem</span>
-<span class="go">TRACE [2019-11-06 19:18:56] httpx.dispatch.connection - start_connect host=&#39;www.google.com&#39; port=443 timeout=TimeoutConfig(timeout=5.0)</span>
+<span class="go">TRACE [2019-11-06 19:18:56] httpx.dispatch.connection - start_connect host=&#39;www.google.com&#39; port=443 timeout=Timeout(timeout=5.0)</span>
 <span class="go">TRACE [2019-11-06 19:18:56] httpx.dispatch.connection - connected http_version=&#39;HTTP/2&#39;</span>
 <span class="go">TRACE [2019-11-06 19:18:56] httpx.dispatch.http2 - send_headers stream_id=1 method=&#39;GET&#39; target=&#39;/&#39; headers=[(b&#39;:method&#39;, b&#39;GET&#39;), (b&#39;:authority&#39;, b&#39;www.google.com&#39;), (b&#39;:scheme&#39;, b&#39;https&#39;), (b&#39;:path&#39;, b&#39;/&#39;), (b&#39;user-agent&#39;, b&#39;python-httpx/0.7.6&#39;), (b&#39;accept&#39;, b&#39;*/*&#39;), (b&#39;accept-encoding&#39;, b&#39;gzip, deflate, br&#39;), (b&#39;connection&#39;, b&#39;keep-alive&#39;)]</span>
 <span class="go">TRACE [2019-11-06 19:18:56] httpx.dispatch.http2 - end_stream stream_id=1</span>
@@ -578,7 +588,7 @@ python -c <span class="s2">&quot;import httpx; httpx.get(&#39;http://example.com
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../advanced/" title="Advanced Usage" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../http2/" title="HTTP/2 Support" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -587,7 +597,7 @@ python -c <span class="s2">&quot;import httpx; httpx.get(&#39;http://example.com
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Advanced Usage
+                HTTP/2 Support
               </span>
             </div>
           </a>

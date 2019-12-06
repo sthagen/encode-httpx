@@ -254,6 +254,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../http2/" title="HTTP/2 Support" class="md-nav__link">
+      HTTP/2 Support
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
     <a href="../environment_variables/" title="Environment Variables" class="md-nav__link">
       Environment Variables
     </a>
@@ -353,22 +365,22 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#nox_sessioncheck-job-failed" class="md-nav__link">
-    NOX_SESSION=check Job Failed
+  <a href="#check-job-failed" class="md-nav__link">
+    Check Job Failed
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#nox_sessiondocs-job-failed" class="md-nav__link">
-    NOX_SESSION=docs Job Failed
+  <a href="#docs-job-failed" class="md-nav__link">
+    Docs Job Failed
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#nox_sessiontest-3x-job-failed" class="md-nav__link">
-    NOX_SESSION=test-3.X Job Failed
+  <a href="#python-3x-job-failed" class="md-nav__link">
+    Python 3.X Job Failed
   </a>
   
 </li>
@@ -453,22 +465,22 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#nox_sessioncheck-job-failed" class="md-nav__link">
-    NOX_SESSION=check Job Failed
+  <a href="#check-job-failed" class="md-nav__link">
+    Check Job Failed
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#nox_sessiondocs-job-failed" class="md-nav__link">
-    NOX_SESSION=docs Job Failed
+  <a href="#docs-job-failed" class="md-nav__link">
+    Docs Job Failed
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#nox_sessiontest-3x-job-failed" class="md-nav__link">
-    NOX_SESSION=test-3.X Job Failed
+  <a href="#python-3x-job-failed" class="md-nav__link">
+    Python 3.X Job Failed
   </a>
   
 </li>
@@ -535,72 +547,44 @@ your GitHub username:</p>
 </pre></div>
 
 
-<p>With the repository cloned you can access its folder, set up the
-virtual environment, install the project requirements,
-and then install HTTPX on edit mode:</p>
+<p>You can now install the project and its dependencies using:</p>
 <div class="codehilite"><pre><span></span>$ <span class="nb">cd</span> httpx
-$ python3 -m venv venv
-$ <span class="nb">source</span> venv/bin/activate
-$ pip install -r test-requirements.txt
-$ pip install -e .
+$ scripts/install
 </pre></div>
 
 
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Feel free to replace this step with your development environment setup
-(pyenv, pipenv, virtualenvwrapper, docker, etc).</p>
-</div>
 <h2 id="testing-and-linting">Testing and Linting</h2>
-<p>We use <a href="https://nox.thea.codes/en/stable/">nox</a> to automate testing, linting,
-and documentation building workflow. Make sure you have it installed
-at your system before starting.</p>
-<p>Install <code>nox</code> with:</p>
-<div class="codehilite"><pre><span></span>$ python3 -m pip install --user nox
-</pre></div>
-
-
-<p>Alternatively, use <a href="https://github.com/pipxproject/pipx">pipx</a> if you prefer
-to keep it into an isolated environment:</p>
-<div class="codehilite"><pre><span></span>$ pipx install nox
-</pre></div>
-
-
-<p>Now, with nox installed, run the complete pipeline with:</p>
-<div class="codehilite"><pre><span></span>$ nox
+<p>We use custom shell scripts to automate testing, linting,
+and documentation building workflow.</p>
+<p>To run the tests, use:</p>
+<div class="codehilite"><pre><span></span>$ scripts/test
 </pre></div>
 
 
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>The test suite spawns a testing server at the port <strong>8000</strong>.
-Make sure this isn't being used, so the tests can run properly.</p>
+<p>The test suite spawns testing servers on ports <strong>8000</strong> and <strong>8001</strong>.
+Make sure these are not in use, so the tests can run properly.</p>
 </div>
-<p>To run the code auto-formatting separately:</p>
-<div class="codehilite"><pre><span></span>$ nox -s lint
+<p>You can run a single test script like this:</p>
+<div class="codehilite"><pre><span></span>$ scripts/test -- tests/test_multipart.py
 </pre></div>
 
 
-<p>Also, if you need to run the tests only:</p>
-<div class="codehilite"><pre><span></span>$ nox -s <span class="nb">test</span>
+<p>To run the code auto-formatting:</p>
+<div class="codehilite"><pre><span></span>$ scripts/lint
 </pre></div>
 
 
-<p>You can also run a single test script like this:</p>
-<div class="codehilite"><pre><span></span>$ nox -s <span class="nb">test</span> -- tests/test_multipart.py
+<p>Lastly, to run code checks separately (they are also run as part of <code>scripts/test</code>), run:</p>
+<div class="codehilite"><pre><span></span>$ scripts/check
 </pre></div>
 
 
-<p>Lastly, to ensure you're on track to pass the CI build, run:</p>
-<div class="codehilite"><pre><span></span>$ scripts/test
-</pre></div>
-
-
-<p>This command is a light wrapper around <code>nox</code> that will run code style checks and test the code against all installed Python versions.</p>
 <h2 id="documenting">Documenting</h2>
 <p>Documentation pages are located under the <code>docs/</code> folder.</p>
 <p>To run the documentation site locally (useful for previewing changes), use:</p>
-<div class="codehilite"><pre><span></span>$ nox -s serve
+<div class="codehilite"><pre><span></span>$ scripts/docs-serve
 </pre></div>
 
 
@@ -612,20 +596,23 @@ If the test suite fails, you'll want to click through to the "Details" link, and
 </p>
 
 <p>Here are some common ways the test suite can fail:</p>
-<h3 id="nox_sessioncheck-job-failed">NOX_SESSION=check Job Failed</h3>
+<h3 id="check-job-failed">Check Job Failed</h3>
 <p align="center" style="margin: 0 0 10px">
   <img src="https://raw.githubusercontent.com/encode/httpx/master/docs/img/travis-fail-check.png" alt='Failing Travis lint job'>
 </p>
 
 <p>This job failing means there is either a code formatting issue or type-annotation issue.
 You can look at the job output to figure out why it's failed or within a shell run:</p>
-<p><code>nox -s check</code></p>
-<p>It may be worth it to run <code>nox -s lint</code> to attempt auto-formatting the code
+<div class="codehilite"><pre><span></span>$ scripts/check
+</pre></div>
+
+
+<p>It may be worth it to run <code>$ scripts/lint</code> to attempt auto-formatting the code
 and if that job succeeds commit the changes.</p>
-<h3 id="nox_sessiondocs-job-failed">NOX_SESSION=docs Job Failed</h3>
+<h3 id="docs-job-failed">Docs Job Failed</h3>
 <p>This job failing means the documentation failed to build. This can happen for
 a variety of reasons like invalid markdown or missing configuration within <code>mkdocs.yml</code>.</p>
-<h3 id="nox_sessiontest-3x-job-failed">NOX_SESSION=test-3.X Job Failed</h3>
+<h3 id="python-3x-job-failed">Python 3.X Job Failed</h3>
 <p align="center" style="margin: 0 0 10px">
   <img src="https://raw.githubusercontent.com/encode/httpx/master/docs/img/travis-fail-test.png" alt='Failing Travis test job'>
 </p>

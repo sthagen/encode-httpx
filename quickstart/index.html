@@ -334,6 +334,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#streaming-responses" class="md-nav__link">
+    Streaming Responses
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#cookies" class="md-nav__link">
     Cookies
   </a>
@@ -380,6 +387,18 @@
   <li class="md-nav__item">
     <a href="../advanced/" title="Advanced Usage" class="md-nav__link">
       Advanced Usage
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../http2/" title="HTTP/2 Support" class="md-nav__link">
+      HTTP/2 Support
     </a>
   </li>
 
@@ -525,6 +544,13 @@
         <li class="md-nav__item">
   <a href="#response-headers" class="md-nav__link">
     Response Headers
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#streaming-responses" class="md-nav__link">
+    Streaming Responses
   </a>
   
 </li>
@@ -828,11 +854,49 @@ binary data.</p>
 </pre></div>
 
 
-<p>Multiple values for a single response header are represented as a single comma-separated
-value, as per <a href="https://tools.ietf.org/html/rfc7230#section-3.2">RFC 7230</a>:</p>
+<p>Multiple values for a single response header are represented as a single comma-separated value, as per <a href="https://tools.ietf.org/html/rfc7230#section-3.2">RFC 7230</a>:</p>
 <blockquote>
 <p>A recipient MAY combine multiple header fields with the same field name into one “field-name: field-value” pair, without changing the semantics of the message, by appending each subsequent field-value to the combined field value in order, separated by a comma.</p>
 </blockquote>
+<h2 id="streaming-responses">Streaming Responses</h2>
+<p>For large downloads you may want to use streaming responses that do not load the entire response body into memory at once.</p>
+<p>You can stream the binary content of the response...</p>
+<div class="codehilite"><pre><span></span><span class="err">&gt;&gt;&gt; async with httpx.stream(&quot;GET&quot;, &quot;https://www.example.com&quot;) as r:</span>
+<span class="err">...     async for data in r.aiter_bytes():</span>
+<span class="err">...         print(data)</span>
+</pre></div>
+
+
+<p>Or the text of the response...</p>
+<div class="codehilite"><pre><span></span><span class="err">&gt;&gt;&gt; async with httpx.stream(&quot;GET&quot;, &quot;https://www.example.com&quot;) as r:</span>
+<span class="err">...     async for text in r.aiter_text():</span>
+<span class="err">...         print(text)</span>
+</pre></div>
+
+
+<p>Or stream the text, on a line-by-line basis...</p>
+<div class="codehilite"><pre><span></span><span class="err">&gt;&gt;&gt; async with httpx.stream(&quot;GET&quot;, &quot;https://www.example.com&quot;) as r:</span>
+<span class="err">...     async for line in r.aiter_lines():</span>
+<span class="err">...         print(line)</span>
+</pre></div>
+
+
+<p>HTTPX will use universal line endings, normalising all cases to <code>\n</code>.</p>
+<p>In some cases you might want to access the raw bytes on the response without applying any HTTP content decoding. In this case any content encoding that the web server has applied such as <code>gzip</code>, <code>deflate</code>, or <code>brotli</code> will not be automatically decoded.</p>
+<div class="codehilite"><pre><span></span><span class="err">&gt;&gt;&gt; async with httpx.stream(&quot;GET&quot;, &quot;https://www.example.com&quot;) as r:</span>
+<span class="err">...     async for chunk in r.aiter_raw():</span>
+<span class="err">...         print(chunk)</span>
+</pre></div>
+
+
+<p>If you're using streaming responses in any of these ways then the <code>response.content</code> and <code>response.text</code> attributes will not be available, and will raise errors if accessed. However you can also use the response streaming functionality to conditionally load the response body:</p>
+<div class="codehilite"><pre><span></span><span class="err">&gt;&gt;&gt; async with httpx.stream(&quot;GET&quot;, &quot;https://www.example.com&quot;) as r:</span>
+<span class="err">...     if r.headers[&#39;Content-Length&#39;] &lt; TOO_LONG:</span>
+<span class="err">...         await r.read()</span>
+<span class="err">...         print(r.text)</span>
+</pre></div>
+
+
 <h2 id="cookies">Cookies</h2>
 <p>Any cookies that are set on the response can be easily accessed:</p>
 <div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;http://httpbin.org/cookies/set?chocolate=chip&#39;</span><span class="p">,</span> <span class="n">allow_redirects</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -901,6 +965,11 @@ raise an error rather than hanging indefinitely.</p>
 <p>The default timeout for network inactivity is five seconds. You can modify the
 value to be more or less strict:</p>
 <div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://github.com/&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span>
+</pre></div>
+
+
+<p>You can also disable the timeout behavior completely...</p>
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://github.com/&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </pre></div>
 
 

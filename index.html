@@ -309,6 +309,18 @@
 
 
   <li class="md-nav__item">
+    <a href="http2/" title="HTTP/2 Support" class="md-nav__link">
+      HTTP/2 Support
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
     <a href="environment_variables/" title="Environment Variables" class="md-nav__link">
       Environment Variables
     </a>
@@ -444,9 +456,15 @@ HTTPX
 or trio, and is able to support making large numbers of concurrent requests.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The 0.8 release switched HTTPX into focusing exclusively on providing an async
-client. It is possible that we'll look at re-introducing a sync API at a
-later date.</p>
+<p>HTTPX should currently be considered in alpha. We'd love early users and feedback,
+but would strongly recommend pinning your dependencies to the latest median
+release, so that you're able to properly review API changes between package
+updates. Currently you should be using <code>httpx==0.8.*</code>.</p>
+<p>In particular, the 0.8 release switched HTTPX into focusing exclusively on
+providing an async client, in order to move the project forward, and help
+us <a href="https://github.com/encode/httpx/issues/572">change our approach to providing sync+async support</a>. If
+you have been using the sync client, you may want to pin to <code>httpx==0.7.*</code>,
+and wait until our sync client is reintroduced.</p>
 </div>
 <hr />
 <p>Let's get started...</p>
@@ -473,7 +491,7 @@ or use Python 3.8 with <code>python -m asyncio</code>.</p>
 well-established usability of <code>requests</code>, and gives you:</p>
 <ul>
 <li>A broadly requests-compatible API.</li>
-<li>HTTP/2 and HTTP/1.1 support.</li>
+<li>HTTP/1.1 and <a href="http2/">HTTP/2 support</a>.</li>
 <li>Ability to <a href="advanced/#calling-into-python-web-apps">make requests directly to ASGI applications</a>.</li>
 <li>Strict timeouts everywhere.</li>
 <li>Fully type annotated.</li>
@@ -499,7 +517,8 @@ well-established usability of <code>requests</code>, and gives you:</p>
 </ul>
 <h2 id="documentation">Documentation</h2>
 <p>For a run-through of all the basics, head over to the <a href="quickstart/">QuickStart</a>.</p>
-<p>For more advanced topics, see the <a href="advanced/">Advanced Usage</a> section.</p>
+<p>For more advanced topics, see the <a href="advanced/">Advanced Usage</a> section,
+or the <a href="http2/">HTTP/2</a> section.</p>
 <p>The <a href="api/">Developer Interface</a> provides a comprehensive API reference.</p>
 <h2 id="dependencies">Dependencies</h2>
 <p>The HTTPX project relies on these excellent libraries:</p>
