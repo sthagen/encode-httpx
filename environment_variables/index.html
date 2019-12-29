@@ -34,7 +34,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.5.0">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.5.1">
     
     
       
@@ -450,7 +450,7 @@
 <p>The HTTPX library can be configured via environment variables.
 Environment variables are used by default. To ignore environment variables, <code>trust_env</code> has to be set <code>False</code>. There are two ways to set <code>trust_env</code> to disable environment variables:</p>
 <ul>
-<li>On the client via <code>httpx.Client(trust_env=False)</code>.</li>
+<li>On the client via <code>httpx.AsyncClient(trust_env=False)</code>.</li>
 <li>Using the top-level API, such as <code>httpx.get("&lt;url&gt;", trust_env=False)</code>.</li>
 </ul>
 <p>Here is a list of environment variables that HTTPX recognizes and what function they serve:</p>
@@ -462,7 +462,7 @@ Environment variables are used by default. To ignore environment variables, <cod
 <div class="codehilite"><pre><span></span><span class="c1"># test_script.py</span>
 <span class="kn">import</span> <span class="nn">httpx</span>
 
-<span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+<span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://google.com&quot;</span><span class="p">)</span>
 </pre></div>
 
@@ -519,7 +519,7 @@ Environment variables are used by default. To ignore environment variables, <cod
 <div class="codehilite"><pre><span></span><span class="c1"># test_script.py</span>
 <span class="kn">import</span> <span class="nn">httpx</span>
 
-<span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+<span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://google.com&quot;</span><span class="p">)</span>
 </pre></div>
 
@@ -637,7 +637,7 @@ python -c <span class="s2">&quot;import httpx; httpx.get(&#39;http://example.com
       
     </div>
     
-      <script src="../assets/javascripts/application.a8b5e56f.js"></script>
+      <script src="../assets/javascripts/application.8e03edeb.js"></script>
       
       <script>app.initialize({version:"1.0.4",url:{base:".."}})</script>
       

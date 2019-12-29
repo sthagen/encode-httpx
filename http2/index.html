@@ -34,7 +34,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.5.0">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.5.1">
     
     
       
@@ -426,7 +426,7 @@ point in time.</p>
 <p>However, if you're issuing highly concurrent requests you might want to consider
 trying out our HTTP/2 support. You can do so by instantiating a client with
 HTTP/2 support enabled:</p>
-<div class="codehilite"><pre><span></span><span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">http2</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">(</span><span class="n">http2</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="o">...</span>
 </pre></div>
 
@@ -434,7 +434,7 @@ HTTP/2 support enabled:</p>
 <p>You can also instantiate a client as a context manager, to ensure that all
 HTTP connections are nicely scoped, and will be closed once the context block
 is exited.</p>
-<div class="codehilite"><pre><span></span><span class="k">async</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">http2</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+<div class="codehilite"><pre><span></span><span class="k">async</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">(</span><span class="n">http2</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
     <span class="o">...</span>
 </pre></div>
 
@@ -446,7 +446,7 @@ requests and responses will be transported over HTTP/2, since both the client
 supports HTTP/1.1 the client will use a standard HTTP/1.1 connection instead.</p>
 <p>You can determine which version of the HTTP protocol was used by examining
 the <code>.http_version</code> property on the response.</p>
-<div class="codehilite"><pre><span></span><span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">http2</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">(</span><span class="n">http2</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">http_version</span><span class="p">)</span>  <span class="c1"># &quot;HTTP/1.0&quot;, &quot;HTTP/1.1&quot;, or &quot;HTTP/2&quot;.</span>
 </pre></div>
@@ -519,7 +519,7 @@ the <code>.http_version</code> property on the response.</p>
       
     </div>
     
-      <script src="../assets/javascripts/application.a8b5e56f.js"></script>
+      <script src="../assets/javascripts/application.8e03edeb.js"></script>
       
       <script>app.initialize({version:"1.0.4",url:{base:".."}})</script>
       

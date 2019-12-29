@@ -34,7 +34,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.5.0">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.5.1">
     
     
       
@@ -892,7 +892,7 @@ binary data.</p>
 <p>If you're using streaming responses in any of these ways then the <code>response.content</code> and <code>response.text</code> attributes will not be available, and will raise errors if accessed. However you can also use the response streaming functionality to conditionally load the response body:</p>
 <div class="codehilite"><pre><span></span><span class="err">&gt;&gt;&gt; async with httpx.stream(&quot;GET&quot;, &quot;https://www.example.com&quot;) as r:</span>
 <span class="err">...     if r.headers[&#39;Content-Length&#39;] &lt; TOO_LONG:</span>
-<span class="err">...         await r.read()</span>
+<span class="err">...         await r.aread()</span>
 <span class="err">...         print(r.text)</span>
 </pre></div>
 
@@ -1060,7 +1060,7 @@ as above:</p>
       
     </div>
     
-      <script src="../assets/javascripts/application.a8b5e56f.js"></script>
+      <script src="../assets/javascripts/application.8e03edeb.js"></script>
       
       <script>app.initialize({version:"1.0.4",url:{base:".."}})</script>
       
