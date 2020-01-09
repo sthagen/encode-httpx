@@ -13,6 +13,8 @@
         <meta name="description" content="A next-generation HTTP client for Python.">
       
       
+        <link rel="canonical" href="https://www.python-httpx.org/">
+      
       
       
         <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -73,8 +75,6 @@
       <defs>
         
         
-          <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
-        
       </defs>
     </svg>
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -90,7 +90,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="." title="HTTPX" class="md-header-nav__button md-logo">
+        <a href="https://www.python-httpx.org/" title="HTTPX" class="md-header-nav__button md-logo">
           
             <i class="md-icon"></i>
           
@@ -149,13 +149,7 @@
 
   
 
-<a href="https://github.com/encode/httpx" title="Go to repository" class="md-source" data-md-source="github">
-  
-    <div class="md-source__icon">
-      <svg viewBox="0 0 24 24" width="24" height="24">
-        <use xlink:href="#__github" width="24" height="24"></use>
-      </svg>
-    </div>
+<a href="https://www.python-httpx.org/" title="Go to repository" class="md-source" data-md-source="">
   
   <div class="md-source__repository">
     encode/httpx
@@ -182,7 +176,7 @@
                   <div class="md-sidebar__inner">
                     <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="." title="HTTPX" class="md-nav__button md-logo">
+    <a href="https://www.python-httpx.org/" title="HTTPX" class="md-nav__button md-logo">
       
         <i class="md-icon"></i>
       
@@ -196,13 +190,7 @@
 
   
 
-<a href="https://github.com/encode/httpx" title="Go to repository" class="md-source" data-md-source="github">
-  
-    <div class="md-source__icon">
-      <svg viewBox="0 0 24 24" width="24" height="24">
-        <use xlink:href="#__github" width="24" height="24"></use>
-      </svg>
-    </div>
+<a href="https://www.python-httpx.org/" title="Go to repository" class="md-source" data-md-source="">
   
   <div class="md-source__repository">
     encode/httpx
@@ -299,6 +287,18 @@
   <li class="md-nav__item">
     <a href="advanced/" title="Advanced Usage" class="md-nav__link">
       Advanced Usage
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="async/" title="Async Support" class="md-nav__link">
+      Async Support
     </a>
   </li>
 
@@ -451,34 +451,21 @@ HTTPX
 <em>A next-generation HTTP client for Python.</em>
 </div>
 
-<p>HTTPX is an asynchronous client library that supports HTTP/1.1 and HTTP/2.</p>
-<p>It can be used in high-performance async web frameworks, using either asyncio
-or trio, and is able to support making large numbers of concurrent requests.</p>
+<p>HTTPX is a fully featured HTTP client for Python 3, which provides sync and async APIs, and support for both HTTP/1.1 and HTTP/2.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>HTTPX should currently be considered in alpha. We'd love early users and feedback,
-but would strongly recommend pinning your dependencies to the latest median
-release, so that you're able to properly review API changes between package
-updates. Currently you should be using <code>httpx==0.10.*</code>.</p>
-<p>In particular, the 0.8 release switched HTTPX into focusing exclusively on
-providing an async client, in order to move the project forward, and help
-us <a href="https://github.com/encode/httpx/issues/572">change our approach to providing sync+async support</a>. If
-you have been using the sync client, you may want to pin to <code>httpx==0.7.*</code>,
-and wait until our sync client is reintroduced.</p>
+<p>HTTPX should currently be considered in beta.</p>
+<p>We believe we've got the public API to a stable point now, but would strongly recommend pinning your dependencies to the <code>0.11.*</code> release, so that you're able to properly review <a href="https://github.com/encode/httpx/blob/master/CHANGELOG.md">API changes between package updates</a>.</p>
+<p>A 1.0 release is expected to be issued sometime on or before April 2020.</p>
 </div>
 <hr />
 <p>Let's get started...</p>
-<p>The standard Python REPL does not allow top-level async statements.</p>
-<p>To run these async examples you'll probably want to either use <code>ipython</code>,
-or use Python 3.8 with <code>python -m asyncio</code>.</p>
 <div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">httpx</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://www.example.org/&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://www.example.org/&#39;</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span>
 <span class="o">&lt;</span><span class="n">Response</span> <span class="p">[</span><span class="mi">200</span> <span class="n">OK</span><span class="p">]</span><span class="o">&gt;</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span>
 <span class="mi">200</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span><span class="o">.</span><span class="n">http_version</span>
-<span class="s1">&#39;HTTP/1.1&#39;</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;content-type&#39;</span><span class="p">]</span>
 <span class="s1">&#39;text/html; charset=UTF-8&#39;</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span>
@@ -490,12 +477,13 @@ or use Python 3.8 with <code>python -m asyncio</code>.</p>
 <p>HTTPX is a high performance asynchronous HTTP client, that builds on the
 well-established usability of <code>requests</code>, and gives you:</p>
 <ul>
-<li>A broadly requests-compatible API.</li>
-<li>HTTP/1.1 and <a href="http2/">HTTP/2 support</a>.</li>
-<li>Ability to <a href="advanced/#calling-into-python-web-apps">make requests directly to ASGI applications</a>.</li>
+<li>A broadly <a href="compatibility/">requests-compatible API</a>.</li>
+<li>Standard synchronous interface, but with <a href="async/">async support if you need it</a>.</li>
+<li>HTTP/1.1 <a href="http2/">and HTTP/2 support</a>.</li>
+<li>Ability to make requests directly to <a href="advanced/#calling-into-python-web-apps">WSGI applications</a> or <a href="async/#calling-into-python-web-apps">ASGI applications</a>.</li>
 <li>Strict timeouts everywhere.</li>
 <li>Fully type annotated.</li>
-<li>100% test coverage.</li>
+<li>99% test coverage.</li>
 </ul>
 <p>Plus all the standard features of <code>requests</code>...</p>
 <ul>
@@ -518,13 +506,14 @@ well-established usability of <code>requests</code>, and gives you:</p>
 <h2 id="documentation">Documentation</h2>
 <p>For a run-through of all the basics, head over to the <a href="quickstart/">QuickStart</a>.</p>
 <p>For more advanced topics, see the <a href="advanced/">Advanced Usage</a> section,
-or the <a href="http2/">HTTP/2</a> section.</p>
+the <a href="async/">async support</a> section, or the <a href="http2/">HTTP/2</a> section.</p>
 <p>The <a href="api/">Developer Interface</a> provides a comprehensive API reference.</p>
 <h2 id="dependencies">Dependencies</h2>
 <p>The HTTPX project relies on these excellent libraries:</p>
 <ul>
-<li><code>h2</code> - HTTP/2 support.</li>
+<li><code>urllib3</code> - Sync client support.</li>
 <li><code>h11</code> - HTTP/1.1 support.</li>
+<li><code>h2</code> - HTTP/2 support.</li>
 <li><code>certifi</code> - SSL certificates.</li>
 <li><code>chardet</code> - Fallback auto-detection for response encoding.</li>
 <li><code>hstspreload</code> - determines whether IDNA-encoded host should be only accessed via HTTPS.</li>

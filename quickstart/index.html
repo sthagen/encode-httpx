@@ -13,6 +13,8 @@
         <meta name="description" content="A next-generation HTTP client for Python.">
       
       
+        <link rel="canonical" href="https://www.python-httpx.org/quickstart/">
+      
       
       
         <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -73,8 +75,6 @@
       <defs>
         
         
-          <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
-        
       </defs>
     </svg>
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -90,7 +90,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href=".." title="HTTPX" class="md-header-nav__button md-logo">
+        <a href="https://www.python-httpx.org/" title="HTTPX" class="md-header-nav__button md-logo">
           
             <i class="md-icon"></i>
           
@@ -149,13 +149,7 @@
 
   
 
-<a href="https://github.com/encode/httpx" title="Go to repository" class="md-source" data-md-source="github">
-  
-    <div class="md-source__icon">
-      <svg viewBox="0 0 24 24" width="24" height="24">
-        <use xlink:href="#__github" width="24" height="24"></use>
-      </svg>
-    </div>
+<a href="https://www.python-httpx.org/" title="Go to repository" class="md-source" data-md-source="">
   
   <div class="md-source__repository">
     encode/httpx
@@ -182,7 +176,7 @@
                   <div class="md-sidebar__inner">
                     <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href=".." title="HTTPX" class="md-nav__button md-logo">
+    <a href="https://www.python-httpx.org/" title="HTTPX" class="md-nav__button md-logo">
       
         <i class="md-icon"></i>
       
@@ -196,13 +190,7 @@
 
   
 
-<a href="https://github.com/encode/httpx" title="Go to repository" class="md-source" data-md-source="github">
-  
-    <div class="md-source__icon">
-      <svg viewBox="0 0 24 24" width="24" height="24">
-        <use xlink:href="#__github" width="24" height="24"></use>
-      </svg>
-    </div>
+<a href="https://www.python-httpx.org/" title="Go to repository" class="md-source" data-md-source="">
   
   <div class="md-source__repository">
     encode/httpx
@@ -387,6 +375,18 @@
   <li class="md-nav__item">
     <a href="../advanced/" title="Advanced Usage" class="md-nav__link">
       Advanced Usage
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../async/" title="Async Support" class="md-nav__link">
+      Async Support
     </a>
   </li>
 
@@ -601,41 +601,35 @@
                 
                 
                 <h1 id="quickstart">QuickStart</h1>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The standard Python REPL does not allow top-level async statements.</p>
-<p>To run async examples directly you'll probably want to either use <code>ipython</code>,
-or use Python 3.8 with <code>python -m asyncio</code>.</p>
-</div>
 <p>First, start by importing HTTPX:</p>
 <div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">httpx</span>
 </pre></div>
 
 
 <p>Now, let’s try to get a webpage.</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://httpbin.org/get&#39;</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://httpbin.org/get&#39;</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span>
 <span class="o">&lt;</span><span class="n">Response</span> <span class="p">[</span><span class="mi">200</span> <span class="n">OK</span><span class="p">]</span><span class="o">&gt;</span>
 </pre></div>
 
 
 <p>Similarly, to make an HTTP POST request:</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;https://httpbin.org/post&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;key&#39;</span><span class="p">:</span> <span class="s1">&#39;value&#39;</span><span class="p">})</span>
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;https://httpbin.org/post&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;key&#39;</span><span class="p">:</span> <span class="s1">&#39;value&#39;</span><span class="p">})</span>
 </pre></div>
 
 
 <p>The PUT, DELETE, HEAD, and OPTIONS requests all follow the same style:</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s1">&#39;https://httpbin.org/put&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;key&#39;</span><span class="p">:</span> <span class="s1">&#39;value&#39;</span><span class="p">})</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="s1">&#39;https://httpbin.org/delete&#39;</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="s1">&#39;https://httpbin.org/get&#39;</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="s1">&#39;https://httpbin.org/get&#39;</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s1">&#39;https://httpbin.org/put&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;key&#39;</span><span class="p">:</span> <span class="s1">&#39;value&#39;</span><span class="p">})</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="s1">&#39;https://httpbin.org/delete&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="s1">&#39;https://httpbin.org/get&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="s1">&#39;https://httpbin.org/get&#39;</span><span class="p">)</span>
 </pre></div>
 
 
 <h2 id="passing-parameters-in-urls">Passing Parameters in URLs</h2>
 <p>To include URL query parameters in the request, use the <code>params</code> keyword:</p>
 <div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;key1&#39;</span><span class="p">:</span> <span class="s1">&#39;value1&#39;</span><span class="p">,</span> <span class="s1">&#39;key2&#39;</span><span class="p">:</span> <span class="s1">&#39;value2&#39;</span><span class="p">}</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://httpbin.org/get&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://httpbin.org/get&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
 </pre></div>
 
 
@@ -648,7 +642,7 @@ resulting URL that was used to make the request:</p>
 
 <p>You can also pass a list of items as a value:</p>
 <div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;key1&#39;</span><span class="p">:</span> <span class="s1">&#39;value1&#39;</span><span class="p">,</span> <span class="s1">&#39;key2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;value2&#39;</span><span class="p">,</span> <span class="s1">&#39;value3&#39;</span><span class="p">]}</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://httpbin.org/get&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://httpbin.org/get&#39;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span><span class="o">.</span><span class="n">url</span>
 <span class="n">URL</span><span class="p">(</span><span class="s1">&#39;https://httpbin.org/get?key1=value1&amp;key2=value2&amp;key2=value3&#39;</span><span class="p">)</span>
 </pre></div>
@@ -656,7 +650,7 @@ resulting URL that was used to make the request:</p>
 
 <h2 id="response-content">Response Content</h2>
 <p>HTTPX will automatically handle decoding the response content into Unicode text.</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://www.example.org/&#39;</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://www.example.org/&#39;</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span>
 <span class="s1">&#39;&lt;!doctype html&gt;</span><span class="se">\n</span><span class="s1">&lt;html&gt;</span><span class="se">\n</span><span class="s1">&lt;head&gt;</span><span class="se">\n</span><span class="s1">&lt;title&gt;Example Domain&lt;/title&gt;...&#39;</span>
 </pre></div>
@@ -693,7 +687,7 @@ encoding will also be supported.</p>
 
 <h2 id="json-response-content">JSON Response Content</h2>
 <p>Often Web API responses will be encoded as JSON.</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://api.github.com/events&#39;</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://api.github.com/events&#39;</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
 <span class="p">[{</span><span class="sa">u</span><span class="s1">&#39;repository&#39;</span><span class="p">:</span> <span class="p">{</span><span class="sa">u</span><span class="s1">&#39;open_issues&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="sa">u</span><span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://github.com/...&#39;</span> <span class="o">...</span>  <span class="p">}}]</span>
 </pre></div>
@@ -703,7 +697,7 @@ encoding will also be supported.</p>
 <p>To include additional headers in the outgoing request, use the <code>headers</code> keyword argument:</p>
 <div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://httpbin.org/headers&#39;</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;user-agent&#39;</span><span class="p">:</span> <span class="s1">&#39;my-app/0.0.1&#39;</span><span class="p">}</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
 </pre></div>
 
 
@@ -712,7 +706,7 @@ encoding will also be supported.</p>
 in the request body. One common way of including that is as form-encoded data,
 which is used for HTML forms.</p>
 <div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;key1&#39;</span><span class="p">:</span> <span class="s1">&#39;value1&#39;</span><span class="p">,</span> <span class="s1">&#39;key2&#39;</span><span class="p">:</span> <span class="s1">&#39;value2&#39;</span><span class="p">}</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;https://httpbin.org/post&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;https://httpbin.org/post&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
 <span class="p">{</span>
   <span class="o">...</span>
@@ -727,7 +721,7 @@ which is used for HTML forms.</p>
 
 <p>Form encoded data can also include multiple values form a given key.</p>
 <div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;key1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;value1&#39;</span><span class="p">,</span> <span class="s1">&#39;value2&#39;</span><span class="p">]}</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;https://httpbin.org/post&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;https://httpbin.org/post&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
 <span class="p">{</span>
   <span class="o">...</span>
@@ -745,7 +739,7 @@ which is used for HTML forms.</p>
 <h2 id="sending-multipart-file-uploads">Sending Multipart File Uploads</h2>
 <p>You can also upload files, using HTTP multipart encoding:</p>
 <div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">files</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;upload-file&#39;</span><span class="p">:</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;report.xls&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)}</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;https://httpbin.org/post&quot;</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="n">files</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;https://httpbin.org/post&quot;</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="n">files</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
 <span class="p">{</span>
   <span class="o">...</span>
@@ -760,7 +754,7 @@ which is used for HTML forms.</p>
 <p>You can also explicitly set the filename and content type, by using a tuple
 of items for the file value:</p>
 <div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">files</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;upload-file&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;report.xls&#39;</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;report.xls&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">),</span> <span class="s1">&#39;application/vnd.ms-excel&#39;</span><span class="p">)}</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;https://httpbin.org/post&quot;</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="n">files</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;https://httpbin.org/post&quot;</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="n">files</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
 <span class="p">{</span>
   <span class="o">...</span>
@@ -776,7 +770,7 @@ of items for the file value:</p>
 <p>Form encoded data is okay if all you need is a simple key-value data structure.
 For more complicated data structures you'll often want to use JSON encoding instead.</p>
 <div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;integer&#39;</span><span class="p">:</span> <span class="mi">123</span><span class="p">,</span> <span class="s1">&#39;boolean&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;list&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">]}</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;https://httpbin.org/post&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;https://httpbin.org/post&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
 <span class="p">{</span>
   <span class="o">...</span>
@@ -801,7 +795,7 @@ that yields <code>bytes</code>.</p>
 binary data.</p>
 <h2 id="response-status-codes">Response Status Codes</h2>
 <p>We can inspect the HTTP status code of the response:</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://httpbin.org/get&#39;</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://httpbin.org/get&#39;</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span>
 <span class="mi">200</span>
 </pre></div>
@@ -814,7 +808,7 @@ binary data.</p>
 
 
 <p>We can raise an exception for any Client or Server error responses (4xx or 5xx status codes):</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">not_found</span> <span class="o">=</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://httpbin.org/status/404&#39;</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">not_found</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://httpbin.org/status/404&#39;</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">not_found</span><span class="o">.</span><span class="n">status_code</span>
 <span class="mi">404</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">not_found</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
@@ -861,45 +855,45 @@ binary data.</p>
 <h2 id="streaming-responses">Streaming Responses</h2>
 <p>For large downloads you may want to use streaming responses that do not load the entire response body into memory at once.</p>
 <p>You can stream the binary content of the response...</p>
-<div class="codehilite"><pre><span></span><span class="err">&gt;&gt;&gt; async with httpx.stream(&quot;GET&quot;, &quot;https://www.example.com&quot;) as r:</span>
-<span class="err">...     async for data in r.aiter_bytes():</span>
+<div class="codehilite"><pre><span></span><span class="err">&gt;&gt;&gt; with httpx.stream(&quot;GET&quot;, &quot;https://www.example.com&quot;) as r:</span>
+<span class="err">...     for data in r.iter_bytes():</span>
 <span class="err">...         print(data)</span>
 </pre></div>
 
 
 <p>Or the text of the response...</p>
-<div class="codehilite"><pre><span></span><span class="err">&gt;&gt;&gt; async with httpx.stream(&quot;GET&quot;, &quot;https://www.example.com&quot;) as r:</span>
-<span class="err">...     async for text in r.aiter_text():</span>
+<div class="codehilite"><pre><span></span><span class="err">&gt;&gt;&gt; with httpx.stream(&quot;GET&quot;, &quot;https://www.example.com&quot;) as r:</span>
+<span class="err">...     for text in r.iter_text():</span>
 <span class="err">...         print(text)</span>
 </pre></div>
 
 
 <p>Or stream the text, on a line-by-line basis...</p>
-<div class="codehilite"><pre><span></span><span class="err">&gt;&gt;&gt; async with httpx.stream(&quot;GET&quot;, &quot;https://www.example.com&quot;) as r:</span>
-<span class="err">...     async for line in r.aiter_lines():</span>
+<div class="codehilite"><pre><span></span><span class="err">&gt;&gt;&gt; with httpx.stream(&quot;GET&quot;, &quot;https://www.example.com&quot;) as r:</span>
+<span class="err">...     for line in r.iter_lines():</span>
 <span class="err">...         print(line)</span>
 </pre></div>
 
 
 <p>HTTPX will use universal line endings, normalising all cases to <code>\n</code>.</p>
 <p>In some cases you might want to access the raw bytes on the response without applying any HTTP content decoding. In this case any content encoding that the web server has applied such as <code>gzip</code>, <code>deflate</code>, or <code>brotli</code> will not be automatically decoded.</p>
-<div class="codehilite"><pre><span></span><span class="err">&gt;&gt;&gt; async with httpx.stream(&quot;GET&quot;, &quot;https://www.example.com&quot;) as r:</span>
-<span class="err">...     async for chunk in r.aiter_raw():</span>
+<div class="codehilite"><pre><span></span><span class="err">&gt;&gt;&gt; with httpx.stream(&quot;GET&quot;, &quot;https://www.example.com&quot;) as r:</span>
+<span class="err">...     for chunk in r.iter_raw():</span>
 <span class="err">...         print(chunk)</span>
 </pre></div>
 
 
 <p>If you're using streaming responses in any of these ways then the <code>response.content</code> and <code>response.text</code> attributes will not be available, and will raise errors if accessed. However you can also use the response streaming functionality to conditionally load the response body:</p>
-<div class="codehilite"><pre><span></span><span class="err">&gt;&gt;&gt; async with httpx.stream(&quot;GET&quot;, &quot;https://www.example.com&quot;) as r:</span>
-<span class="err">...     if r.headers[&#39;Content-Length&#39;] &lt; TOO_LONG:</span>
-<span class="err">...         await r.aread()</span>
-<span class="err">...         print(r.text)</span>
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">stream</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;https://www.example.com&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">r</span><span class="p">:</span>
+<span class="o">...</span>     <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Content-Length&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">TOO_LONG</span><span class="p">:</span>
+<span class="o">...</span>         <span class="n">r</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="o">...</span>         <span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
 </pre></div>
 
 
 <h2 id="cookies">Cookies</h2>
 <p>Any cookies that are set on the response can be easily accessed:</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;http://httpbin.org/cookies/set?chocolate=chip&#39;</span><span class="p">,</span> <span class="n">allow_redirects</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;http://httpbin.org/cookies/set?chocolate=chip&#39;</span><span class="p">,</span> <span class="n">allow_redirects</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span><span class="o">.</span><span class="n">cookies</span><span class="p">[</span><span class="s1">&#39;chocolate&#39;</span><span class="p">]</span>
 <span class="s1">&#39;chip&#39;</span>
 </pre></div>
@@ -907,7 +901,7 @@ binary data.</p>
 
 <p>To include cookies in an outgoing request, use the <code>cookies</code> parameter:</p>
 <div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">cookies</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;peanut&quot;</span><span class="p">:</span> <span class="s2">&quot;butter&quot;</span><span class="p">}</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;http://httpbin.org/cookies&#39;</span><span class="p">,</span> <span class="n">cookies</span><span class="o">=</span><span class="n">cookies</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;http://httpbin.org/cookies&#39;</span><span class="p">,</span> <span class="n">cookies</span><span class="o">=</span><span class="n">cookies</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
 <span class="p">{</span><span class="s1">&#39;cookies&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;peanut&#39;</span><span class="p">:</span> <span class="s1">&#39;butter&#39;</span><span class="p">}}</span>
 </pre></div>
@@ -918,7 +912,7 @@ with additional API for accessing cookies by their domain or path.</p>
 <div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">cookies</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Cookies</span><span class="p">()</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">cookies</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;cookie_on_domain&#39;</span><span class="p">,</span> <span class="s1">&#39;hello, there!&#39;</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="s1">&#39;httpbin.org&#39;</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">cookies</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;cookie_off_domain&#39;</span><span class="p">,</span> <span class="s1">&#39;nope.&#39;</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="s1">&#39;example.org&#39;</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;http://httpbin.org/cookies&#39;</span><span class="p">,</span> <span class="n">cookies</span><span class="o">=</span><span class="n">cookies</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;http://httpbin.org/cookies&#39;</span><span class="p">,</span> <span class="n">cookies</span><span class="o">=</span><span class="n">cookies</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
 <span class="p">{</span><span class="s1">&#39;cookies&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;cookie_on_domain&#39;</span><span class="p">:</span> <span class="s1">&#39;hello, there!&#39;</span><span class="p">}}</span>
 </pre></div>
@@ -930,7 +924,7 @@ with additional API for accessing cookies by their domain or path.</p>
 It contains a list of any redirect responses that were followed, in the order
 in which they were made.</p>
 <p>For example, GitHub redirects all HTTP requests to HTTPS.</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;http://github.com/&#39;</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;http://github.com/&#39;</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span><span class="o">.</span><span class="n">url</span>
 <span class="n">URL</span><span class="p">(</span><span class="s1">&#39;https://github.com/&#39;</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span>
@@ -941,7 +935,7 @@ in which they were made.</p>
 
 
 <p>You can modify the default redirection handling with the allow_redirects parameter:</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;http://github.com/&#39;</span><span class="p">,</span> <span class="n">allow_redirects</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;http://github.com/&#39;</span><span class="p">,</span> <span class="n">allow_redirects</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span>
 <span class="mi">301</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span><span class="o">.</span><span class="n">history</span>
@@ -950,7 +944,7 @@ in which they were made.</p>
 
 
 <p>If you’re making a <code>HEAD</code> request, you can use this to enable redirection:</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="s1">&#39;http://github.com/&#39;</span><span class="p">,</span> <span class="n">allow_redirects</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="s1">&#39;http://github.com/&#39;</span><span class="p">,</span> <span class="n">allow_redirects</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span><span class="o">.</span><span class="n">url</span>
 <span class="s1">&#39;https://github.com/&#39;</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span><span class="o">.</span><span class="n">history</span>
@@ -964,22 +958,22 @@ meaning that if a connection is not properly established then it should always
 raise an error rather than hanging indefinitely.</p>
 <p>The default timeout for network inactivity is five seconds. You can modify the
 value to be more or less strict:</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://github.com/&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://github.com/&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span>
 </pre></div>
 
 
 <p>You can also disable the timeout behavior completely...</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://github.com/&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://github.com/&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </pre></div>
 
 
-<p>For advanced timeout management, see <a href="https://www.encode.io/httpx/advanced/#fine-tuning-the-configuration">Timeout fine-tuning</a>.</p>
+<p>For advanced timeout management, see <a href="../advanced/#fine-tuning-the-configuration">Timeout fine-tuning</a>.</p>
 <h2 id="authentication">Authentication</h2>
 <p>HTTPX supports Basic and Digest HTTP authentication.</p>
 <p>To provide Basic authentication credentials, pass a 2-tuple of
 plaintext <code>str</code> or <code>bytes</code> objects as the <code>auth</code> argument to the request
 functions:</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://example.com&quot;</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;my_user&quot;</span><span class="p">,</span> <span class="s2">&quot;password123&quot;</span><span class="p">))</span>
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://example.com&quot;</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;my_user&quot;</span><span class="p">,</span> <span class="s2">&quot;password123&quot;</span><span class="p">))</span>
 </pre></div>
 
 
@@ -988,7 +982,7 @@ a <code>DigestAuth</code> object with the plaintext username and password as arg
 This object can be then passed as the <code>auth</code> argument to the request methods
 as above:</p>
 <div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">auth</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">DigestAuth</span><span class="p">(</span><span class="s2">&quot;my_user&quot;</span><span class="p">,</span> <span class="s2">&quot;password123&quot;</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">await</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://example.com&quot;</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="n">auth</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://example.com&quot;</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="n">auth</span><span class="p">)</span>
 <span class="o">&lt;</span><span class="n">Response</span> <span class="p">[</span><span class="mi">200</span> <span class="n">OK</span><span class="p">]</span><span class="o">&gt;</span>
 </pre></div>
                 

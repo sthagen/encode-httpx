@@ -1,0 +1,811 @@
+
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+        <meta name="description" content="A next-generation HTTP client for Python.">
+      
+      
+        <link rel="canonical" href="https://www.python-httpx.org/async/">
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.5.0">
+    
+    
+      
+        <title>Async Support - HTTPX</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/application.1b62728e.css">
+      
+      
+    
+    
+      <script src="../assets/javascripts/modernizr.268332fc.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700|Roboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../assets/fonts/material-icons.css">
+    
+    
+      <link rel="stylesheet" href="../css/custom.css">
+    
+    
+      
+    
+    
+  </head>
+  
+    <body dir="ltr">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#async-support" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="https://www.python-httpx.org/" title="HTTPX" class="md-header-nav__button md-logo">
+          
+            <i class="md-icon"></i>
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            <span class="md-header-nav__topic">
+              HTTPX
+            </span>
+            <span class="md-header-nav__topic">
+              
+                Async Support
+              
+            </span>
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+          
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+        
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            
+
+
+  
+
+<a href="https://www.python-httpx.org/" title="Go to repository" class="md-source" data-md-source="">
+  
+  <div class="md-source__repository">
+    encode/httpx
+  </div>
+</a>
+          </div>
+        </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main" role="main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="https://www.python-httpx.org/" title="HTTPX" class="md-nav__button md-logo">
+      
+        <i class="md-icon"></i>
+      
+    </a>
+    HTTPX
+  </label>
+  
+    <div class="md-nav__source">
+      
+
+
+  
+
+<a href="https://www.python-httpx.org/" title="Go to repository" class="md-source" data-md-source="">
+  
+  <div class="md-source__repository">
+    encode/httpx
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href=".." title="Introduction" class="md-nav__link">
+      Introduction
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../quickstart/" title="QuickStart" class="md-nav__link">
+      QuickStart
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../advanced/" title="Advanced Usage" class="md-nav__link">
+      Advanced Usage
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Async Support
+      </label>
+    
+    <a href="./" title="Async Support" class="md-nav__link md-nav__link--active">
+      Async Support
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#making-async-requests" class="md-nav__link">
+    Making Async requests
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api-differences" class="md-nav__link">
+    API Differences
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#making-requests" class="md-nav__link">
+    Making requests
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opening-and-closing-clients" class="md-nav__link">
+    Opening and closing clients
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#streaming-responses" class="md-nav__link">
+    Streaming responses
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#streaming-requests" class="md-nav__link">
+    Streaming requests
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#supported-async-environments" class="md-nav__link">
+    Supported async environments
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#asyncio" class="md-nav__link">
+    AsyncIO
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trio" class="md-nav__link">
+    Trio
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calling-into-python-web-apps" class="md-nav__link">
+    Calling into Python Web Apps
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#unix-domain-sockets" class="md-nav__link">
+    Unix Domain Sockets
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../http2/" title="HTTP/2 Support" class="md-nav__link">
+      HTTP/2 Support
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../environment_variables/" title="Environment Variables" class="md-nav__link">
+      Environment Variables
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../compatibility/" title="Requests Compatibility" class="md-nav__link">
+      Requests Compatibility
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../api/" title="Developer Interface" class="md-nav__link">
+      Developer Interface
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../contributing/" title="Contributing" class="md-nav__link">
+      Contributing
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#making-async-requests" class="md-nav__link">
+    Making Async requests
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api-differences" class="md-nav__link">
+    API Differences
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#making-requests" class="md-nav__link">
+    Making requests
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opening-and-closing-clients" class="md-nav__link">
+    Opening and closing clients
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#streaming-responses" class="md-nav__link">
+    Streaming responses
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#streaming-requests" class="md-nav__link">
+    Streaming requests
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#supported-async-environments" class="md-nav__link">
+    Supported async environments
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#asyncio" class="md-nav__link">
+    AsyncIO
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#trio" class="md-nav__link">
+    Trio
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calling-into-python-web-apps" class="md-nav__link">
+    Calling into Python Web Apps
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#unix-domain-sockets" class="md-nav__link">
+    Unix Domain Sockets
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="async-support">Async Support</h1>
+<p>HTTPX offers a standard synchronous API by default, but also gives you
+the option of an async client if you need it.</p>
+<p>Async is a concurrency model that is far more efficient than multi-threading,
+and can provide significant performance benefits and enable the use of
+long-lived network connections such as WebSockets.</p>
+<p>If you're working with an async web framework then you'll also want to use an
+async client for sending outgoing HTTP requests.</p>
+<h2 id="making-async-requests">Making Async requests</h2>
+<p>To make asynchronous requests, you'll need an <code>AsyncClient</code>.</p>
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">async</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+<span class="o">&gt;&gt;&gt;</span>     <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://www.example.com/&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span>
+<span class="o">&lt;</span><span class="n">Response</span> <span class="p">[</span><span class="mi">200</span> <span class="n">OK</span><span class="p">]</span><span class="o">&gt;</span>
+</pre></div>
+
+
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Use <a href="https://ipython.readthedocs.io/en/stable/">IPython</a> or Python 3.8+ with <code>python -m asyncio</code> to try this code interactively, as they support executing <code>async</code>/<code>await</code> expressions in the console.</p>
+</div>
+<h2 id="api-differences">API Differences</h2>
+<p>If you're using an async client then there are a few bits of API that
+use async methods.</p>
+<h3 id="making-requests">Making requests</h3>
+<p>The request methods are all async, so you should use <code>response = await client.get(...)</code> style for all of the following:</p>
+<ul>
+<li><code>AsyncClient.get(url, ...)</code></li>
+<li><code>AsyncClient.options(url, ...)</code></li>
+<li><code>AsyncClient.head(url, ...)</code></li>
+<li><code>AsyncClient.post(url, ...)</code></li>
+<li><code>AsyncClient.put(url, ...)</code></li>
+<li><code>AsyncClient.patch(url, ...)</code></li>
+<li><code>AsyncClient.delete(url, ...)</code></li>
+<li><code>AsyncClient.request(method, url, ...)</code></li>
+<li><code>AsyncClient.send(request, ...)</code></li>
+</ul>
+<h3 id="opening-and-closing-clients">Opening and closing clients</h3>
+<p>Use <code>async with httpx.AsyncClient()</code> if you want a context-managed client...</p>
+<div class="codehilite"><pre><span></span><span class="k">async</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="o">...</span>
+</pre></div>
+
+
+<p>Alternatively, use <code>await client.aclose()</code> if you want to close a client explicitly:</p>
+<div class="codehilite"><pre><span></span><span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">()</span>
+<span class="o">...</span>
+<span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">aclose</span><span class="p">()</span>
+</pre></div>
+
+
+<h3 id="streaming-responses">Streaming responses</h3>
+<p>The <code>AsyncClient.stream(method, url, ...)</code> method is an async context block.</p>
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">async</span> <span class="k">with</span> <span class="n">client</span><span class="o">.</span><span class="n">stream</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;https://www.example.com/&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+<span class="o">&gt;&gt;&gt;</span>     <span class="k">async</span> <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">aiter_content</span><span class="p">():</span>
+<span class="o">&gt;&gt;&gt;</span>         <span class="o">...</span>
+</pre></div>
+
+
+<p>The async response streaming methods are:</p>
+<ul>
+<li><code>Response.aread()</code> - For conditionally reading a response inside a stream block.</li>
+<li><code>Response.aiter_content()</code> - For streaming the response content as bytes.</li>
+<li><code>Response.aiter_text()</code> - For streaming the response content as text.</li>
+<li><code>Response.aiter_lines()</code> - For streaming the response content as lines of text.</li>
+<li><code>Response.aiter_raw()</code> - For streaming the raw response bytes, without applying content decoding.</li>
+<li><code>Response.aclose()</code> - For closing the response. You don't usually need this, since <code>.stream</code> block close the response automatically on exit.</li>
+</ul>
+<h3 id="streaming-requests">Streaming requests</h3>
+<p>When sending a streaming request body with an <code>AsyncClient</code> instance, you should use an async butes generator instead of a bytes generator:</p>
+<div class="codehilite"><pre><span></span><span class="k">async</span> <span class="k">def</span> <span class="nf">upload_bytes</span><span class="p">():</span>
+    <span class="o">...</span>  <span class="c1"># yield byte content</span>
+
+<span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">upload_bytes</span><span class="p">())</span>
+</pre></div>
+
+
+<h2 id="supported-async-environments">Supported async environments</h2>
+<p>HTTPX supports either <code>asyncio</code> or <code>trio</code> as an async environment.</p>
+<p>By default it will auto-detect which of those two to use as the backend
+for socket operations and concurrency primitives.</p>
+<p>You can also explicitly select a backend by instantiating a client with the
+<code>backend</code> argument...</p>
+<div class="codehilite"><pre><span></span><span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">)</span>     <span class="c1"># Autodetection. The default case.</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="s1">&#39;asyncio&#39;</span><span class="p">)</span>  <span class="c1"># Use asyncio as the backend.</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="s1">&#39;trio&#39;</span><span class="p">)</span>     <span class="c1"># Use trio as the backend.</span>
+</pre></div>
+
+
+<h3 id="asyncio"><a href="https://docs.python.org/3/library/asyncio.html">AsyncIO</a></h3>
+<p>AsyncIO is Python's <a href="https://docs.python.org/3/library/asyncio.html">built-in library</a>
+for writing concurrent code with the async/await syntax.</p>
+<div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">httpx</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://www.example.com/&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+<span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</pre></div>
+
+
+<h3 id="trio"><a href="https://github.com/python-trio/trio">Trio</a></h3>
+<p>Trio is <a href="https://trio.readthedocs.io/en/stable/">an alternative async library</a>,
+designed around the <a href="https://en.wikipedia.org/wiki/Structured_concurrency">the principles of structured concurrency</a>.</p>
+<div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">httpx</span>
+<span class="kn">import</span> <span class="nn">trio</span>
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://www.example.com/&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+<span class="n">trio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">)</span>
+</pre></div>
+
+
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The <code>trio</code> package must be installed to use the Trio backend.</p>
+</div>
+<h2 id="calling-into-python-web-apps">Calling into Python Web Apps</h2>
+<p>Just as <code>httpx.Client</code> allows you to call directly into WSGI web applications,
+the <code>httpx.AsyncClient</code> class allows you to call directly into ASGI web applications.</p>
+<p>Let's take this Starlette application as an example:</p>
+<div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">starlette.applications</span> <span class="kn">import</span> <span class="n">Starlette</span>
+<span class="kn">from</span> <span class="nn">starlette.responses</span> <span class="kn">import</span> <span class="n">HTMLResponse</span>
+<span class="kn">from</span> <span class="nn">starlette.routing</span> <span class="kn">import</span> <span class="n">Route</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">HTMLResponse</span><span class="p">(</span><span class="s2">&quot;Hello World!&quot;</span><span class="p">)</span>
+
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Starlette</span><span class="p">(</span><span class="n">routes</span><span class="o">=</span><span class="p">[</span><span class="n">Route</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">hello</span><span class="p">)])</span>
+</pre></div>
+
+
+<p>We can make requests directly against the application, like so:</p>
+<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">httpx</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">async</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">(</span><span class="n">app</span><span class="o">=</span><span class="n">app</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+<span class="o">...</span>     <span class="n">r</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;http://example/&#39;</span><span class="p">)</span>
+<span class="o">...</span>     <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span>
+<span class="o">...</span>     <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="s2">&quot;Hello World!&quot;</span>
+</pre></div>
+
+
+<p>For some more complex cases you might need to customise the ASGI dispatch. This allows you to:</p>
+<ul>
+<li>Inspect 500 error responses rather than raise exceptions by setting <code>raise_app_exceptions=False</code>.</li>
+<li>Mount the ASGI application at a subpath by setting <code>root_path</code>.</li>
+<li>Use a given client address for requests by setting <code>client</code>.</li>
+</ul>
+<p>For example:</p>
+<div class="codehilite"><pre><span></span><span class="c1"># Instantiate a client that makes ASGI requests with a client IP of &quot;1.2.3.4&quot;,</span>
+<span class="c1"># on port 123.</span>
+<span class="n">dispatch</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">ASGIDispatch</span><span class="p">(</span><span class="n">app</span><span class="o">=</span><span class="n">app</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;1.2.3.4&quot;</span><span class="p">,</span> <span class="mi">123</span><span class="p">))</span>
+<span class="k">async</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">(</span><span class="n">dispatch</span><span class="o">=</span><span class="n">dispatch</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="o">...</span>
+</pre></div>
+
+
+<p>See <a href="https://asgi.readthedocs.io/en/latest/specs/www.html#connection-scope">the ASGI documentation</a> for more details on the <code>client</code> and <code>root_path</code> keys.</p>
+<h2 id="unix-domain-sockets">Unix Domain Sockets</h2>
+<p>The async client provides support for connecting through a unix domain socket via the <code>uds</code> parameter. This is useful when making requests to a server that is bound to a socket file rather than an IP address.</p>
+<p>Here's an example requesting the Docker Engine API:</p>
+<div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">httpx</span>
+
+
+<span class="k">async</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">(</span><span class="n">uds</span><span class="o">=</span><span class="s2">&quot;/var/run/docker.sock&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="c1"># This request will connect through the socket file.</span>
+    <span class="n">resp</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;http://localhost/version&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>This functionality is not currently available in the synchronous client.</p>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../advanced/" title="Advanced Usage" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Advanced Usage
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../http2/" title="HTTP/2 Support" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                HTTP/2 Support
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        powered by
+        <a href="https://www.mkdocs.org">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/">
+          Material for MkDocs</a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/application.a8b5e56f.js"></script>
+      
+      <script>app.initialize({version:"1.0.4",url:{base:".."}})</script>
+      
+    
+  </body>
+</html>
