@@ -36,7 +36,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.5.0">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.6.0">
     
     
       
@@ -54,7 +54,7 @@
     
       
         <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700|Roboto+Mono&display=fallback">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
         <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
       
     
@@ -623,7 +623,7 @@ use async methods.</p>
 <p>The <code>AsyncClient.stream(method, url, ...)</code> method is an async context block.</p>
 <div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">()</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="k">async</span> <span class="k">with</span> <span class="n">client</span><span class="o">.</span><span class="n">stream</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;https://www.example.com/&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
-<span class="o">&gt;&gt;&gt;</span>     <span class="k">async</span> <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">aiter_content</span><span class="p">():</span>
+<span class="o">&gt;&gt;&gt;</span>     <span class="k">async</span> <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">aiter_bytes</span><span class="p">():</span>
 <span class="o">&gt;&gt;&gt;</span>         <span class="o">...</span>
 </pre></div>
 
@@ -631,14 +631,14 @@ use async methods.</p>
 <p>The async response streaming methods are:</p>
 <ul>
 <li><code>Response.aread()</code> - For conditionally reading a response inside a stream block.</li>
-<li><code>Response.aiter_content()</code> - For streaming the response content as bytes.</li>
+<li><code>Response.aiter_bytes()</code> - For streaming the response content as bytes.</li>
 <li><code>Response.aiter_text()</code> - For streaming the response content as text.</li>
 <li><code>Response.aiter_lines()</code> - For streaming the response content as lines of text.</li>
 <li><code>Response.aiter_raw()</code> - For streaming the raw response bytes, without applying content decoding.</li>
 <li><code>Response.aclose()</code> - For closing the response. You don't usually need this, since <code>.stream</code> block close the response automatically on exit.</li>
 </ul>
 <h3 id="streaming-requests">Streaming requests</h3>
-<p>When sending a streaming request body with an <code>AsyncClient</code> instance, you should use an async butes generator instead of a bytes generator:</p>
+<p>When sending a streaming request body with an <code>AsyncClient</code> instance, you should use an async bytes generator instead of a bytes generator:</p>
 <div class="codehilite"><pre><span></span><span class="k">async</span> <span class="k">def</span> <span class="nf">upload_bytes</span><span class="p">():</span>
     <span class="o">...</span>  <span class="c1"># yield byte content</span>
 
@@ -750,6 +750,7 @@ the <code>httpx.AsyncClient</code> class allows you to call directly into ASGI w
                 
                   
                 
+                
               
               
                 
@@ -816,7 +817,7 @@ the <code>httpx.AsyncClient</code> class allows you to call directly into ASGI w
       
     </div>
     
-      <script src="../assets/javascripts/application.a8b5e56f.js"></script>
+      <script src="../assets/javascripts/application.808e90bb.js"></script>
       
       <script>app.initialize({version:"1.0.4",url:{base:".."}})</script>
       
