@@ -751,8 +751,8 @@ all outgoing requests.</p>
 <span class="k">def</span> <span class="nf">hello</span><span class="p">():</span>
     <span class="k">return</span> <span class="s2">&quot;Hello World!&quot;</span>
 
-<span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">app</span><span class="o">=</span><span class="n">app</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;http://example/&#39;</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">app</span><span class="o">=</span><span class="n">app</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;http://testserver&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span>
     <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="s2">&quot;Hello World!&quot;</span>
 </pre></div>
@@ -767,7 +767,7 @@ all outgoing requests.</p>
 <p>For example:</p>
 <div class="codehilite"><pre><span></span><span class="c1"># Instantiate a client that makes WSGI requests with a client IP of &quot;1.2.3.4&quot;.</span>
 <span class="n">dispatch</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">WSGIDispatch</span><span class="p">(</span><span class="n">app</span><span class="o">=</span><span class="n">app</span><span class="p">,</span> <span class="n">remote_addr</span><span class="o">=</span><span class="s2">&quot;1.2.3.4&quot;</span><span class="p">)</span>
-<span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">dispatch</span><span class="o">=</span><span class="n">dispatch</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+<span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">dispatch</span><span class="o">=</span><span class="n">dispatch</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;http://testserver&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
     <span class="o">...</span>
 </pre></div>
 
@@ -822,7 +822,7 @@ you should create a new client or restart the interpreter.</p>
 
 
 <h2 id="http-proxying">HTTP Proxying</h2>
-<p>HTTPX supports setting up proxies the same way that Requests does via the <code>proxies</code> parameter.
+<p>HTTPX supports setting up HTTP proxies the same way that Requests does via the <code>proxies</code> parameter.
 For example to forward all HTTP traffic to <code>http://127.0.0.1:3080</code> and all HTTPS traffic
 to <code>http://127.0.0.1:3081</code> your <code>proxies</code> config would look like this:</p>
 <div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">proxies</span> <span class="o">=</span> <span class="p">{</span>
@@ -834,6 +834,8 @@ to <code>http://127.0.0.1:3081</code> your <code>proxies</code> config would loo
 </pre></div>
 
 
+<p>Credentials may be passed in as part of the URL in the standard way, i.e.
+<code>http://username:password@127.0.0.1:3080</code>.</p>
 <p>Proxies can be configured for a specific scheme and host, all schemes of a host,
 all hosts for a scheme, or for all requests. When determining which proxy configuration
 to use for a given request this same order is used.</p>
@@ -877,6 +879,7 @@ regardless of the proxy <code>url</code> being <code>http</code> or <code>https<
 <p>To use proxies you must pass the proxy information at <code>Client</code> initialization,
 rather than on the <code>.get(...)</code> call or other request methods.</p>
 </div>
+<p>SOCKS proxies are <em>not</em> supported yet.</p>
 <h2 id="timeout-configuration">Timeout Configuration</h2>
 <p>HTTPX is careful to enforce timeouts everywhere by default.</p>
 <p>The default behavior is to raise a <code>TimeoutException</code> after 5 seconds of
@@ -1041,6 +1044,40 @@ MIME header field.</li>
 </pre></div>
 
 
+<p>Similarly, if you are implementing a scheme that requires access to the response body, then use the <code>requires_response_body</code> property.   You will then be able to access response body properties and methods such as <code>response.content</code>, <code>response.text</code>, <code>response.json()</code>, etc.</p>
+<div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MyCustomAuth</span><span class="p">(</span><span class="n">httpx</span><span class="o">.</span><span class="n">Auth</span><span class="p">):</span>
+    <span class="n">requires_response_body</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">,</span> <span class="n">refresh_token</span><span class="p">,</span> <span class="n">refresh_url</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">access_token</span> <span class="o">=</span> <span class="n">access_token</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh_token</span> <span class="o">=</span> <span class="n">refresh_token</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refresh_url</span> <span class="o">=</span> <span class="n">refresh_url</span>
+
+    <span class="k">def</span> <span class="nf">auth_flow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s2">&quot;X-Authentication&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_token</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="k">yield</span> <span class="n">request</span>
+
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">401</span><span class="p">:</span>
+            <span class="c1"># If the server issues a 401 response, then issue a request to</span>
+            <span class="c1"># refresh tokens, and resend the request.</span>
+            <span class="n">refresh_response</span> <span class="o">=</span> <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_refresh_request</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_tokens</span><span class="p">(</span><span class="n">refresh_response</span><span class="p">)</span>
+
+            <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s2">&quot;X-Authentication&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_token</span>
+            <span class="k">yield</span> <span class="n">request</span>
+
+    <span class="k">def</span> <span class="nf">build_refresh_request</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Return an `httpx.Request` for refreshing tokens.</span>
+        <span class="o">...</span>
+
+    <span class="k">def</span> <span class="nf">update_tokens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+        <span class="c1"># Update the `.access_token` and `.refresh_token` tokens</span>
+        <span class="c1"># based on a refresh response.</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="o">...</span>
+</pre></div>
+
+
 <h2 id="ssl-certificates">SSL certificates</h2>
 <p>When making a request over HTTPS, HTTPX needs to verify the identity of the requested host. To do this, it uses a bundle of SSL certificates (a.k.a. CA bundle) delivered by a trusted certificate authority (CA).</p>
 <h3 id="changing-the-verification-defaults">Changing the verification defaults</h3>
@@ -1152,6 +1189,10 @@ MIME header field.</li>
       <script src="../assets/javascripts/application.808e90bb.js"></script>
       
       <script>app.initialize({version:"1.0.4",url:{base:".."}})</script>
+      
+        <script src="../js/chat.js"></script>
+      
+        <script src="../js/sidecar-1.5.0.js"></script>
       
     
   </body>
