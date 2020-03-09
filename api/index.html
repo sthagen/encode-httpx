@@ -36,7 +36,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.6.0">
+      <meta name="generator" content="mkdocs-1.1, mkdocs-material-4.6.3">
     
     
       
@@ -44,12 +44,12 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/application.1b62728e.css">
+      <link rel="stylesheet" href="../assets/stylesheets/application.adb8469c.css">
       
       
     
     
-      <script src="../assets/javascripts/modernizr.268332fc.js"></script>
+      <script src="../assets/javascripts/modernizr.86422ebf.js"></script>
     
     
       
@@ -83,7 +83,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#developer-interface" tabindex="1" class="md-skip">
+      <a href="#developer-interface" tabindex="0" class="md-skip">
         Skip to content
       </a>
     
@@ -92,7 +92,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="https://www.python-httpx.org/" title="HTTPX" class="md-header-nav__button md-logo">
+        <a href="https://www.python-httpx.org/" title="HTTPX" aria-label="HTTPX" class="md-header-nav__button md-logo">
           
             <i class="md-icon"></i>
           
@@ -123,7 +123,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" name="search">
-      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <input type="text" class="md-search__input" aria-label="search" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
       <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
         &#xE5CD;
@@ -545,16 +545,14 @@ two-tuple of (certificate file, key file), or a three-tuple of (certificate
 file, key file, password).</li>
 <li><strong>trust_env</strong> - <em>(optional)</em> Enables or disables usage of environment
 variables for configuration.</li>
-<li><strong>proxies</strong> - <em>(optional)</em> A dictionary mapping HTTP protocols to proxy
-URLs.</li>
 </ul>
 <p><strong>Returns:</strong> <code>Response</code></p>
 <p>Usage:</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">httpx</span>
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">httpx</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="s1">&#39;GET&#39;</span><span class="p">,</span> <span class="s1">&#39;https://httpbin.org/get&#39;</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">response</span>
 <span class="o">&lt;</span><span class="n">Response</span> <span class="p">[</span><span class="mi">200</span> <span class="n">OK</span><span class="p">]</span><span class="o">&gt;</span>
-</pre></div></div>
+</code></pre></div></div>
 </div>
 <div class="autodoc">
 <div class="autodoc-signature"><code>httpx.<strong>get</strong></code><span class="autodoc-punctuation">(</span><em class="autodoc-param">url</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">*</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">params=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">headers=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">cookies=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">auth=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">allow_redirects=True</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">cert=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">verify=True</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">timeout=Timeout(timeout=5.0)</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">trust_env=True</em><span class="autodoc-punctuation">)</span></div>
@@ -606,9 +604,9 @@ this function, as <code>DELETE</code> requests should not include a request body
 <div class="autodoc-signature"><em>class </em><code>httpx.<strong>Client</strong></code><span class="autodoc-punctuation">(</span><em class="autodoc-param">*</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">auth=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">params=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">headers=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">cookies=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">verify=True</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">cert=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">proxies=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">timeout=Timeout(timeout=5.0)</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">pool_limits=PoolLimits(soft_limit=10, hard_limit=100)</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">max_redirects=20</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">base_url=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">dispatch=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">app=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">trust_env=True</em><span class="autodoc-punctuation">)</span></div>
 <div class="autodoc-docstring"><p>An HTTP client, with connection pooling, HTTP/2, redirects, cookie persistence, etc.</p>
 <p>Usage:</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span>
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://example.org&#39;</span><span class="p">)</span>
-</pre></div>
+</code></pre></div>
 
 
 <p><strong>Parameters:</strong></p>
@@ -652,25 +650,25 @@ variables for configuration.</li>
 <div class="autodoc-docstring"><p>Cookie values to include when sending requests.</p></div>
 <div class="autodoc-signature"><code><strong>params</strong></code></div>
 <div class="autodoc-docstring"><p>Query parameters to include in the URL when sending requests.</p></div>
-<div class="autodoc-signature"><code><strong>request</strong></code><span class="autodoc-punctuation">(</span><em class="autodoc-param">self</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">method</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">url</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">*</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">data=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">files=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">json=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">params=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">headers=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">cookies=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">auth=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">allow_redirects=True</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">timeout=<httpx._config.UnsetType object at 0x10b8425d0></em><span class="autodoc-punctuation">)</span></div>
+<div class="autodoc-signature"><code><strong>request</strong></code><span class="autodoc-punctuation">(</span><em class="autodoc-param">self</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">method</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">url</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">*</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">data=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">files=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">json=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">params=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">headers=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">cookies=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">auth=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">allow_redirects=True</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">timeout=<httpx._config.UnsetType object at 0x10816e8d0></em><span class="autodoc-punctuation">)</span></div>
 <div class="autodoc-docstring"></div>
-<div class="autodoc-signature"><code><strong>get</strong></code><span class="autodoc-punctuation">(</span><em class="autodoc-param">self</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">url</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">*</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">params=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">headers=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">cookies=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">auth=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">allow_redirects=True</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">timeout=<httpx._config.UnsetType object at 0x10b8425d0></em><span class="autodoc-punctuation">)</span></div>
+<div class="autodoc-signature"><code><strong>get</strong></code><span class="autodoc-punctuation">(</span><em class="autodoc-param">self</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">url</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">*</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">params=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">headers=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">cookies=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">auth=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">allow_redirects=True</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">timeout=<httpx._config.UnsetType object at 0x10816e8d0></em><span class="autodoc-punctuation">)</span></div>
 <div class="autodoc-docstring"></div>
-<div class="autodoc-signature"><code><strong>head</strong></code><span class="autodoc-punctuation">(</span><em class="autodoc-param">self</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">url</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">*</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">params=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">headers=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">cookies=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">auth=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">allow_redirects=False</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">timeout=<httpx._config.UnsetType object at 0x10b8425d0></em><span class="autodoc-punctuation">)</span></div>
+<div class="autodoc-signature"><code><strong>head</strong></code><span class="autodoc-punctuation">(</span><em class="autodoc-param">self</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">url</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">*</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">params=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">headers=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">cookies=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">auth=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">allow_redirects=False</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">timeout=<httpx._config.UnsetType object at 0x10816e8d0></em><span class="autodoc-punctuation">)</span></div>
 <div class="autodoc-docstring"></div>
-<div class="autodoc-signature"><code><strong>options</strong></code><span class="autodoc-punctuation">(</span><em class="autodoc-param">self</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">url</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">*</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">params=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">headers=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">cookies=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">auth=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">allow_redirects=True</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">timeout=<httpx._config.UnsetType object at 0x10b8425d0></em><span class="autodoc-punctuation">)</span></div>
+<div class="autodoc-signature"><code><strong>options</strong></code><span class="autodoc-punctuation">(</span><em class="autodoc-param">self</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">url</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">*</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">params=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">headers=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">cookies=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">auth=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">allow_redirects=True</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">timeout=<httpx._config.UnsetType object at 0x10816e8d0></em><span class="autodoc-punctuation">)</span></div>
 <div class="autodoc-docstring"></div>
-<div class="autodoc-signature"><code><strong>post</strong></code><span class="autodoc-punctuation">(</span><em class="autodoc-param">self</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">url</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">*</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">data=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">files=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">json=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">params=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">headers=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">cookies=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">auth=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">allow_redirects=True</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">timeout=<httpx._config.UnsetType object at 0x10b8425d0></em><span class="autodoc-punctuation">)</span></div>
+<div class="autodoc-signature"><code><strong>post</strong></code><span class="autodoc-punctuation">(</span><em class="autodoc-param">self</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">url</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">*</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">data=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">files=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">json=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">params=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">headers=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">cookies=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">auth=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">allow_redirects=True</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">timeout=<httpx._config.UnsetType object at 0x10816e8d0></em><span class="autodoc-punctuation">)</span></div>
 <div class="autodoc-docstring"></div>
-<div class="autodoc-signature"><code><strong>put</strong></code><span class="autodoc-punctuation">(</span><em class="autodoc-param">self</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">url</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">*</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">data=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">files=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">json=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">params=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">headers=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">cookies=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">auth=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">allow_redirects=True</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">timeout=<httpx._config.UnsetType object at 0x10b8425d0></em><span class="autodoc-punctuation">)</span></div>
+<div class="autodoc-signature"><code><strong>put</strong></code><span class="autodoc-punctuation">(</span><em class="autodoc-param">self</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">url</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">*</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">data=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">files=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">json=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">params=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">headers=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">cookies=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">auth=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">allow_redirects=True</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">timeout=<httpx._config.UnsetType object at 0x10816e8d0></em><span class="autodoc-punctuation">)</span></div>
 <div class="autodoc-docstring"></div>
-<div class="autodoc-signature"><code><strong>patch</strong></code><span class="autodoc-punctuation">(</span><em class="autodoc-param">self</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">url</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">*</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">data=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">files=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">json=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">params=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">headers=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">cookies=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">auth=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">allow_redirects=True</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">timeout=<httpx._config.UnsetType object at 0x10b8425d0></em><span class="autodoc-punctuation">)</span></div>
+<div class="autodoc-signature"><code><strong>patch</strong></code><span class="autodoc-punctuation">(</span><em class="autodoc-param">self</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">url</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">*</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">data=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">files=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">json=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">params=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">headers=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">cookies=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">auth=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">allow_redirects=True</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">timeout=<httpx._config.UnsetType object at 0x10816e8d0></em><span class="autodoc-punctuation">)</span></div>
 <div class="autodoc-docstring"></div>
-<div class="autodoc-signature"><code><strong>delete</strong></code><span class="autodoc-punctuation">(</span><em class="autodoc-param">self</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">url</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">*</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">params=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">headers=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">cookies=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">auth=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">allow_redirects=True</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">timeout=<httpx._config.UnsetType object at 0x10b8425d0></em><span class="autodoc-punctuation">)</span></div>
+<div class="autodoc-signature"><code><strong>delete</strong></code><span class="autodoc-punctuation">(</span><em class="autodoc-param">self</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">url</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">*</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">params=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">headers=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">cookies=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">auth=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">allow_redirects=True</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">timeout=<httpx._config.UnsetType object at 0x10816e8d0></em><span class="autodoc-punctuation">)</span></div>
 <div class="autodoc-docstring"></div>
 <div class="autodoc-signature"><code><strong>build_request</strong></code><span class="autodoc-punctuation">(</span><em class="autodoc-param">self</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">method</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">url</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">*</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">data=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">files=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">json=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">params=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">headers=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">cookies=None</em><span class="autodoc-punctuation">)</span></div>
 <div class="autodoc-docstring"><p>Build and return a request instance.</p></div>
-<div class="autodoc-signature"><code><strong>send</strong></code><span class="autodoc-punctuation">(</span><em class="autodoc-param">self</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">request</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">*</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">stream=False</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">auth=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">allow_redirects=True</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">timeout=<httpx._config.UnsetType object at 0x10b8425d0></em><span class="autodoc-punctuation">)</span></div>
+<div class="autodoc-signature"><code><strong>send</strong></code><span class="autodoc-punctuation">(</span><em class="autodoc-param">self</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">request</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">*</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">stream=False</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">auth=None</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">allow_redirects=True</em><span class="autodoc-punctuation">, </span><em class="autodoc-param">timeout=<httpx._config.UnsetType object at 0x10816e8d0></em><span class="autodoc-punctuation">)</span></div>
 <div class="autodoc-docstring"></div>
 <div class="autodoc-signature"><code><strong>close</strong></code><span class="autodoc-punctuation">(</span><em class="autodoc-param">self</em><span class="autodoc-punctuation">)</span></div>
 <div class="autodoc-docstring"></div>
@@ -716,9 +714,9 @@ variables for configuration.</li>
 <h2 id="request"><code>Request</code></h2>
 <p><em>An HTTP request. Can be constructed explicitly for more control over exactly
 what gets sent over the wire.</em></p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">request</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;https://example.org&quot;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;host&#39;</span><span class="p">:</span> <span class="s1">&#39;example.org&#39;</span><span class="p">})</span>
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">request</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;https://example.org&quot;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;host&#39;</span><span class="p">:</span> <span class="s1">&#39;example.org&#39;</span><span class="p">})</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
-</pre></div>
+</code></pre></div>
 
 
 <ul>
@@ -731,10 +729,10 @@ what gets sent over the wire.</em></p>
 </ul>
 <h2 id="url"><code>URL</code></h2>
 <p><em>A normalized, IDNA supporting URL.</em></p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">url</span> <span class="o">=</span> <span class="n">URL</span><span class="p">(</span><span class="s2">&quot;https://example.org/&quot;</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">url</span> <span class="o">=</span> <span class="n">URL</span><span class="p">(</span><span class="s2">&quot;https://example.org/&quot;</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">url</span><span class="o">.</span><span class="n">host</span>
 <span class="s1">&#39;example.org&#39;</span>
-</pre></div>
+</code></pre></div>
 
 
 <ul>
@@ -756,9 +754,9 @@ what gets sent over the wire.</em></p>
 </ul>
 <h2 id="origin"><code>Origin</code></h2>
 <p><em>A normalized, IDNA supporting set of scheme/host/port info.</em></p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">Origin</span><span class="p">(</span><span class="s1">&#39;https://example.org&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">Origin</span><span class="p">(</span><span class="s1">&#39;HTTPS://EXAMPLE.ORG:443&#39;</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">Origin</span><span class="p">(</span><span class="s1">&#39;https://example.org&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">Origin</span><span class="p">(</span><span class="s1">&#39;HTTPS://EXAMPLE.ORG:443&#39;</span><span class="p">)</span>
 <span class="kc">True</span>
-</pre></div>
+</code></pre></div>
 
 
 <ul>
@@ -770,10 +768,10 @@ what gets sent over the wire.</em></p>
 </ul>
 <h2 id="headers"><code>Headers</code></h2>
 <p><em>A case-insensitive multi-dict.</em></p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">headers</span> <span class="o">=</span> <span class="n">Headers</span><span class="p">({</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">})</span>
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">headers</span> <span class="o">=</span> <span class="n">Headers</span><span class="p">({</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">})</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">headers</span><span class="p">[</span><span class="s1">&#39;content-type&#39;</span><span class="p">]</span>
 <span class="s1">&#39;application/json&#39;</span>
-</pre></div>
+</code></pre></div>
 
 
 <ul>
@@ -781,9 +779,9 @@ what gets sent over the wire.</em></p>
 </ul>
 <h2 id="cookies"><code>Cookies</code></h2>
 <p><em>A dict-like cookie store.</em></p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">cookies</span> <span class="o">=</span> <span class="n">Cookies</span><span class="p">()</span>
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">cookies</span> <span class="o">=</span> <span class="n">Cookies</span><span class="p">()</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">cookies</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="s2">&quot;example.org&quot;</span><span class="p">)</span>
-</pre></div>
+</code></pre></div>
 
 
 <ul>
@@ -855,9 +853,9 @@ what gets sent over the wire.</em></p>
       <div class="md-footer-copyright">
         
         powered by
-        <a href="https://www.mkdocs.org">MkDocs</a>
+        <a href="https://www.mkdocs.org" target="_blank" rel="noopener">MkDocs</a>
         and
-        <a href="https://squidfunk.github.io/mkdocs-material/">
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
           Material for MkDocs</a>
       </div>
       
@@ -867,9 +865,9 @@ what gets sent over the wire.</em></p>
       
     </div>
     
-      <script src="../assets/javascripts/application.808e90bb.js"></script>
+      <script src="../assets/javascripts/application.c33a9706.js"></script>
       
-      <script>app.initialize({version:"1.0.4",url:{base:".."}})</script>
+      <script>app.initialize({version:"1.1",url:{base:".."}})</script>
       
         <script src="../js/chat.js"></script>
       

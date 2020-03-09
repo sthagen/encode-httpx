@@ -36,7 +36,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.6.0">
+      <meta name="generator" content="mkdocs-1.1, mkdocs-material-4.6.3">
     
     
       
@@ -44,12 +44,12 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/application.1b62728e.css">
+      <link rel="stylesheet" href="../assets/stylesheets/application.adb8469c.css">
       
       
     
     
-      <script src="../assets/javascripts/modernizr.268332fc.js"></script>
+      <script src="../assets/javascripts/modernizr.86422ebf.js"></script>
     
     
       
@@ -83,7 +83,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#contributing" tabindex="1" class="md-skip">
+      <a href="#contributing" tabindex="0" class="md-skip">
         Skip to content
       </a>
     
@@ -92,7 +92,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="https://www.python-httpx.org/" title="HTTPX" class="md-header-nav__button md-logo">
+        <a href="https://www.python-httpx.org/" title="HTTPX" aria-label="HTTPX" class="md-header-nav__button md-logo">
           
             <i class="md-icon"></i>
           
@@ -123,7 +123,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" name="search">
-      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <input type="text" class="md-search__input" aria-label="search" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
       <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
         &#xE5CD;
@@ -557,22 +557,22 @@ provide as much information as possible like:</p>
 <a href="https://github.com/encode/httpx">HTTPX repository</a> on GitHub.</p>
 <p>Then clone your fork with the following command replacing <code>YOUR-USERNAME</code> with
 your GitHub username:</p>
-<div class="codehilite"><pre><span></span>$ git clone https://github.com/YOUR-USERNAME/httpx
-</pre></div>
+<div class="codehilite"><pre><span></span><code>$ git clone https://github.com/YOUR-USERNAME/httpx
+</code></pre></div>
 
 
 <p>You can now install the project and its dependencies using:</p>
-<div class="codehilite"><pre><span></span>$ <span class="nb">cd</span> httpx
+<div class="codehilite"><pre><span></span><code>$ <span class="nb">cd</span> httpx
 $ scripts/install
-</pre></div>
+</code></pre></div>
 
 
 <h2 id="testing-and-linting">Testing and Linting</h2>
 <p>We use custom shell scripts to automate testing, linting,
 and documentation building workflow.</p>
 <p>To run the tests, use:</p>
-<div class="codehilite"><pre><span></span>$ scripts/test
-</pre></div>
+<div class="codehilite"><pre><span></span><code>$ scripts/test
+</code></pre></div>
 
 
 <div class="admonition warning">
@@ -581,25 +581,25 @@ and documentation building workflow.</p>
 Make sure these are not in use, so the tests can run properly.</p>
 </div>
 <p>You can run a single test script like this:</p>
-<div class="codehilite"><pre><span></span>$ scripts/test -- tests/test_multipart.py
-</pre></div>
+<div class="codehilite"><pre><span></span><code>$ scripts/test -- tests/test_multipart.py
+</code></pre></div>
 
 
 <p>To run the code auto-formatting:</p>
-<div class="codehilite"><pre><span></span>$ scripts/lint
-</pre></div>
+<div class="codehilite"><pre><span></span><code>$ scripts/lint
+</code></pre></div>
 
 
 <p>Lastly, to run code checks separately (they are also run as part of <code>scripts/test</code>), run:</p>
-<div class="codehilite"><pre><span></span>$ scripts/check
-</pre></div>
+<div class="codehilite"><pre><span></span><code>$ scripts/check
+</code></pre></div>
 
 
 <h2 id="documenting">Documenting</h2>
 <p>Documentation pages are located under the <code>docs/</code> folder.</p>
 <p>To run the documentation site locally (useful for previewing changes), use:</p>
-<div class="codehilite"><pre><span></span>$ scripts/docs-serve
-</pre></div>
+<div class="codehilite"><pre><span></span><code>$ scripts/docs-serve
+</code></pre></div>
 
 
 <h2 id="resolving-build-travis-failures">Resolving Build / Travis Failures</h2>
@@ -617,8 +617,8 @@ If the test suite fails, you'll want to click through to the "Details" link, and
 
 <p>This job failing means there is either a code formatting issue or type-annotation issue.
 You can look at the job output to figure out why it's failed or within a shell run:</p>
-<div class="codehilite"><pre><span></span>$ scripts/check
-</pre></div>
+<div class="codehilite"><pre><span></span><code>$ scripts/check
+</code></pre></div>
 
 
 <p>It may be worth it to run <code>$ scripts/lint</code> to attempt auto-formatting the code
@@ -701,9 +701,9 @@ for the pull request for help debugging coverage.</p>
       <div class="md-footer-copyright">
         
         powered by
-        <a href="https://www.mkdocs.org">MkDocs</a>
+        <a href="https://www.mkdocs.org" target="_blank" rel="noopener">MkDocs</a>
         and
-        <a href="https://squidfunk.github.io/mkdocs-material/">
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
           Material for MkDocs</a>
       </div>
       
@@ -713,9 +713,9 @@ for the pull request for help debugging coverage.</p>
       
     </div>
     
-      <script src="../assets/javascripts/application.808e90bb.js"></script>
+      <script src="../assets/javascripts/application.c33a9706.js"></script>
       
-      <script>app.initialize({version:"1.0.4",url:{base:".."}})</script>
+      <script>app.initialize({version:"1.1",url:{base:".."}})</script>
       
         <script src="../js/chat.js"></script>
       

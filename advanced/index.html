@@ -36,7 +36,7 @@
         <meta name="lang:search.tokenizer" content="[\s\-]+">
       
       <link rel="shortcut icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.6.0">
+      <meta name="generator" content="mkdocs-1.1, mkdocs-material-4.6.3">
     
     
       
@@ -44,12 +44,12 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/application.1b62728e.css">
+      <link rel="stylesheet" href="../assets/stylesheets/application.adb8469c.css">
       
       
     
     
-      <script src="../assets/javascripts/modernizr.268332fc.js"></script>
+      <script src="../assets/javascripts/modernizr.86422ebf.js"></script>
     
     
       
@@ -83,7 +83,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#advanced-usage" tabindex="1" class="md-skip">
+      <a href="#advanced-usage" tabindex="0" class="md-skip">
         Skip to content
       </a>
     
@@ -92,7 +92,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="https://www.python-httpx.org/" title="HTTPX" class="md-header-nav__button md-logo">
+        <a href="https://www.python-httpx.org/" title="HTTPX" aria-label="HTTPX" class="md-header-nav__button md-logo">
           
             <i class="md-icon"></i>
           
@@ -123,7 +123,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" name="search">
-      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <input type="text" class="md-search__input" aria-label="search" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
       <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
         &#xE5CD;
@@ -279,6 +279,33 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#why-use-a-client" class="md-nav__link">
+    Why use a Client?
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#more-efficient-usage-of-network-resources" class="md-nav__link">
+    More efficient usage of network resources
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extra-features" class="md-nav__link">
+    Extra features
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#usage" class="md-nav__link">
     Usage
   </a>
@@ -286,8 +313,29 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#configuration" class="md-nav__link">
-    Configuration
+  <a href="#making-requests" class="md-nav__link">
+    Making requests
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sharing-configuration-across-requests" class="md-nav__link">
+    Sharing configuration across requests
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#merging-of-configuration" class="md-nav__link">
+    Merging of configuration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#other-client-only-configuration-options" class="md-nav__link">
+    Other Client-only configuration options
   </a>
   
 </li>
@@ -305,8 +353,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#build-request" class="md-nav__link">
-    Build Request
+  <a href="#request-instances" class="md-nav__link">
+    Request instances
   </a>
   
 </li>
@@ -519,6 +567,33 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#why-use-a-client" class="md-nav__link">
+    Why use a Client?
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#more-efficient-usage-of-network-resources" class="md-nav__link">
+    More efficient usage of network resources
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extra-features" class="md-nav__link">
+    Extra features
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#usage" class="md-nav__link">
     Usage
   </a>
@@ -526,8 +601,29 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#configuration" class="md-nav__link">
-    Configuration
+  <a href="#making-requests" class="md-nav__link">
+    Making requests
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sharing-configuration-across-requests" class="md-nav__link">
+    Sharing configuration across requests
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#merging-of-configuration" class="md-nav__link">
+    Merging of configuration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#other-client-only-configuration-options" class="md-nav__link">
+    Other Client-only configuration options
   </a>
   
 </li>
@@ -545,8 +641,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#build-request" class="md-nav__link">
-    Build Request
+  <a href="#request-instances" class="md-nav__link">
+    Request instances
   </a>
   
 </li>
@@ -666,73 +762,130 @@
                 
                 <h1 id="advanced-usage">Advanced Usage</h1>
 <h2 id="client-instances">Client Instances</h2>
-<p>Using a Client instance to make requests will give you HTTP connection pooling,
-will provide cookie persistence, and allows you to apply configuration across
-all outgoing requests.</p>
 <div class="admonition hint">
 <p class="admonition-title">Hint</p>
-<p>A Client instance is equivalent to a Session instance in <code>requests</code>.</p>
+<p>If you are coming from Requests, <code>httpx.Client()</code> is what you can use instead of <code>requests.Session()</code>.</p>
 </div>
+<h3 id="why-use-a-client">Why use a Client?</h3>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Starting from <code>httpx==0.10.0</code>, the default and recommended Client class is <code>AsyncClient</code>. This should help prevent breaking changes once sync support is reintroduced.</p>
-<p>A <code>Client</code> synonym remains for compatibility with <code>httpx==0.9.*</code> releases, but you are encouraged to migrate to <code>AsyncClient</code> as soon as possible.</p>
+<p class="admonition-title">TL;DR</p>
+<p>If you do anything more than experimentation, one-off scripts, or prototypes, then you should use a <code>Client</code> instance.</p>
 </div>
+<h4 id="more-efficient-usage-of-network-resources">More efficient usage of network resources</h4>
+<p>When you make requests using the top-level API as documented in the <a href="/quickstart">Quickstart</a> guide, HTTPX has to establish a new connection <em>for every single request</em> (connections are not reused). As the number of requests to a host increases, this quickly becomes inefficient.</p>
+<p>On the other hand, a <code>Client</code> instance uses <a href="https://en.wikipedia.org/wiki/HTTP_persistent_connection">HTTP connection pooling</a>. This means that when you make several requests to the same host, the <code>Client</code> will reuse the underlying TCP connection, instead of recreating one for every single request.</p>
+<p>This can bring <strong>significant performance improvements</strong> compared to using the top-level API, including:</p>
+<ul>
+<li>Reduced latency across requests (no handshaking).</li>
+<li>Reduced CPU usage and round-trips.</li>
+<li>Reduced network congestion.</li>
+</ul>
+<h4 id="extra-features">Extra features</h4>
+<p><code>Client</code> instances also support features that aren't available at the top-level API, such as:</p>
+<ul>
+<li>Cookie persistance across requests.</li>
+<li>Applying configuration across all outgoing requests.</li>
+<li>Sending requests through HTTP proxies.</li>
+<li>Using <a href="/http2">HTTP/2</a>.</li>
+</ul>
+<p>The other sections on this page go into further detail about what you can do with a <code>Client</code> instance.</p>
 <h3 id="usage">Usage</h3>
 <p>The recommended way to use a <code>Client</code> is as a context manager. This will ensure that connections are properly cleaned up when leaving the <code>with</code> block:</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
-<span class="o">...</span>     <span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://example.com&#39;</span><span class="p">)</span>
-<span class="o">...</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span>
-<span class="o">&lt;</span><span class="n">Response</span> <span class="p">[</span><span class="mi">200</span> <span class="n">OK</span><span class="p">]</span><span class="o">&gt;</span>
-</pre></div>
+<div class="codehilite"><pre><span></span><code><span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="o">...</span>
+</code></pre></div>
 
 
 <p>Alternatively, you can explicitly close the connection pool without block-usage using <code>.close()</code>:</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">try</span><span class="p">:</span>
+<div class="codehilite"><pre><span></span><code><span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="o">...</span>
+<span class="k">finally</span><span class="p">:</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</code></pre></div>
+
+
+<h3 id="making-requests">Making requests</h3>
+<p>Once you have a <code>Client</code>, you can send requests using <code>.get()</code>, <code>.post()</code>, etc. For example:</p>
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
 <span class="o">...</span>     <span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://example.com&#39;</span><span class="p">)</span>
-<span class="o">...</span> <span class="k">finally</span><span class="p">:</span>
-<span class="o">...</span>     <span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 <span class="o">...</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span>
 <span class="o">&lt;</span><span class="n">Response</span> <span class="p">[</span><span class="mi">200</span> <span class="n">OK</span><span class="p">]</span><span class="o">&gt;</span>
-</pre></div>
+</code></pre></div>
 
 
-<p>Once you have a <code>Client</code>, you can use all the features documented in the <a href="/quickstart">Quickstart</a> guide.</p>
-<h3 id="configuration">Configuration</h3>
+<p>These methods accept the same arguments as <code>httpx.get()</code>, <code>httpx.post()</code>, etc. This means that all features documented in the <a href="/quickstart">Quickstart</a> guide are also available at the client level.</p>
+<p>For example, to send a request with custom headers:</p>
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+<span class="o">...</span>     <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;X-Custom&#39;</span><span class="p">:</span> <span class="s1">&#39;value&#39;</span><span class="p">}</span>
+<span class="o">...</span>     <span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://example.com&#39;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+<span class="o">...</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;X-Custom&#39;</span><span class="p">]</span>
+<span class="s1">&#39;value&#39;</span>
+</code></pre></div>
+
+
+<h3 id="sharing-configuration-across-requests">Sharing configuration across requests</h3>
 <p>Clients allow you to apply configuration to all outgoing requests by passing parameters to the <code>Client</code> constructor.</p>
-<p>For example, to apply a set of custom headers on every request:</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://httpbin.org/headers&#39;</span>
+<p>For example, to apply a set of custom headers <em>on every request</em>:</p>
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://httpbin.org/headers&#39;</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;user-agent&#39;</span><span class="p">:</span> <span class="s1">&#39;my-app/0.0.1&#39;</span><span class="p">}</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
 <span class="o">...</span>     <span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
 <span class="o">...</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s1">&#39;headers&#39;</span><span class="p">][</span><span class="s1">&#39;User-Agent&#39;</span><span class="p">]</span>
 <span class="s1">&#39;my-app/0.0.1&#39;</span>
-</pre></div>
+</code></pre></div>
 
 
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>When you provide a parameter at both the client and request levels, one of two things can happen:</p>
+<h3 id="merging-of-configuration">Merging of configuration</h3>
+<p>When a configuration option is provided at both the client-level and request-level, one of two things can happen:</p>
 <ul>
-<li>For headers, query parameters and cookies, the values are merged into one.</li>
-<li>For all other parameters, the request-level value is used.</li>
+<li>For headers, query parameters and cookies, the values are combined together. For example:</li>
 </ul>
-</div>
-<p>Additionally, <code>Client</code> accepts some parameters that aren't available at the request level.</p>
-<p>One particularly useful parameter is <code>base_url</code>, which allows you to define a base URL to prepend to all outgoing requests:</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="s1">&#39;http://httpbin.org&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;X-Auth&#39;</span><span class="p">:</span> <span class="s1">&#39;from-client&#39;</span><span class="p">}</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;client_id&#39;</span><span class="p">:</span> <span class="s1">&#39;client1&#39;</span><span class="p">}</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+<span class="o">...</span>     <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;X-Custom&#39;</span><span class="p">:</span> <span class="s1">&#39;from-request&#39;</span><span class="p">}</span>
+<span class="o">...</span>     <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;request_id&#39;</span><span class="p">:</span> <span class="s1">&#39;request1&#39;</span><span class="p">}</span>
+<span class="o">...</span>     <span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://example.com&#39;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+<span class="o">...</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">url</span>
+<span class="n">URL</span><span class="p">(</span><span class="s1">&#39;https://example.com?client_id=client1&amp;request_id=request1&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;X-Auth&#39;</span><span class="p">]</span>
+<span class="s1">&#39;from-client&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;X-Custom&#39;</span><span class="p">]</span>
+<span class="s1">&#39;from-request&#39;</span>
+</code></pre></div>
+
+
+<ul>
+<li>For all other parameters, the request-level value takes priority. For example:</li>
+</ul>
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">auth</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;tom&#39;</span><span class="p">,</span> <span class="s1">&#39;mot123&#39;</span><span class="p">))</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+<span class="o">...</span>     <span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://example.com&#39;</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;alice&#39;</span><span class="p">,</span> <span class="s1">&#39;ecila123&#39;</span><span class="p">))</span>
+<span class="o">...</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">auth</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;Authorization&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">base64</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">auth</span><span class="p">)</span>
+<span class="sa">b</span><span class="s1">&#39;alice:ecila123&#39;</span>
+</code></pre></div>
+
+
+<p>If you need finer-grained control on the merging of client-level and request-level parameters, see <a href="#request-instances">Request instances</a>.</p>
+<h3 id="other-client-only-configuration-options">Other Client-only configuration options</h3>
+<p>Additionally, <code>Client</code> accepts some configuration options that aren't available at the request level.</p>
+<p>For example, <code>base_url</code> allows you to prepend an URL to all outgoing requests:</p>
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="s1">&#39;http://httpbin.org&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
 <span class="o">...</span>     <span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/headers&#39;</span><span class="p">)</span>
 <span class="o">...</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">url</span>
 <span class="n">URL</span><span class="p">(</span><span class="s1">&#39;http://httpbin.org/headers&#39;</span><span class="p">)</span>
-</pre></div>
+</code></pre></div>
 
 
-<p>For a list of all available client-level parameters, see the <a href="/api/#client"><code>Client</code> API reference</a>.</p>
+<p>For a list of all available client parameters, see the <a href="/api/#client"><code>Client</code></a> API reference.</p>
 <h2 id="calling-into-python-web-apps">Calling into Python Web Apps</h2>
 <p>You can configure an <code>httpx</code> client to call directly into a Python web application using the WSGI protocol.</p>
 <p>This is particularly useful for two main use-cases:</p>
@@ -741,7 +894,7 @@ all outgoing requests.</p>
 <li>Mocking out external services during tests or in dev/staging environments.</li>
 </ul>
 <p>Here's an example of integrating against a Flask application:</p>
-<div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span>
 <span class="kn">import</span> <span class="nn">httpx</span>
 
 
@@ -755,7 +908,7 @@ all outgoing requests.</p>
     <span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span>
     <span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="s2">&quot;Hello World!&quot;</span>
-</pre></div>
+</code></pre></div>
 
 
 <p>For some more complex cases you might need to customize the WSGI dispatch. This allows you to:</p>
@@ -765,24 +918,40 @@ all outgoing requests.</p>
 <li>Use a given client address for requests by setting <code>remote_addr</code> (WSGI).</li>
 </ul>
 <p>For example:</p>
-<div class="codehilite"><pre><span></span><span class="c1"># Instantiate a client that makes WSGI requests with a client IP of &quot;1.2.3.4&quot;.</span>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Instantiate a client that makes WSGI requests with a client IP of &quot;1.2.3.4&quot;.</span>
 <span class="n">dispatch</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">WSGIDispatch</span><span class="p">(</span><span class="n">app</span><span class="o">=</span><span class="n">app</span><span class="p">,</span> <span class="n">remote_addr</span><span class="o">=</span><span class="s2">&quot;1.2.3.4&quot;</span><span class="p">)</span>
 <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">dispatch</span><span class="o">=</span><span class="n">dispatch</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;http://testserver&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
     <span class="o">...</span>
-</pre></div>
+</code></pre></div>
 
 
-<h2 id="build-request">Build Request</h2>
-<p>You can use <code>Client.build_request()</code> to build a request and
-make modifications before sending the request.</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
-<span class="o">...</span>     <span class="n">req</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">build_request</span><span class="p">(</span><span class="s2">&quot;OPTIONS&quot;</span><span class="p">,</span> <span class="s2">&quot;https://example.com&quot;</span><span class="p">)</span>
-<span class="o">...</span>     <span class="n">req</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">full_path</span> <span class="o">=</span> <span class="s2">&quot;*&quot;</span>  <span class="c1"># Build an &#39;OPTIONS *&#39; request for CORS</span>
-<span class="o">...</span>     <span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
-<span class="o">...</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">r</span>
-<span class="o">&lt;</span><span class="n">Response</span> <span class="p">[</span><span class="mi">200</span> <span class="n">OK</span><span class="p">]</span><span class="o">&gt;</span>
-</pre></div>
+<h2 id="request-instances">Request instances</h2>
+<p>For maximum control on what gets sent over the wire, HTTPX supports building explicit <a href="/api#request"><code>Request</code></a> instances:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">request</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Request</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;https://example.com&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+
+<p>To dispatch a <code>Request</code> instance across to the network, create a <a href="#client-instances"><code>Client</code> instance</a> and use <code>.send()</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+    <span class="o">...</span>
+</code></pre></div>
+
+
+<p>If you need to mix client-level and request-level options in a way that is not supported by the default <a href="#merging-of-parameters">Merging of parameters</a>, you can use <code>.build_request()</code> and then make arbitrary modifications to the <code>Request</code> instance. For example:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;X-Api-Key&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span> <span class="s2">&quot;X-Client-ID&quot;</span><span class="p">:</span> <span class="s2">&quot;ABC123&quot;</span><span class="p">}</span>
+
+<span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="n">request</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">build_request</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;https://api.example.com&quot;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s2">&quot;X-Client-ID&quot;</span><span class="p">])</span>  <span class="c1"># &quot;ABC123&quot;</span>
+
+    <span class="c1"># Don&#39;t send the API key for this particular request.</span>
+    <span class="k">del</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s2">&quot;X-Api-Key&quot;</span><span class="p">]</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+    <span class="o">...</span>
+</code></pre></div>
 
 
 <h2 id="netrc-support">.netrc Support</h2>
@@ -795,43 +964,43 @@ If you need to refresh the cache (e.g. because the NETRC file has changed),
 you should create a new client or restart the interpreter.</p>
 </div>
 <p>As default <code>trust_env</code> is true. To set false:</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://example.org/&#39;</span><span class="p">,</span> <span class="n">trust_env</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</pre></div>
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://example.org/&#39;</span><span class="p">,</span> <span class="n">trust_env</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
 
 
 <p>If <code>NETRC</code> environment is empty, HTTPX tries to use default files.
 (<code>~/.netrc</code>, <code>~/_netrc</code>)</p>
 <p>To change <code>NETRC</code> environment:</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">os</span>
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">os</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;NETRC&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;my_default_folder/.my_netrc&quot;</span>
-</pre></div>
+</code></pre></div>
 
 
 <p>.netrc file content example:</p>
-<div class="codehilite"><pre><span></span><span class="n">machine</span> <span class="n">netrcexample</span><span class="p">.</span><span class="n">org</span>
+<div class="codehilite"><pre><span></span><code><span class="n">machine</span> <span class="n">netrcexample</span><span class="p">.</span><span class="n">org</span>
 <span class="n">login</span> <span class="n">example</span><span class="o">-</span><span class="n">username</span>
 <span class="n">password</span> <span class="n">example</span><span class="o">-</span><span class="n">password</span>
 
 <span class="p">...</span>
-</pre></div>
+</code></pre></div>
 
 
 <p>When using <code>Client</code> instances, <code>trust_env</code> should be set on the client itself, rather that on the request methods:</p>
-<div class="codehilite"><pre><span></span><span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">trust_env</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</pre></div>
+<div class="codehilite"><pre><span></span><code><span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">trust_env</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
 
 
 <h2 id="http-proxying">HTTP Proxying</h2>
 <p>HTTPX supports setting up HTTP proxies the same way that Requests does via the <code>proxies</code> parameter.
 For example to forward all HTTP traffic to <code>http://127.0.0.1:3080</code> and all HTTPS traffic
 to <code>http://127.0.0.1:3081</code> your <code>proxies</code> config would look like this:</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">proxies</span> <span class="o">=</span> <span class="p">{</span>
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">proxies</span> <span class="o">=</span> <span class="p">{</span>
 <span class="o">...</span>     <span class="s2">&quot;http&quot;</span><span class="p">:</span> <span class="s2">&quot;http://127.0.0.1:3080&quot;</span><span class="p">,</span>
 <span class="o">...</span>     <span class="s2">&quot;https&quot;</span><span class="p">:</span> <span class="s2">&quot;http://127.0.0.1:3081&quot;</span>
 <span class="o">...</span> <span class="p">}</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">proxies</span><span class="o">=</span><span class="n">proxies</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
 <span class="o">...</span>     <span class="o">...</span>
-</pre></div>
+</code></pre></div>
 
 
 <p>Credentials may be passed in as part of the URL in the standard way, i.e.
@@ -839,7 +1008,7 @@ to <code>http://127.0.0.1:3081</code> your <code>proxies</code> config would loo
 <p>Proxies can be configured for a specific scheme and host, all schemes of a host,
 all hosts for a scheme, or for all requests. When determining which proxy configuration
 to use for a given request this same order is used.</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">proxies</span> <span class="o">=</span> <span class="p">{</span>
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">proxies</span> <span class="o">=</span> <span class="p">{</span>
 <span class="o">...</span>     <span class="s2">&quot;http://example.com&quot;</span><span class="p">:</span>  <span class="s2">&quot;...&quot;</span><span class="p">,</span>  <span class="c1"># Host+Scheme</span>
 <span class="o">...</span>     <span class="s2">&quot;all://example.com&quot;</span><span class="p">:</span>  <span class="s2">&quot;...&quot;</span><span class="p">,</span>  <span class="c1"># Host</span>
 <span class="o">...</span>     <span class="s2">&quot;http&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>  <span class="c1"># Scheme</span>
@@ -851,7 +1020,7 @@ to use for a given request this same order is used.</p>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">proxy</span> <span class="o">=</span> <span class="s2">&quot;...&quot;</span>  <span class="c1"># Shortcut for {&#39;all&#39;: &#39;...&#39;}</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">proxies</span><span class="o">=</span><span class="n">proxy</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
 <span class="o">...</span>     <span class="o">...</span>
-</pre></div>
+</code></pre></div>
 
 
 <div class="admonition warning">
@@ -864,14 +1033,14 @@ use HTTPS and tunnel requests if possible.</p>
 and will establish a <code>CONNECT</code> TCP tunnel for <code>https://</code> requests. This doesn't change
 regardless of the proxy <code>url</code> being <code>http</code> or <code>https</code>.</p>
 <p>Proxies can be configured to have different behavior such as forwarding or tunneling all requests:</p>
-<div class="codehilite"><pre><span></span><span class="n">proxy</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Proxy</span><span class="p">(</span>
+<div class="codehilite"><pre><span></span><code><span class="n">proxy</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Proxy</span><span class="p">(</span>
     <span class="n">url</span><span class="o">=</span><span class="s2">&quot;https://127.0.0.1&quot;</span><span class="p">,</span>
     <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;TUNNEL_ONLY&quot;</span>  <span class="c1"># May be &quot;TUNNEL_ONLY&quot; or &quot;FORWARD_ONLY&quot;. Defaults to &quot;DEFAULT&quot;.</span>
 <span class="p">)</span>
 <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">proxies</span><span class="o">=</span><span class="n">proxy</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
     <span class="c1"># This request will be tunneled instead of forwarded.</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;http://example.com&quot;</span><span class="p">)</span>
-</pre></div>
+</code></pre></div>
 
 
 <div class="admonition note">
@@ -886,32 +1055,32 @@ rather than on the <code>.get(...)</code> call or other request methods.</p>
 network inactivity.</p>
 <h3 id="setting-and-disabling-timeouts">Setting and disabling timeouts</h3>
 <p>You can set timeouts for an individual request:</p>
-<div class="codehilite"><pre><span></span><span class="c1"># Using the top-level API:</span>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Using the top-level API:</span>
 <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;http://example.com/api/v1/example&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
 
 <span class="c1"># Using a client instance:</span>
 <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
     <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;http://example.com/api/v1/example&quot;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
-</pre></div>
+</code></pre></div>
 
 
 <p>Or disable timeouts for an individual request:</p>
-<div class="codehilite"><pre><span></span><span class="c1"># Using the top-level API:</span>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Using the top-level API:</span>
 <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;http://example.com/api/v1/example&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
 <span class="c1"># Using a client instance:</span>
 <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
     <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;http://example.com/api/v1/example&quot;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-</pre></div>
+</code></pre></div>
 
 
 <h3 id="setting-a-default-timeout-on-a-client">Setting a default timeout on a client</h3>
 <p>You can set a timeout on a client instance, which results in the given
 <code>timeout</code> being used as the default for requests made with this client:</p>
-<div class="codehilite"><pre><span></span><span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span>              <span class="c1"># Use a default 5s timeout everywhere.</span>
+<div class="codehilite"><pre><span></span><code><span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span>              <span class="c1"># Use a default 5s timeout everywhere.</span>
 <span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>  <span class="c1"># Use a default 10s timeout everywhere.</span>
 <span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>  <span class="c1"># Disable all timeouts by default.</span>
-</pre></div>
+</code></pre></div>
 
 
 <h3 id="fine-tuning-the-configuration">Fine tuning the configuration</h3>
@@ -935,19 +1104,19 @@ configuration here is the maximum number of allowable connections in the
 connection pool, which is configured by the <code>pool_limits</code>.</li>
 </ul>
 <p>You can configure the timeout behavior for any of these values...</p>
-<div class="codehilite"><pre><span></span><span class="c1"># A client with a 60s timeout for connecting, and a 10s timeout elsewhere.</span>
+<div class="codehilite"><pre><span></span><code><span class="c1"># A client with a 60s timeout for connecting, and a 10s timeout elsewhere.</span>
 <span class="n">timeout</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Timeout</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">connect_timeout</span><span class="o">=</span><span class="mf">60.0</span><span class="p">)</span>
 <span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span>
 
 <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;http://example.com/&#39;</span><span class="p">)</span>
-</pre></div>
+</code></pre></div>
 
 
 <h2 id="multipart-file-encoding">Multipart file encoding</h2>
 <p>As mentioned in the <a href="/quickstart#sending-multipart-file-uploads">quickstart</a>
 multipart file encoding is available by passing a dictionary with the
 name of the payloads as keys and either tuple of elements or a file-like object or a string as values.</p>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">files</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;upload-file&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;report.xls&#39;</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;report.xls&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">),</span> <span class="s1">&#39;application/vnd.ms-excel&#39;</span><span class="p">)}</span>
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">files</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;upload-file&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;report.xls&#39;</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;report.xls&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">),</span> <span class="s1">&#39;application/vnd.ms-excel&#39;</span><span class="p">)}</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;https://httpbin.org/post&quot;</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="n">files</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
 <span class="p">{</span>
@@ -957,7 +1126,7 @@ name of the payloads as keys and either tuple of elements or a file-like object 
   <span class="p">},</span>
   <span class="o">...</span>
 <span class="p">}</span>
-</pre></div>
+</code></pre></div>
 
 
 <p>More specifically, if a tuple is used as a value, it must have between 2 and 3 elements:</p>
@@ -972,7 +1141,7 @@ on the file name, with unknown file extensions defaulting to "application/octet-
 If the file name is explicitly set to <code>None</code> then HTTPX will not include a content-type
 MIME header field.</li>
 </ul>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="n">files</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;upload-file&#39;</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;text content&#39;</span><span class="p">,</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">)}</span>
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">files</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;upload-file&#39;</span><span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;text content&#39;</span><span class="p">,</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">)}</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;https://httpbin.org/post&quot;</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="n">files</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
 <span class="p">{</span>
@@ -983,7 +1152,7 @@ MIME header field.</li>
   <span class="p">},</span>
   <span class="o">...</span>
 <span class="p">}</span>
-</pre></div>
+</code></pre></div>
 
 
 <h2 id="customizing-authentication">Customizing authentication</h2>
@@ -995,7 +1164,7 @@ MIME header field.</li>
 <li>A subclass of <code>httpx.Auth</code>.</li>
 </ul>
 <p>The most involved of these is the last, which allows you to create authentication flows involving one or more requests. A subclass of <code>httpx.Auth</code> should implement <code>def auth_flow(request)</code>, and yield any requests that need to be made...</p>
-<div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MyCustomAuth</span><span class="p">(</span><span class="n">httpx</span><span class="o">.</span><span class="n">Auth</span><span class="p">):</span>
+<div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">MyCustomAuth</span><span class="p">(</span><span class="n">httpx</span><span class="o">.</span><span class="n">Auth</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">token</span>
 
@@ -1003,11 +1172,11 @@ MIME header field.</li>
         <span class="c1"># Send the request, with a custom `X-Authentication` header.</span>
         <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;X-Authentication&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span>
         <span class="k">yield</span> <span class="n">request</span>
-</pre></div>
+</code></pre></div>
 
 
 <p>If the auth flow requires more that one request, you can issue multiple yields, and obtain the response in each case...</p>
-<div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MyCustomAuth</span><span class="p">(</span><span class="n">httpx</span><span class="o">.</span><span class="n">Auth</span><span class="p">):</span>
+<div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">MyCustomAuth</span><span class="p">(</span><span class="n">httpx</span><span class="o">.</span><span class="n">Auth</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">token</span>
 
@@ -1018,12 +1187,12 @@ MIME header field.</li>
           <span class="c1"># with a custom `X-Authentication` header.</span>
           <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;X-Authentication&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span>
           <span class="k">yield</span> <span class="n">request</span>
-</pre></div>
+</code></pre></div>
 
 
 <p>Custom authentication classes are designed to not perform any I/O, so that they may be used with both sync and async client instances. If you are implementing an authentication scheme that requires the request body, then you need to indicate this on the class using a <code>requires_request_body</code> property.</p>
 <p>You will then be able to access <code>request.content</code> inside the <code>.auth_flow()</code> method.</p>
-<div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MyCustomAuth</span><span class="p">(</span><span class="n">httpx</span><span class="o">.</span><span class="n">Auth</span><span class="p">):</span>
+<div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">MyCustomAuth</span><span class="p">(</span><span class="n">httpx</span><span class="o">.</span><span class="n">Auth</span><span class="p">):</span>
     <span class="n">requires_request_body</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">):</span>
@@ -1041,11 +1210,11 @@ MIME header field.</li>
         <span class="c1"># Create a request signature, based on `request.method`, `request.url`,</span>
         <span class="c1"># `request.headers`, and `request.content`.</span>
         <span class="o">...</span>
-</pre></div>
+</code></pre></div>
 
 
 <p>Similarly, if you are implementing a scheme that requires access to the response body, then use the <code>requires_response_body</code> property.   You will then be able to access response body properties and methods such as <code>response.content</code>, <code>response.text</code>, <code>response.json()</code>, etc.</p>
-<div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MyCustomAuth</span><span class="p">(</span><span class="n">httpx</span><span class="o">.</span><span class="n">Auth</span><span class="p">):</span>
+<div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">MyCustomAuth</span><span class="p">(</span><span class="n">httpx</span><span class="o">.</span><span class="n">Auth</span><span class="p">):</span>
     <span class="n">requires_response_body</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">,</span> <span class="n">refresh_token</span><span class="p">,</span> <span class="n">refresh_url</span><span class="p">):</span>
@@ -1075,7 +1244,7 @@ MIME header field.</li>
         <span class="c1"># based on a refresh response.</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
         <span class="o">...</span>
-</pre></div>
+</code></pre></div>
 
 
 <h2 id="ssl-certificates">SSL certificates</h2>
@@ -1083,23 +1252,23 @@ MIME header field.</li>
 <h3 id="changing-the-verification-defaults">Changing the verification defaults</h3>
 <p>By default, HTTPX uses the CA bundle provided by <a href="https://pypi.org/project/certifi/">Certifi</a>. This is what you want in most cases, even though some advanced situations may require you to use a different set of certificates.</p>
 <p>If you'd like to use a custom CA bundle, you can use the <code>verify</code> parameter.</p>
-<div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">httpx</span>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">httpx</span>
 
 <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://example.org&quot;</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="s2">&quot;path/to/client.pem&quot;</span><span class="p">)</span>
-</pre></div>
+</code></pre></div>
 
 
 <p>You can also disable the SSL verification...</p>
-<div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">httpx</span>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">httpx</span>
 
 <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://example.org&quot;</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</pre></div>
+</code></pre></div>
 
 
 <h3 id="ssl-configuration-on-client-instances">SSL configuration on client instances</h3>
 <p>If you're using a <code>Client()</code> instance, then you should pass any SSL settings when instantiating the client.</p>
-<div class="codehilite"><pre><span></span><span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</pre></div>
+<div class="codehilite"><pre><span></span><code><span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
 
 
 <p>The <code>client.get(...)</code> method and other request methods <em>do not</em> support changing the SSL settings on a per-request basis. If you need different SSL settings in different cases you should use more that one client instance, with different settings on each. Each client will then be using an isolated connection pool with a specific fixed SSL configuration on all connections within that pool.</p>
@@ -1111,11 +1280,11 @@ MIME header field.</li>
 <li>Pass the server key/cert files when starting your local server. (This depends on the particular web server you're using. For example, <a href="https://www.uvicorn.org">Uvicorn</a> provides the <code>--ssl-keyfile</code> and <code>--ssl-certfile</code> options.)</li>
 <li>Tell HTTPX to use the certificates stored in <code>client.pem</code>:</li>
 </ol>
-<div class="codehilite"><pre><span></span><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">httpx</span>
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">httpx</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://localhost:8000&quot;</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="s2">&quot;/tmp/client.pem&quot;</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">r</span>
 <span class="n">Response</span> <span class="o">&lt;</span><span class="mi">200</span> <span class="n">OK</span><span class="o">&gt;</span>
-</pre></div>
+</code></pre></div>
                 
                   
                 
@@ -1174,9 +1343,9 @@ MIME header field.</li>
       <div class="md-footer-copyright">
         
         powered by
-        <a href="https://www.mkdocs.org">MkDocs</a>
+        <a href="https://www.mkdocs.org" target="_blank" rel="noopener">MkDocs</a>
         and
-        <a href="https://squidfunk.github.io/mkdocs-material/">
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
           Material for MkDocs</a>
       </div>
       
@@ -1186,9 +1355,9 @@ MIME header field.</li>
       
     </div>
     
-      <script src="../assets/javascripts/application.808e90bb.js"></script>
+      <script src="../assets/javascripts/application.c33a9706.js"></script>
       
-      <script>app.initialize({version:"1.0.4",url:{base:".."}})</script>
+      <script>app.initialize({version:"1.1",url:{base:".."}})</script>
       
         <script src="../js/chat.js"></script>
       
