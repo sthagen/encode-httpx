@@ -368,6 +368,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#request-instantiation" class="md-nav__link">
+    Request instantiation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#mocking" class="md-nav__link">
     Mocking
   </a>
@@ -393,6 +400,18 @@
   <li class="md-nav__item">
     <a href="../api/" title="Developer Interface" class="md-nav__link">
       Developer Interface
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../third-party-packages/" title="Third Party Packages" class="md-nav__link">
+      Third Party Packages
     </a>
   </li>
 
@@ -479,6 +498,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#request-instantiation" class="md-nav__link">
+    Request instantiation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#mocking" class="md-nav__link">
     Mocking
   </a>
@@ -546,6 +572,9 @@ Use <code>str(response.url)</code> if you need a string instance.</p>
 </code></pre></div>
 
 
+<h2 id="request-instantiation">Request instantiation</h2>
+<p>There is no notion of <a href="https://requests.readthedocs.io/en/stable/user/advanced/#prepared-requests">prepared requests</a> in HTTPX. If you need to customize request instantiation, see <a href="/advanced#request-instances">Request instances</a>.</p>
+<p>Besides, <code>httpx.Request()</code> does not support the <code>auth</code>, <code>timeout</code>, <code>allow_redirects</code>, <code>proxies</code>, <code>verify</code> and <code>cert</code> parameters. However these are available in <code>httpx.request</code>, <code>httpx.get</code>, <code>httpx.post</code> etc., as well as on <a href="/advanced#client-instances"><code>Client</code> instances</a>.</p>
 <h2 id="mocking">Mocking</h2>
 <p>If you need to mock HTTPX the same way that test utilities like <code>responses</code> and <code>requests-mock</code> does for <code>requests</code>, see <a href="https://github.com/lundberg/respx">RESPX</a>.</p>
                 
