@@ -1,43 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url>
      <loc>https://www.python-httpx.org/</loc>
-     <lastmod>2020-03-28</lastmod>
+     <lastmod>2020-04-30</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://www.python-httpx.org/quickstart/</loc>
-     <lastmod>2020-03-28</lastmod>
+     <lastmod>2020-04-30</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://www.python-httpx.org/advanced/</loc>
-     <lastmod>2020-03-28</lastmod>
+     <lastmod>2020-04-30</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://www.python-httpx.org/async/</loc>
-     <lastmod>2020-03-28</lastmod>
+     <lastmod>2020-04-30</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://www.python-httpx.org/http2/</loc>
-     <lastmod>2020-03-28</lastmod>
+     <lastmod>2020-04-30</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://www.python-httpx.org/environment_variables/</loc>
-     <lastmod>2020-03-28</lastmod>
+     <lastmod>2020-04-30</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://www.python-httpx.org/compatibility/</loc>
-     <lastmod>2020-03-28</lastmod>
+     <lastmod>2020-04-30</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://www.python-httpx.org/api/</loc>
-     <lastmod>2020-03-28</lastmod>
+     <lastmod>2020-04-30</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://www.python-httpx.org/third-party-packages/</loc>
-     <lastmod>2020-03-28</lastmod>
+     <lastmod>2020-04-30</lastmod>
      <changefreq>daily</changefreq>
     </url><url>
      <loc>https://www.python-httpx.org/contributing/</loc>
-     <lastmod>2020-03-28</lastmod>
+     <lastmod>2020-04-30</lastmod>
      <changefreq>daily</changefreq>
     </url>
 </urlset>
