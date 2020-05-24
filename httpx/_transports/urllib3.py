@@ -1,19 +1,21 @@
-import math
 import socket
-import ssl
-from typing import Dict, Iterator, List, Optional, Tuple, Union
+from typing import Dict, Iterator, List, Optional, Tuple
 
 import httpcore
-import urllib3
-from urllib3.exceptions import MaxRetryError, SSLError
 
-from .._config import DEFAULT_POOL_LIMITS, PoolLimits, Proxy, SSLConfig
+from .._config import Proxy, SSLConfig
 from .._content_streams import ByteStream, IteratorStream
 from .._types import CertTypes, VerifyTypes
 from .._utils import as_network_error
 
+try:
+    import urllib3
+    from urllib3.exceptions import MaxRetryError, SSLError
+except ImportError:  # pragma: nocover
+    urllib3 = None
 
-class URLLib3Dispatcher(httpcore.SyncHTTPTransport):
+
+class URLLib3Transport(httpcore.SyncHTTPTransport):
     def __init__(
         self,
         *,
@@ -21,66 +23,29 @@ class URLLib3Dispatcher(httpcore.SyncHTTPTransport):
         verify: VerifyTypes = True,
         cert: CertTypes = None,
         trust_env: bool = None,
-        pool_limits: PoolLimits = DEFAULT_POOL_LIMITS,
+        pool_connections: int = 10,
+        pool_maxsize: int = 10,
+        pool_block: bool = False,
     ):
+        assert (
+            urllib3 is not None
+        ), "urllib3 must be installed in order to use URLLib3Transport"
+
         ssl_config = SSLConfig(
             verify=verify, cert=cert, trust_env=trust_env, http2=False
         )
-        hard_limit = pool_limits.hard_limit
-        soft_limit = pool_limits.soft_limit
 
-        # Our connection pool configuration doesn't quite match up with urllib3's
-        # controls, but we can put sensible mappings in place:
-        if hard_limit is None:
-            block = False
-            if soft_limit is None:
-                num_pools = 1000
-                maxsize = 1000
-            else:
-                num_pools = int(math.sqrt(soft_limit))
-                maxsize = int(math.sqrt(soft_limit))
-        else:
-            block = True
-            num_pools = int(math.sqrt(hard_limit))
-            maxsize = int(math.sqrt(hard_limit))
-
-        self.pool = self.init_pool_manager(
-            proxy=proxy,
+        self.pool = urllib3.PoolManager(
             ssl_context=ssl_config.ssl_context,
-            num_pools=num_pools,
-            maxsize=maxsize,
-            block=block,
+            num_pools=pool_connections,
+            maxsize=pool_maxsize,
+            block=pool_block,
         )
-
-    def init_pool_manager(
-        self,
-        proxy: Optional[Proxy],
-        ssl_context: ssl.SSLContext,
-        num_pools: int,
-        maxsize: int,
-        block: bool,
-    ) -> Union[urllib3.PoolManager, urllib3.ProxyManager]:
-        if proxy is None:
-            return urllib3.PoolManager(
-                ssl_context=ssl_context,
-                num_pools=num_pools,
-                maxsize=maxsize,
-                block=block,
-            )
-        else:
-            return urllib3.ProxyManager(
-                proxy_url=str(proxy.url),
-                proxy_headers=dict(proxy.headers),
-                ssl_context=ssl_context,
-                num_pools=num_pools,
-                maxsize=maxsize,
-                block=block,
-            )
 
     def request(
         self,
         method: bytes,
-        url: Tuple[bytes, bytes, int, bytes],
+        url: Tuple[bytes, bytes, Optional[int], bytes],
         headers: List[Tuple[bytes, bytes]] = None,
         stream: httpcore.SyncByteStream = None,
         timeout: Dict[str, Optional[float]] = None,
@@ -104,8 +69,8 @@ class URLLib3Dispatcher(httpcore.SyncHTTPTransport):
         body = stream if chunked or content_length else None
 
         scheme, host, port, path = url
-        default_scheme = {80: b"http", 443: "https"}.get(port)
-        if scheme == default_scheme:
+        default_port = {b"http": 80, "https": 443}.get(scheme)
+        if port is None or port == default_port:
             url_str = "%s://%s%s" % (
                 scheme.decode("ascii"),
                 host.decode("ascii"),
@@ -153,3 +118,34 @@ class URLLib3Dispatcher(httpcore.SyncHTTPTransport):
 
     def close(self) -> None:
         self.pool.clear()
+
+
+class URLLib3ProxyTransport(URLLib3Transport):
+    def __init__(
+        self,
+        *,
+        proxy_url: str,
+        proxy_headers: dict = None,
+        verify: VerifyTypes = True,
+        cert: CertTypes = None,
+        trust_env: bool = None,
+        pool_connections: int = 10,
+        pool_maxsize: int = 10,
+        pool_block: bool = False,
+    ):
+        assert (
+            urllib3 is not None
+        ), "urllib3 must be installed in order to use URLLib3ProxyTransport"
+
+        ssl_config = SSLConfig(
+            verify=verify, cert=cert, trust_env=trust_env, http2=False
+        )
+
+        self.pool = urllib3.ProxyManager(
+            proxy_url=proxy_url,
+            proxy_headers=proxy_headers,
+            ssl_context=ssl_config.ssl_context,
+            num_pools=pool_connections,
+            maxsize=pool_maxsize,
+            block=pool_block,
+        )

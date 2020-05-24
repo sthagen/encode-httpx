@@ -18,11 +18,11 @@ from ._config import (
     UnsetType,
 )
 from ._content_streams import ContentStream
-from ._dispatch.asgi import ASGIDispatch
-from ._dispatch.wsgi import WSGIDispatch
 from ._exceptions import HTTPError, InvalidURL, RequestBodyUnavailable, TooManyRedirects
 from ._models import URL, Cookies, Headers, Origin, QueryParams, Request, Response
 from ._status_codes import codes
+from ._transports.asgi import ASGITransport
+from ._transports.wsgi import WSGITransport
 from ._types import (
     AuthTypes,
     CertTypes,
@@ -41,6 +41,7 @@ from ._utils import (
     get_environment_proxies,
     get_logger,
     should_not_be_proxied,
+    warn_deprecated,
 )
 
 logger = get_logger(__name__)
@@ -91,7 +92,7 @@ class BaseClient:
             return {"all": proxy}
         elif isinstance(proxies, httpcore.AsyncHTTPTransport):  # pragma: nocover
             raise RuntimeError(
-                "Passing a dispatcher instance to 'proxies=' is no longer "
+                "Passing a transport instance to 'proxies=' is no longer "
                 "supported. Use `httpx.Proxy() instead.`"
             )
         else:
@@ -102,7 +103,7 @@ class BaseClient:
                     new_proxies[str(key)] = proxy
                 elif isinstance(value, httpcore.AsyncHTTPTransport):  # pragma: nocover
                     raise RuntimeError(
-                        "Passing a dispatcher instance to 'proxies=' is "
+                        "Passing a transport instance to 'proxies=' is "
                         "no longer supported. Use `httpx.Proxy() instead.`"
                     )
             return new_proxies
@@ -417,8 +418,9 @@ class Client(BaseClient):
     that should be followed.
     * **base_url** - *(optional)* A URL to use as the base when building
     request URLs.
-    * **dispatch** - *(optional)* A dispatch class to use for sending requests
+    * **transport** - *(optional)* A transport class to use for sending requests
     over the network.
+    * **dispatch** - *(optional)* A deprecated alias for transport.
     * **app** - *(optional)* An WSGI application to send requests to,
     rather than sending actual network requests.
     * **trust_env** - *(optional)* Enables or disables usage of environment
@@ -434,11 +436,13 @@ class Client(BaseClient):
         cookies: CookieTypes = None,
         verify: VerifyTypes = True,
         cert: CertTypes = None,
+        http2: bool = False,
         proxies: ProxiesTypes = None,
         timeout: TimeoutTypes = DEFAULT_TIMEOUT_CONFIG,
         pool_limits: PoolLimits = DEFAULT_POOL_LIMITS,
         max_redirects: int = DEFAULT_MAX_REDIRECTS,
         base_url: URLTypes = None,
+        transport: httpcore.SyncHTTPTransport = None,
         dispatch: httpcore.SyncHTTPTransport = None,
         app: typing.Callable = None,
         trust_env: bool = True,
@@ -456,76 +460,86 @@ class Client(BaseClient):
 
         proxy_map = self.get_proxy_map(proxies, trust_env)
 
-        self.dispatch = self.init_dispatch(
+        if dispatch is not None:
+            warn_deprecated(
+                "The dispatch argument is deprecated since v0.13 and will be "
+                "removed in a future release, please use 'transport'"
+            )
+            if transport is None:
+                transport = dispatch
+
+        self.transport = self.init_transport(
             verify=verify,
             cert=cert,
+            http2=http2,
             pool_limits=pool_limits,
-            dispatch=dispatch,
+            transport=transport,
             app=app,
             trust_env=trust_env,
         )
         self.proxies: typing.Dict[str, httpcore.SyncHTTPTransport] = {
-            key: self.init_proxy_dispatch(
+            key: self.init_proxy_transport(
                 proxy,
                 verify=verify,
                 cert=cert,
+                http2=http2,
                 pool_limits=pool_limits,
                 trust_env=trust_env,
             )
             for key, proxy in proxy_map.items()
         }
 
-    def init_dispatch(
+    def init_transport(
         self,
         verify: VerifyTypes = True,
         cert: CertTypes = None,
+        http2: bool = False,
         pool_limits: PoolLimits = DEFAULT_POOL_LIMITS,
-        dispatch: httpcore.SyncHTTPTransport = None,
+        transport: httpcore.SyncHTTPTransport = None,
         app: typing.Callable = None,
         trust_env: bool = True,
     ) -> httpcore.SyncHTTPTransport:
-        if dispatch is not None:
-            return dispatch
+        if transport is not None:
+            return transport
 
         if app is not None:
-            return WSGIDispatch(app=app)
+            return WSGITransport(app=app)
 
         ssl_context = SSLConfig(
             verify=verify, cert=cert, trust_env=trust_env
         ).ssl_context
-        max_keepalive = pool_limits.soft_limit
-        max_connections = pool_limits.hard_limit
 
         return httpcore.SyncConnectionPool(
             ssl_context=ssl_context,
-            max_keepalive=max_keepalive,
-            max_connections=max_connections,
+            max_keepalive=pool_limits.max_keepalive,
+            max_connections=pool_limits.max_connections,
+            http2=http2,
         )
 
-    def init_proxy_dispatch(
+    def init_proxy_transport(
         self,
         proxy: Proxy,
         verify: VerifyTypes = True,
         cert: CertTypes = None,
+        http2: bool = False,
         pool_limits: PoolLimits = DEFAULT_POOL_LIMITS,
         trust_env: bool = True,
     ) -> httpcore.SyncHTTPTransport:
         ssl_context = SSLConfig(
             verify=verify, cert=cert, trust_env=trust_env
         ).ssl_context
-        max_keepalive = pool_limits.soft_limit
-        max_connections = pool_limits.hard_limit
 
         return httpcore.SyncHTTPProxy(
-            proxy_origin=proxy.url.raw[:3],
+            proxy_url=proxy.url.raw,
             proxy_headers=proxy.headers.raw,
             proxy_mode=proxy.mode,
             ssl_context=ssl_context,
-            max_keepalive=max_keepalive,
-            max_connections=max_connections,
+            max_keepalive=pool_limits.max_keepalive,
+            max_connections=pool_limits.max_connections,
+            http2=http2,
         )
 
-    def dispatcher_for_url(self, url: URL) -> httpcore.SyncHTTPTransport:
+    def transport_for_url(self, url: URL) -> httpcore.SyncHTTPTransport:
         """
         Returns the transport instance that should be used for a given URL.
         This will either be the standard connection pool, or a proxy.
@@ -545,10 +559,10 @@ class Client(BaseClient):
             )
             for proxy_key in proxy_keys:
                 if proxy_key and proxy_key in self.proxies:
-                    dispatcher = self.proxies[proxy_key]
-                    return dispatcher
+                    transport = self.proxies[proxy_key]
+                    return transport
 
-        return self.dispatch
+        return self.transport
 
     def request(
         self,
@@ -680,7 +694,7 @@ class Client(BaseClient):
         Sends a single request, without handling any redirections.
         """
 
-        dispatcher = self.dispatcher_for_url(request.url)
+        transport = self.transport_for_url(request.url)
 
         try:
             (
@@ -689,7 +703,7 @@ class Client(BaseClient):
                 reason_phrase,
                 headers,
                 stream,
-            ) = dispatcher.request(
+            ) = transport.request(
                 request.method.encode(),
                 request.url.raw,
                 headers=request.headers.raw,
@@ -892,7 +906,7 @@ class Client(BaseClient):
         )
 
     def close(self) -> None:
-        self.dispatch.close()
+        self.transport.close()
         for proxy in self.proxies.values():
             proxy.close()
 
@@ -949,8 +963,9 @@ class AsyncClient(BaseClient):
     that should be followed.
     * **base_url** - *(optional)* A URL to use as the base when building
     request URLs.
-    * **dispatch** - *(optional)* A dispatch class to use for sending requests
+    * **transport** - *(optional)* A transport class to use for sending requests
     over the network.
+    * **dispatch** - *(optional)* A deprecated alias for transport.
     * **app** - *(optional)* An ASGI application to send requests to,
     rather than sending actual network requests.
     * **trust_env** - *(optional)* Enables or disables usage of environment
@@ -972,6 +987,7 @@ class AsyncClient(BaseClient):
         pool_limits: PoolLimits = DEFAULT_POOL_LIMITS,
         max_redirects: int = DEFAULT_MAX_REDIRECTS,
         base_url: URLTypes = None,
+        transport: httpcore.AsyncHTTPTransport = None,
         dispatch: httpcore.AsyncHTTPTransport = None,
         app: typing.Callable = None,
         trust_env: bool = True,
@@ -987,19 +1003,27 @@ class AsyncClient(BaseClient):
             trust_env=trust_env,
         )
 
+        if dispatch is not None:
+            warn_deprecated(
+                "The dispatch argument is deprecated since v0.13 and will be "
+                "removed in a future release, please use 'transport'",
+            )
+            if transport is None:
+                transport = dispatch
+
         proxy_map = self.get_proxy_map(proxies, trust_env)
 
-        self.dispatch = self.init_dispatch(
+        self.transport = self.init_transport(
             verify=verify,
             cert=cert,
             http2=http2,
             pool_limits=pool_limits,
-            dispatch=dispatch,
+            transport=transport,
             app=app,
             trust_env=trust_env,
         )
         self.proxies: typing.Dict[str, httpcore.AsyncHTTPTransport] = {
-            key: self.init_proxy_dispatch(
+            key: self.init_proxy_transport(
                 proxy,
                 verify=verify,
                 cert=cert,
@@ -1010,36 +1034,34 @@ class AsyncClient(BaseClient):
             for key, proxy in proxy_map.items()
         }
 
-    def init_dispatch(
+    def init_transport(
         self,
         verify: VerifyTypes = True,
         cert: CertTypes = None,
         http2: bool = False,
         pool_limits: PoolLimits = DEFAULT_POOL_LIMITS,
-        dispatch: httpcore.AsyncHTTPTransport = None,
+        transport: httpcore.AsyncHTTPTransport = None,
         app: typing.Callable = None,
         trust_env: bool = True,
     ) -> httpcore.AsyncHTTPTransport:
-        if dispatch is not None:
-            return dispatch
+        if transport is not None:
+            return transport
 
         if app is not None:
-            return ASGIDispatch(app=app)
+            return ASGITransport(app=app)
 
         ssl_context = SSLConfig(
             verify=verify, cert=cert, trust_env=trust_env
         ).ssl_context
-        max_keepalive = pool_limits.soft_limit
-        max_connections = pool_limits.hard_limit
 
         return httpcore.AsyncConnectionPool(
             ssl_context=ssl_context,
-            max_keepalive=max_keepalive,
-            max_connections=max_connections,
+            max_keepalive=pool_limits.max_keepalive,
+            max_connections=pool_limits.max_connections,
             http2=http2,
         )
 
-    def init_proxy_dispatch(
+    def init_proxy_transport(
         self,
         proxy: Proxy,
         verify: VerifyTypes = True,
@@ -1051,19 +1073,18 @@ class AsyncClient(BaseClient):
         ssl_context = SSLConfig(
             verify=verify, cert=cert, trust_env=trust_env
         ).ssl_context
-        max_keepalive = pool_limits.soft_limit
-        max_connections = pool_limits.hard_limit
 
         return httpcore.AsyncHTTPProxy(
-            proxy_origin=proxy.url.raw[:3],
+            proxy_url=proxy.url.raw,
             proxy_headers=proxy.headers.raw,
             proxy_mode=proxy.mode,
             ssl_context=ssl_context,
-            max_keepalive=max_keepalive,
-            max_connections=max_connections,
+            max_keepalive=pool_limits.max_keepalive,
+            max_connections=pool_limits.max_connections,
+            http2=http2,
         )
 
-    def dispatcher_for_url(self, url: URL) -> httpcore.AsyncHTTPTransport:
+    def transport_for_url(self, url: URL) -> httpcore.AsyncHTTPTransport:
         """
         Returns the transport instance that should be used for a given URL.
         This will either be the standard connection pool, or a proxy.
@@ -1083,10 +1104,10 @@ class AsyncClient(BaseClient):
             )
             for proxy_key in proxy_keys:
                 if proxy_key and proxy_key in self.proxies:
-                    dispatcher = self.proxies[proxy_key]
-                    return dispatcher
+                    transport = self.proxies[proxy_key]
+                    return transport
 
-        return self.dispatch
+        return self.transport
 
     async def request(
         self,
@@ -1221,7 +1242,7 @@ class AsyncClient(BaseClient):
         Sends a single request, without handling any redirections.
         """
 
-        dispatcher = self.dispatcher_for_url(request.url)
+        transport = self.transport_for_url(request.url)
 
         try:
             (
@@ -1230,7 +1251,7 @@ class AsyncClient(BaseClient):
                 reason_phrase,
                 headers,
                 stream,
-            ) = await dispatcher.request(
+            ) = await transport.request(
                 request.method.encode(),
                 request.url.raw,
                 headers=request.headers.raw,
@@ -1433,7 +1454,7 @@ class AsyncClient(BaseClient):
         )
 
     async def aclose(self) -> None:
-        await self.dispatch.aclose()
+        await self.transport.aclose()
         for proxy in self.proxies.values():
             await proxy.aclose()
 

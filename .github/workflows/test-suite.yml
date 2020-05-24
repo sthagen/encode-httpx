@@ -2,6 +2,8 @@
 name: Test Suite
 
 on:
+  push:
+    branches: ["master"]
   pull_request:
     branches: ["master"]
 
@@ -27,3 +29,5 @@ jobs:
         run: "scripts/build"
       - name: "Run tests"
         run: "scripts/test"
+      - name: "Enforce coverage"
+        run: "scripts/coverage"
