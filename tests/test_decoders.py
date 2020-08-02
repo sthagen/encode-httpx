@@ -135,7 +135,8 @@ def test_empty_content(header_value):
     "decoder", (BrotliDecoder, DeflateDecoder, GZipDecoder, IdentityDecoder)
 )
 def test_decoders_empty_cases(decoder):
-    instance = decoder()
+    request = httpx.Request(method="GET", url="https://www.example.com")
+    instance = decoder(request)
     assert instance.decode(b"") == b""
     assert instance.flush() == b""
 
@@ -206,10 +207,12 @@ async def test_text_decoder_known_encoding():
 
 
 def test_text_decoder_empty_cases():
-    decoder = TextDecoder()
+    request = httpx.Request(method="GET", url="https://www.example.com")
+
+    decoder = TextDecoder(request=request)
     assert decoder.flush() == ""
 
-    decoder = TextDecoder()
+    decoder = TextDecoder(request=request)
     assert decoder.decode(b"") == ""
     assert decoder.flush() == ""
 
@@ -247,14 +250,13 @@ def test_line_decoder_cr():
     assert decoder.flush() == ["c\n"]
 
     # Issue #1033
-    # TODO: This seems like another bug; fix expectations and results.
     decoder = LineDecoder()
     assert decoder.decode("") == []
     assert decoder.decode("12345\r") == []
-    assert decoder.decode("foo ") == []
+    assert decoder.decode("foo ") == ["12345\n"]
     assert decoder.decode("bar ") == []
     assert decoder.decode("baz\r") == []
-    assert decoder.flush() == ["12345\rfoo bar baz\n"]
+    assert decoder.flush() == ["foo bar baz\n"]
 
 
 def test_line_decoder_crnl():

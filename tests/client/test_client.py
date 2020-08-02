@@ -21,6 +21,23 @@ def test_get(server):
     assert repr(response) == "<Response [200 OK]>"
     assert response.elapsed > timedelta(0)
 
+    with pytest.raises(httpx.NotRedirectResponse):
+        response.next()
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        pytest.param("invalid://example.org", id="scheme-not-http(s)"),
+        pytest.param("://example.org", id="no-scheme"),
+        pytest.param("http://", id="no-host"),
+    ],
+)
+def test_get_invalid_url(server, url):
+    with httpx.Client() as client:
+        with pytest.raises(httpx.InvalidURL):
+            client.get(url)
+
 
 def test_build_request(server):
     url = server.url.copy_with(path="/echo_headers")
@@ -177,3 +194,13 @@ def test_merge_url_hsts(url: str, scheme: str, is_ssl: bool):
     request = client.build_request("GET", url)
     assert request.url.scheme == scheme
     assert request.url.is_ssl == is_ssl
+
+
+def test_pool_limits_deprecated():
+    limits = httpx.Limits()
+
+    with pytest.warns(DeprecationWarning):
+        httpx.Client(pool_limits=limits)
+
+    with pytest.warns(DeprecationWarning):
+        httpx.AsyncClient(pool_limits=limits)
