@@ -7,10 +7,11 @@ import urllib.request
 import warnings
 from collections.abc import MutableMapping
 from http.cookiejar import Cookie, CookieJar
-from urllib.parse import parse_qsl, urlencode
+from urllib.parse import parse_qsl, quote, unquote, urlencode
 
 import chardet
 import rfc3986
+import rfc3986.exceptions
 
 from .__version__ import __version__
 from ._content_streams import ByteStream, ContentStream, encode
@@ -25,6 +26,7 @@ from ._decoders import (
 from ._exceptions import (
     CookieConflict,
     HTTPStatusError,
+    InvalidURL,
     NotRedirectResponse,
     RequestNotRead,
     ResponseClosed,
@@ -55,15 +57,19 @@ from ._utils import (
 
 
 class URL:
-    def __init__(self, url: URLTypes, params: QueryParamTypes = None) -> None:
+    def __init__(self, url: URLTypes = "", params: QueryParamTypes = None) -> None:
         if isinstance(url, str):
-            self._uri_reference = rfc3986.api.iri_reference(url).encode()
+            try:
+                self._uri_reference = rfc3986.iri_reference(url).encode()
+            except rfc3986.exceptions.InvalidAuthority as exc:
+                raise InvalidURL(message=str(exc)) from None
+
+            if self.is_absolute_url:
+                # We don't want to normalize relative URLs, since doing so
+                # removes any leading `../` portion.
+                self._uri_reference = self._uri_reference.normalize()
         else:
             self._uri_reference = url._uri_reference
-
-        # Normalize scheme and domain name.
-        if self.is_absolute_url:
-            self._uri_reference = self._uri_reference.normalize()
 
         # Add any query parameters, merging with any in the URL if needed.
         if params:
@@ -94,12 +100,12 @@ class URL:
     @property
     def username(self) -> str:
         userinfo = self._uri_reference.userinfo or ""
-        return userinfo.partition(":")[0]
+        return unquote(userinfo.partition(":")[0])
 
     @property
     def password(self) -> str:
         userinfo = self._uri_reference.userinfo or ""
-        return userinfo.partition(":")[2]
+        return unquote(userinfo.partition(":")[2])
 
     @property
     def host(self) -> str:
@@ -140,6 +146,8 @@ class URL:
 
     @property
     def is_ssl(self) -> bool:
+        message = 'URL.is_ssl() is pending deprecation. Use url.scheme == "https"'
+        warnings.warn(message, DeprecationWarning)
         return self.scheme == "https"
 
     @property
@@ -167,8 +175,8 @@ class URL:
         ):
             host = kwargs.pop("host", self.host)
             port = kwargs.pop("port", self.port)
-            username = kwargs.pop("username", self.username)
-            password = kwargs.pop("password", self.password)
+            username = quote(kwargs.pop("username", self.username) or "")
+            password = quote(kwargs.pop("password", self.password) or "")
 
             authority = host
             if port is not None:
@@ -181,19 +189,19 @@ class URL:
 
             kwargs["authority"] = authority
 
-        return URL(self._uri_reference.copy_with(**kwargs).unsplit(),)
+        return URL(self._uri_reference.copy_with(**kwargs).unsplit())
 
-    def join(self, relative_url: URLTypes) -> "URL":
+    def join(self, url: URLTypes) -> "URL":
         """
-        Return an absolute URL, using given this URL as the base.
+        Return an absolute URL, using this URL as the base.
         """
         if self.is_relative_url:
-            return URL(relative_url)
+            return URL(url)
 
         # We drop any fragment portion, because RFC 3986 strictly
         # treats URLs with a fragment portion as not being absolute URLs.
         base_uri = self._uri_reference.copy_with(fragment=None)
-        relative_url = URL(relative_url)
+        relative_url = URL(url)
         return URL(relative_url._uri_reference.resolve_with(base_uri).unsplit())
 
     def __hash__(self) -> int:
@@ -605,6 +613,9 @@ class Request:
 
     def prepare(self) -> None:
         for key, value in self.stream.get_headers().items():
+            # Ignore Transfer-Encoding if the Content-Length has been set explicitly.
+            if key.lower() == "transfer-encoding" and "content-length" in self.headers:
+                continue
             self.headers.setdefault(key, value)
 
         auto_headers: typing.List[typing.Tuple[bytes, bytes]] = []
@@ -1194,6 +1205,9 @@ class Cookies(MutableMapping):
 
         def info(self) -> email.message.Message:
             info = email.message.Message()
-            for key, value in self.response.headers.items():
+            for key, value in self.response.headers.multi_items():
+                #  Note that setting `info[key]` here is an "append" operation,
+                # not a "replace" operation.
+                # https://docs.python.org/3/library/email.compat32-message.html#email.message.Message.__setitem__
                 info[key] = value
             return info

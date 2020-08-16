@@ -280,12 +280,12 @@ with httpx.Client(proxies="http://localhost:8030") as client:
     ...
 ```
 
-To route HTTP and HTTPS requests to 2 different proxies, respectively located at `http://localhost:8030`, and `http://localhost:8031`, pass a `dict` of proxy URLs:
+For more advanced use cases, pass a proxies `dict`. For example, to route HTTP and HTTPS requests to 2 different proxies, respectively located at `http://localhost:8030`, and `http://localhost:8031`, pass a `dict` of proxy URLs:
 
 ```python
 proxies = {
-    "http": "http://localhost:8030",
-    "https": "http://localhost:8031",
+    "http://": "http://localhost:8030",
+    "https://": "http://localhost:8031",
 }
 
 with httpx.Client(proxies=proxies) as client:
@@ -295,7 +295,7 @@ with httpx.Client(proxies=proxies) as client:
 For detailed information about proxy routing, see the [Routing](#routing) section.
 
 !!! tip "Gotcha"
-    In most cases, the proxy URL for the `https` key _should_ use the `http://` scheme (that's not a typo!).
+    In most cases, the proxy URL for the `https://` key _should_ use the `http://` scheme (that's not a typo!).
 
     This is because HTTP proxying requires initiating a connection with the proxy server. While it's possible that your proxy supports doing it via HTTPS, most proxies only support doing it via HTTP.
 
@@ -307,14 +307,18 @@ Proxy credentials can be passed as the `userinfo` section of the proxy URL. For 
 
 ```python
 proxies = {
-    "http": "http://username:password@localhost:8030",
+    "http://": "http://username:password@localhost:8030",
     # ...
 }
 ```
 
 ### Routing
 
-HTTPX supports configuring which requests go through a given proxy and which don't based on the requested **scheme**, **domain**, **port**, or a combination of these.
+HTTPX provides fine-grained controls for deciding which requests should go through a proxy, and which shouldn't. This process is known as proxy routing.
+
+The `proxies` dictionary maps URL patterns ("proxy keys") to proxy URLs. HTTPX matches requested URLs against proxy keys to decide which proxy should be used, if any. Matching is done from most specific proxy keys (e.g. `https://<domain>:<port>`) to least specific ones (e.g. `https://`).
+
+HTTPX supports routing proxies based on **scheme**, **domain**, **port**, or a combination of these.
 
 #### Wildcard routing
 
@@ -322,11 +326,9 @@ Route everything through a proxy...
 
 ```python
 proxies = {
-    "all": "http://localhost:8030",
+    "all://": "http://localhost:8030",
 }
 ```
-
-(This is equivalent to `Client(..., proxies="http://localhost:8030")`.)
 
 #### Scheme routing
 
@@ -334,8 +336,8 @@ Route HTTP requests through one proxy, and HTTPS requests through another...
 
 ```python
 proxies = {
-    "http": "http://localhost:8030",
-    "https": "http://localhost:8031",
+    "http://": "http://localhost:8030",
+    "https://": "http://localhost:8031",
 }
 ```
 
@@ -400,7 +402,7 @@ To do so, pass `None` as the proxy URL. For example...
 ```python
 proxies = {
     # Route requests through a proxy by default...
-    "all": "http://localhost:8031",
+    "all://": "http://localhost:8031",
     # Except those for "example.com".
     "all://example.com": None,
 }
@@ -413,7 +415,7 @@ You can combine the routing features outlined above to build complex proxy routi
 ```python
 proxies = {
     # Route all traffic through a proxy by default...
-    "all": "http://localhost:8030",
+    "all://": "http://localhost:8030",
     # But don't use proxies for HTTPS requests to "domain.io"...
     "https://domain.io": None,
     # And use another proxy for requests to "example.com" and its subdomains...
@@ -429,17 +431,6 @@ proxies = {
 HTTP proxying can also be configured through environment variables, although with less fine-grained control.
 
 See documentation on [`HTTP_PROXY`, `HTTPS_PROXY`, `ALL_PROXY`](/environment_variables/#http_proxy-https_proxy-all_proxy) for more information.
-
-#### Routing algorithm overview
-
-For reference, the proxy routing algorithm used by HTTPX is roughly as follows...
-
-1. Sort proxy keys in decreasing order of specificity. (For example, a proxy on `all://example.com` comes before a proxy on `all`.) _This is done on client instanciation._
-1. When making a request, go through sorted proxies, looking for a matching key...
-    1. If a key matches...
-        1. ...But the value is `None`, no proxy is used.
-        1. Otherwise, the associated proxy is used.
-    1. If no key matched, no proxy is used.
 
 ### Proxy mechanisms
 
@@ -622,12 +613,12 @@ MIME header field.
 
 !!! tip
     It is safe to upload large files this way. File uploads are streaming by default, meaning that only one chunk will be loaded into memory at a time.
- 
+
  Non-file data fields can be included in the multipart form using by passing them to `data=...`.
- 
+
 You can also send multiple files in one go with a multiple file field form.
 To do that, pass a list of `(field, <file>)` items instead of a dictionary, allowing you to pass multiple items with the same `field`.
-For instance this request sends 2 files, `foo.png` and `bar.png` in one request on the `images` form field: 
+For instance this request sends 2 files, `foo.png` and `bar.png` in one request on the `images` form field:
 
 ```python
 >>> files = [('images', ('foo.png', open('foo.png', 'rb'), 'image/png')),
@@ -766,8 +757,8 @@ We also include a helper function for creating properly configured `SSLContext` 
 >>> context = httpx.create_ssl_context()
 ```
 
-The `create_ssl_context` function accepts the same set of SSL configuration arguments 
-(`trust_env`, `verify`, `cert` and `http2` arguments) 
+The `create_ssl_context` function accepts the same set of SSL configuration arguments
+(`trust_env`, `verify`, `cert` and `http2` arguments)
 as `httpx.Client` or `httpx.AsyncClient`
 
 ```python
@@ -818,13 +809,30 @@ HTTPX's `Client` also accepts a `transport` argument. This argument allows you
 to provide a custom Transport object that will be used to perform the actual
 sending of the requests.
 
-A transport instance must implement the Transport API defined by
-[`httpcore`](https://www.encode.io/httpcore/api/). You
-should either subclass `httpcore.AsyncHTTPTransport` to implement a transport to
-use with `AsyncClient`, or subclass `httpcore.SyncHTTPTransport` to implement a
-transport to use with `Client`.
+For some advanced configuration you might need to instantiate a transport
+class directly, and pass it to the client instance. The `httpcore` package
+provides a `local_address` configuration that is only available via this
+low-level API.
 
-For example, HTTPX ships with a transport that uses the excellent
+```python
+>>> import httpx, httpcore
+>>> ssl_context = httpx.create_ssl_context()
+>>> transport = httpcore.SyncConnectionPool(
+...     ssl_context=ssl_context,
+...     max_connections=100,
+...     max_keepalive_connections=20,
+...     keepalive_expiry=5.0,
+...     local_address="0.0.0.0"
+... )  # Use the standard HTTPX defaults, but with an IPv4 only 'local_address'.
+>>> client = httpx.Client(transport=transport)
+```
+
+Unlike the `httpx.Client()`, the lower-level `httpcore` transport instances
+do not include any default values for configuring aspects such as the
+connection pooling details, so you'll need to provide more explicit
+configuration when using this API.
+
+HTTPX also currently ships with a transport that uses the excellent
 [`urllib3` library](https://urllib3.readthedocs.io/en/latest/), which can be
 used with the sync `Client`...
 
@@ -837,24 +845,28 @@ used with the sync `Client`...
 
 Note that you'll need to install the `urllib3` package to use `URLLib3Transport`.
 
+A transport instance must implement the Transport API defined by
+[`httpcore`](https://www.encode.io/httpcore/api/). You
+should either subclass `httpcore.AsyncHTTPTransport` to implement a transport to
+use with `AsyncClient`, or subclass `httpcore.SyncHTTPTransport` to implement a
+transport to use with `Client`.
+
 A complete example of a custom transport implementation would be:
 
 ```python
 import json
-
 import httpcore
-import httpx
 
 
-class JSONEchoTransport(httpcore.SyncHTTPTransport):
+class HelloWorldTransport(httpcore.SyncHTTPTransport):
     """
-    A mock transport that returns a JSON response containing the request body.
+    A mock transport that always returns a JSON "Hello, world!" response.
     """
 
     def request(self, method, url, headers=None, stream=None, timeout=None):
-        body = b"".join(stream).decode("utf-8")
-        content = json.dumps({"body": body}).encode("utf-8")
-        stream = httpcore.SyncByteStream([content])
+        message = {"text": "Hello, world!"}
+        content = json.dumps(message).encode("utf-8")
+        stream = httpcore.PlainByteStream(content)
         headers = [(b"content-type", b"application/json")]
         return b"HTTP/1.1", 200, b"OK", headers, stream
 ```
@@ -862,8 +874,9 @@ class JSONEchoTransport(httpcore.SyncHTTPTransport):
 Which we can use in the same way:
 
 ```python
->>> client = httpx.Client(transport=JSONEchoTransport())
->>> response = client.post("https://httpbin.org/post", data="Hello, world!")
+>>> import httpx
+>>> client = httpx.Client(transport=HelloWorldTransport())
+>>> response = client.get("https://example.org/")
 >>> response.json()
-{'body': 'Hello, world!'}
+{"text": "Hello, world!"}
 ```

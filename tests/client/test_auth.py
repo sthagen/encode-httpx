@@ -40,7 +40,7 @@ class MockTransport:
         url: typing.Tuple[bytes, bytes, int, bytes],
         headers: typing.List[typing.Tuple[bytes, bytes]],
         stream: ContentStream,
-        timeout: typing.Dict[str, typing.Optional[float]] = None,
+        timeout: typing.Mapping[str, typing.Optional[float]] = None,
     ) -> typing.Tuple[
         bytes, int, bytes, typing.List[typing.Tuple[bytes, bytes]], ContentStream
     ]:
@@ -90,7 +90,7 @@ class MockDigestAuthTransport(httpcore.AsyncHTTPTransport):
         url: typing.Tuple[bytes, bytes, typing.Optional[int], bytes],
         headers: typing.List[typing.Tuple[bytes, bytes]] = None,
         stream: httpcore.AsyncByteStream = None,
-        timeout: typing.Dict[str, typing.Optional[float]] = None,
+        timeout: typing.Mapping[str, typing.Optional[float]] = None,
     ) -> typing.Tuple[
         bytes, int, bytes, typing.List[typing.Tuple[bytes, bytes]], ContentStream
     ]:
@@ -277,6 +277,18 @@ async def test_trust_env_auth() -> None:
     assert response.json() == {
         "auth": "Basic ZXhhbXBsZS11c2VybmFtZTpleGFtcGxlLXBhc3N3b3Jk"
     }
+
+
+@pytest.mark.asyncio
+async def test_auth_disable_per_request() -> None:
+    url = "https://example.org/"
+    auth = ("tomchristie", "password123")
+
+    client = AsyncClient(transport=AsyncMockTransport(), auth=auth)
+    response = await client.get(url, auth=None)
+
+    assert response.status_code == 200
+    assert response.json() == {"auth": None}
 
 
 def test_auth_hidden_url() -> None:
