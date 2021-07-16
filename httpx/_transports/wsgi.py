@@ -3,7 +3,7 @@ import itertools
 import typing
 from urllib.parse import unquote
 
-import httpcore
+from .base import BaseTransport, SyncByteStream
 
 
 def _skip_leading_empty_chunks(body: typing.Iterable) -> typing.Iterable:
@@ -14,7 +14,16 @@ def _skip_leading_empty_chunks(body: typing.Iterable) -> typing.Iterable:
     return []
 
 
-class WSGITransport(httpcore.SyncHTTPTransport):
+class WSGIByteStream(SyncByteStream):
+    def __init__(self, result: typing.Iterable[bytes]) -> None:
+        self._result = _skip_leading_empty_chunks(result)
+
+    def __iter__(self) -> typing.Iterator[bytes]:
+        for part in self._result:
+            yield part
+
+
+class WSGITransport(BaseTransport):
     """
     A custom transport that handles sending requests directly to an WSGI app.
     The simplest way to use this functionality is to use the `app` argument.
@@ -42,7 +51,7 @@ class WSGITransport(httpcore.SyncHTTPTransport):
     * `raise_app_exceptions` - Boolean indicating if exceptions in the application
        should be raised. Default to `True`. Can be set to `False` for use cases
        such as testing the content of a client 500 response.
-    * `script_name` - The root path on which the ASGI application should be mounted.
+    * `script_name` - The root path on which the WSGI application should be mounted.
     * `remote_addr` - A string indicating the client IP of incoming requests.
     ```
     """
@@ -59,18 +68,17 @@ class WSGITransport(httpcore.SyncHTTPTransport):
         self.script_name = script_name
         self.remote_addr = remote_addr
 
-    def request(
+    def handle_request(
         self,
         method: bytes,
         url: typing.Tuple[bytes, bytes, typing.Optional[int], bytes],
-        headers: typing.List[typing.Tuple[bytes, bytes]] = None,
-        stream: httpcore.SyncByteStream = None,
-        ext: dict = None,
+        headers: typing.List[typing.Tuple[bytes, bytes]],
+        stream: SyncByteStream,
+        extensions: dict,
     ) -> typing.Tuple[
-        int, typing.List[typing.Tuple[bytes, bytes]], httpcore.SyncByteStream, dict
+        int, typing.List[typing.Tuple[bytes, bytes]], SyncByteStream, dict
     ]:
-        headers = [] if headers is None else headers
-        stream = httpcore.PlainByteStream(content=b"") if stream is None else stream
+        wsgi_input = io.BytesIO(b"".join(stream))
 
         scheme, host, port, full_path = url
         path, _, query = full_path.partition(b"?")
@@ -80,7 +88,7 @@ class WSGITransport(httpcore.SyncHTTPTransport):
         environ = {
             "wsgi.version": (1, 0),
             "wsgi.url_scheme": scheme.decode("ascii"),
-            "wsgi.input": io.BytesIO(b"".join(stream)),
+            "wsgi.input": wsgi_input,
             "wsgi.errors": io.BytesIO(),
             "wsgi.multithread": True,
             "wsgi.multiprocess": False,
@@ -112,9 +120,8 @@ class WSGITransport(httpcore.SyncHTTPTransport):
             seen_exc_info = exc_info
 
         result = self.app(environ, start_response)
-        # This is needed because the status returned by start_response
-        # shouldn't be used until the first non-empty chunk has been served.
-        result = _skip_leading_empty_chunks(result)
+
+        stream = WSGIByteStream(result)
 
         assert seen_status is not None
         assert seen_response_headers is not None
@@ -126,7 +133,6 @@ class WSGITransport(httpcore.SyncHTTPTransport):
             (key.encode("ascii"), value.encode("ascii"))
             for key, value in seen_response_headers
         ]
-        stream = httpcore.IteratorByteStream(iterator=result)
-        ext = {}
+        extensions = {}
 
-        return (status_code, headers, stream, ext)
+        return (status_code, headers, stream, extensions)

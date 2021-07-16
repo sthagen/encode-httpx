@@ -14,6 +14,7 @@ from cryptography.hazmat.primitives.serialization import (
     PrivateFormat,
     load_pem_private_key,
 )
+from typing_extensions import Literal
 from uvicorn.config import Config
 from uvicorn.main import Server
 
@@ -76,8 +77,6 @@ async def app(scope, receive, send):
     assert scope["type"] == "http"
     if scope["path"].startswith("/slow_response"):
         await slow_response(scope, receive, send)
-    elif scope["path"].startswith("/slow_stream_response"):
-        await slow_stream_response(scope, receive, send)
     elif scope["path"].startswith("/status"):
         await status_code(scope, receive, send)
     elif scope["path"].startswith("/echo_body"):
@@ -111,19 +110,6 @@ async def slow_response(scope, receive, send):
         }
     )
     await send({"type": "http.response.body", "body": b"Hello, world!"})
-
-
-async def slow_stream_response(scope, receive, send):
-    await send(
-        {
-            "type": "http.response.start",
-            "status": 200,
-            "headers": [[b"content-type", b"text/plain"]],
-        }
-    )
-
-    await sleep(1)
-    await send({"type": "http.response.body", "body": b"", "more_body": False})
 
 
 async def status_code(scope, receive, send):
@@ -179,7 +165,7 @@ async def redirect_301(scope, receive, send):
     await send({"type": "http.response.body"})
 
 
-SERVER_SCOPE = "session"
+SERVER_SCOPE: Literal["session"] = "session"
 
 
 @pytest.fixture(scope=SERVER_SCOPE)

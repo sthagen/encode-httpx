@@ -8,10 +8,12 @@ import io
 import typing
 import zlib
 
+from ._exceptions import DecodingError
+
 try:
-    import brotli
+    import brotlicffi
 except ImportError:  # pragma: nocover
-    brotli = None
+    brotlicffi = None
 
 
 class ContentDecoder:
@@ -54,13 +56,13 @@ class DeflateDecoder(ContentDecoder):
             if was_first_attempt:
                 self.decompressor = zlib.decompressobj(-zlib.MAX_WBITS)
                 return self.decode(data)
-            raise ValueError(str(exc))
+            raise DecodingError(str(exc)) from exc
 
     def flush(self) -> bytes:
         try:
             return self.decompressor.flush()
         except zlib.error as exc:  # pragma: nocover
-            raise ValueError(str(exc))
+            raise DecodingError(str(exc)) from exc
 
 
 class GZipDecoder(ContentDecoder):
@@ -77,13 +79,13 @@ class GZipDecoder(ContentDecoder):
         try:
             return self.decompressor.decompress(data)
         except zlib.error as exc:
-            raise ValueError(str(exc))
+            raise DecodingError(str(exc)) from exc
 
     def flush(self) -> bytes:
         try:
             return self.decompressor.flush()
         except zlib.error as exc:  # pragma: nocover
-            raise ValueError(str(exc))
+            raise DecodingError(str(exc)) from exc
 
 
 class BrotliDecoder(ContentDecoder):
@@ -97,14 +99,14 @@ class BrotliDecoder(ContentDecoder):
     """
 
     def __init__(self) -> None:
-        if brotli is None:  # pragma: nocover
+        if brotlicffi is None:  # pragma: nocover
             raise ImportError(
-                "Using 'BrotliDecoder', but the 'brotlipy' or 'brotli' library "
+                "Using 'BrotliDecoder', but the 'brotlicffi' library "
                 "is not installed."
                 "Make sure to install httpx using `pip install httpx[brotli]`."
             ) from None
 
-        self.decompressor = brotli.Decompressor()
+        self.decompressor = brotlicffi.Decompressor()
         self.seen_data = False
         if hasattr(self.decompressor, "decompress"):
             self._decompress = self.decompressor.decompress
@@ -116,9 +118,9 @@ class BrotliDecoder(ContentDecoder):
             return b""
         self.seen_data = True
         try:
-            return self._decompress(data)
-        except brotli.error as exc:
-            raise ValueError(str(exc))
+            return self.decompressor.decompress(data)
+        except brotlicffi.Error as exc:
+            raise DecodingError(str(exc)) from exc
 
     def flush(self) -> bytes:
         if not self.seen_data:
@@ -127,8 +129,8 @@ class BrotliDecoder(ContentDecoder):
             if hasattr(self.decompressor, "finish"):
                 self.decompressor.finish()
             return b""
-        except brotli.error as exc:  # pragma: nocover
-            raise ValueError(str(exc))
+        except brotlicffi.Error as exc:  # pragma: nocover
+            raise DecodingError(str(exc)) from exc
 
 
 class MultiDecoder(ContentDecoder):
@@ -363,5 +365,5 @@ SUPPORTED_DECODERS = {
 }
 
 
-if brotli is None:
+if brotlicffi is None:
     SUPPORTED_DECODERS.pop("br")  # pragma: nocover

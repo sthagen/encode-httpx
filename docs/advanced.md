@@ -228,10 +228,10 @@ every time a particular type of event takes place.
 
 There are currently two event hooks:
 
-* `request` - Called once a request is about to be sent. Passed the `request` instance.
-* `response` - Called once the response has been returned. Passed the `response` instance.
+* `request` - Called after a request is fully prepared, but before it is sent to the network. Passed the `request` instance.
+* `response` - Called after the response has been fetched from the network, but before it is returned to the caller. Passed the `response` instance.
 
-These allow you to install client-wide functionality such as logging and monitoring.
+These allow you to install client-wide functionality such as logging, monitoring or tracing.
 
 ```python
 def log_request(request):
@@ -253,6 +253,15 @@ def raise_on_4xx_5xx(response):
     response.raise_for_status()
 
 client = httpx.Client(event_hooks={'response': [raise_on_4xx_5xx]})
+```
+
+The hooks are also allowed to modify `request` and `response` objects.
+
+```python
+def add_timestamp(request):
+    request.headers['x-request-timestamp'] = datetime.now(tz=datetime.utc).isoformat()
+    
+client = httpx.Client(event_hooks={'request': [add_timestamp]})
 ```
 
 Event hooks must always be set as a **list of callables**, and you may register
@@ -361,7 +370,7 @@ password example-password
 ...
 ```
 
-When using `Client` instances, `trust_env` should be set on the client itself, rather that on the request methods:
+When using `Client` instances, `trust_env` should be set on the client itself, rather than on the request methods:
 
 ```python
 client = httpx.Client(trust_env=False)
@@ -667,7 +676,7 @@ You can control the connection pool size using the `limits` keyword
 argument on the client. It takes instances of `httpx.Limits` which define:
 
 - `max_keepalive`, number of allowable keep-alive connections, or `None` to always
-allow. (Defaults 10)
+allow. (Defaults 20)
 - `max_connections`, maximum number of allowable connections, or` None` for no limits.
 (Default 100)
 
@@ -945,6 +954,32 @@ client = httpx.Client(verify=False)
 
 The `client.get(...)` method and other request methods *do not* support changing the SSL settings on a per-request basis. If you need different SSL settings in different cases you should use more that one client instance, with different settings on each. Each client will then be using an isolated connection pool with a specific fixed SSL configuration on all connections within that pool.
 
+### Client Side Certificates
+
+You can also specify a local cert to use as a client-side certificate, either a path to an SSL certificate file, or two-tuple of (certificate file, key file), or a three-tuple of (certificate file, key file, password)
+
+```python
+import httpx
+
+r = httpx.get("https://example.org", cert="path/to/client.pem")
+```
+
+Alternatively,
+
+```pycon
+>>> cert = ("path/to/client.pem", "path/to/client.key")
+>>> httpx.get("https://example.org", cert=cert)
+<Response [200 OK]>
+```
+
+or
+
+```pycon
+>>> cert = ("path/to/client.pem", "path/to/client.key", "password")
+>>> httpx.get("https://example.org", cert=cert)
+<Response [200 OK]>
+```
+
 ### Making HTTPS requests to a local server
 
 When making requests to local servers, such as a development server running on `localhost`, you will typically be using unencrypted HTTP connections.
@@ -1015,31 +1050,39 @@ This [public gist](https://gist.github.com/florimondmanca/d56764d78d748eb9f73165
 
 ### Writing custom transports
 
-A transport instance must implement the Transport API defined by
-[`httpcore`](https://www.encode.io/httpcore/api/). You
-should either subclass `httpcore.AsyncHTTPTransport` to implement a transport to
-use with `AsyncClient`, or subclass `httpcore.SyncHTTPTransport` to implement a
-transport to use with `Client`.
+A transport instance must implement the low-level Transport API, which deals
+with sending a single request, and returning a response. You should either
+subclass `httpx.BaseTransport` to implement a transport to use with `Client`,
+or subclass `httpx.AsyncBaseTransport` to implement a transport to
+use with `AsyncClient`.
+
+At the layer of the transport API we're using plain primitives.
+No `Request` or `Response` models, no fancy `URL` or `Header` handling.
+This strict point of cut-off provides a clear design separation between the
+HTTPX API, and the low-level network handling.
+
+See the `handle_request` and `handle_async_request` docstrings for more details
+on the specifics of the Transport API.
 
 A complete example of a custom transport implementation would be:
 
 ```python
 import json
-import httpcore
+import httpx
 
 
-class HelloWorldTransport(httpcore.SyncHTTPTransport):
+class HelloWorldTransport(httpx.BaseTransport):
     """
     A mock transport that always returns a JSON "Hello, world!" response.
     """
 
-    def request(self, method, url, headers=None, stream=None, ext=None):
+    def handle_request(self, method, url, headers, stream, extensions):
         message = {"text": "Hello, world!"}
         content = json.dumps(message).encode("utf-8")
-        stream = httpcore.PlainByteStream(content)
+        stream = httpx.ByteStream(content)
         headers = [(b"content-type", b"application/json")]
-        ext = {"http_version": b"HTTP/1.1"}
-        return 200, headers, stream, ext
+        extensions = {}
+        return 200, headers, stream, extensions
 ```
 
 Which we can use in the same way:
@@ -1066,7 +1109,7 @@ def handler(request):
 
 
 # Switch to a mock transport, if the TESTING environment variable is set.
-if os.environ['TESTING'].upper() == "TRUE":
+if os.environ.get('TESTING', '').upper() == "TRUE":
     transport = httpx.MockTransport(handler)
 else:
     transport = httpx.HTTPTransport()
@@ -1084,24 +1127,23 @@ which transport an outgoing request should be routed via, with [the same style
 used for specifying proxy routing](#routing).
 
 ```python
-import httpcore
 import httpx
 
-class HTTPSRedirectTransport(httpcore.SyncHTTPTransport):
+class HTTPSRedirectTransport(httpx.BaseTransport):
     """
     A transport that always redirects to HTTPS.
     """
 
-    def request(self, method, url, headers=None, stream=None, ext=None):
+    def handle_request(self, method, url, headers, stream, extensions):
         scheme, host, port, path = url
         if port is None:
             location = b"https://%s%s" % (host, path)
         else:
             location = b"https://%s:%d%s" % (host, port, path)
-        stream = httpcore.PlainByteStream(b"")
+        stream = httpx.ByteStream(b"")
         headers = [(b"location", location)]
-        ext = {"http_version": b"HTTP/1.1"}
-        return 303, headers, stream, ext
+        extensions = {}
+        return 303, headers, stream, extensions
 
 
 # A client where any `http` requests are always redirected to `https`

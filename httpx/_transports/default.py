@@ -24,25 +24,99 @@ client = httpx.Client(transport=transport)
 transport = httpx.HTTPTransport(uds="socket.uds")
 client = httpx.Client(transport=transport)
 """
+import contextlib
 import typing
 from types import TracebackType
 
 import httpcore
 
 from .._config import DEFAULT_LIMITS, Limits, Proxy, create_ssl_context
+from .._exceptions import (
+    CloseError,
+    ConnectError,
+    ConnectTimeout,
+    LocalProtocolError,
+    NetworkError,
+    PoolTimeout,
+    ProtocolError,
+    ProxyError,
+    ReadError,
+    ReadTimeout,
+    RemoteProtocolError,
+    TimeoutException,
+    UnsupportedProtocol,
+    WriteError,
+    WriteTimeout,
+)
 from .._types import CertTypes, VerifyTypes
+from .base import AsyncBaseTransport, AsyncByteStream, BaseTransport, SyncByteStream
 
 T = typing.TypeVar("T", bound="HTTPTransport")
 A = typing.TypeVar("A", bound="AsyncHTTPTransport")
-Headers = typing.List[typing.Tuple[bytes, bytes]]
-URL = typing.Tuple[bytes, bytes, typing.Optional[int], bytes]
 
 
-class HTTPTransport(httpcore.SyncHTTPTransport):
+@contextlib.contextmanager
+def map_httpcore_exceptions() -> typing.Iterator[None]:
+    try:
+        yield
+    except Exception as exc:
+        mapped_exc = None
+
+        for from_exc, to_exc in HTTPCORE_EXC_MAP.items():
+            if not isinstance(exc, from_exc):
+                continue
+            # We want to map to the most specific exception we can find.
+            # Eg if `exc` is an `httpcore.ReadTimeout`, we want to map to
+            # `httpx.ReadTimeout`, not just `httpx.TimeoutException`.
+            if mapped_exc is None or issubclass(to_exc, mapped_exc):
+                mapped_exc = to_exc
+
+        if mapped_exc is None:  # pragma: nocover
+            raise
+
+        message = str(exc)
+        raise mapped_exc(message) from exc
+
+
+HTTPCORE_EXC_MAP = {
+    httpcore.TimeoutException: TimeoutException,
+    httpcore.ConnectTimeout: ConnectTimeout,
+    httpcore.ReadTimeout: ReadTimeout,
+    httpcore.WriteTimeout: WriteTimeout,
+    httpcore.PoolTimeout: PoolTimeout,
+    httpcore.NetworkError: NetworkError,
+    httpcore.ConnectError: ConnectError,
+    httpcore.ReadError: ReadError,
+    httpcore.WriteError: WriteError,
+    httpcore.CloseError: CloseError,
+    httpcore.ProxyError: ProxyError,
+    httpcore.UnsupportedProtocol: UnsupportedProtocol,
+    httpcore.ProtocolError: ProtocolError,
+    httpcore.LocalProtocolError: LocalProtocolError,
+    httpcore.RemoteProtocolError: RemoteProtocolError,
+}
+
+
+class ResponseStream(SyncByteStream):
+    def __init__(self, httpcore_stream: httpcore.SyncByteStream):
+        self._httpcore_stream = httpcore_stream
+
+    def __iter__(self) -> typing.Iterator[bytes]:
+        with map_httpcore_exceptions():
+            for part in self._httpcore_stream:
+                yield part
+
+    def close(self) -> None:
+        with map_httpcore_exceptions():
+            self._httpcore_stream.close()
+
+
+class HTTPTransport(BaseTransport):
     def __init__(
         self,
         verify: VerifyTypes = True,
         cert: CertTypes = None,
+        http1: bool = True,
         http2: bool = False,
         limits: Limits = DEFAULT_LIMITS,
         trust_env: bool = True,
@@ -60,6 +134,7 @@ class HTTPTransport(httpcore.SyncHTTPTransport):
                 max_connections=limits.max_connections,
                 max_keepalive_connections=limits.max_keepalive_connections,
                 keepalive_expiry=limits.keepalive_expiry,
+                http1=http1,
                 http2=http2,
                 uds=uds,
                 local_address=local_address,
@@ -89,27 +164,56 @@ class HTTPTransport(httpcore.SyncHTTPTransport):
         exc_value: BaseException = None,
         traceback: TracebackType = None,
     ) -> None:
-        self._pool.__exit__(exc_type, exc_value, traceback)
+        with map_httpcore_exceptions():
+            self._pool.__exit__(exc_type, exc_value, traceback)
 
-    def request(
+    def handle_request(
         self,
         method: bytes,
-        url: URL,
-        headers: Headers = None,
-        stream: httpcore.SyncByteStream = None,
-        ext: dict = None,
-    ) -> typing.Tuple[int, Headers, httpcore.SyncByteStream, dict]:
-        return self._pool.request(method, url, headers=headers, stream=stream, ext=ext)
+        url: typing.Tuple[bytes, bytes, typing.Optional[int], bytes],
+        headers: typing.List[typing.Tuple[bytes, bytes]],
+        stream: SyncByteStream,
+        extensions: dict,
+    ) -> typing.Tuple[
+        int, typing.List[typing.Tuple[bytes, bytes]], SyncByteStream, dict
+    ]:
+        with map_httpcore_exceptions():
+            status_code, headers, byte_stream, extensions = self._pool.handle_request(
+                method=method,
+                url=url,
+                headers=headers,
+                stream=httpcore.IteratorByteStream(iter(stream)),
+                extensions=extensions,
+            )
+
+        stream = ResponseStream(byte_stream)
+
+        return status_code, headers, stream, extensions
 
     def close(self) -> None:
         self._pool.close()
 
 
-class AsyncHTTPTransport(httpcore.AsyncHTTPTransport):
+class AsyncResponseStream(AsyncByteStream):
+    def __init__(self, httpcore_stream: httpcore.AsyncByteStream):
+        self._httpcore_stream = httpcore_stream
+
+    async def __aiter__(self) -> typing.AsyncIterator[bytes]:
+        with map_httpcore_exceptions():
+            async for part in self._httpcore_stream:
+                yield part
+
+    async def aclose(self) -> None:
+        with map_httpcore_exceptions():
+            await self._httpcore_stream.aclose()
+
+
+class AsyncHTTPTransport(AsyncBaseTransport):
     def __init__(
         self,
         verify: VerifyTypes = True,
         cert: CertTypes = None,
+        http1: bool = True,
         http2: bool = False,
         limits: Limits = DEFAULT_LIMITS,
         trust_env: bool = True,
@@ -127,6 +231,7 @@ class AsyncHTTPTransport(httpcore.AsyncHTTPTransport):
                 max_connections=limits.max_connections,
                 max_keepalive_connections=limits.max_keepalive_connections,
                 keepalive_expiry=limits.keepalive_expiry,
+                http1=http1,
                 http2=http2,
                 uds=uds,
                 local_address=local_address,
@@ -156,19 +261,36 @@ class AsyncHTTPTransport(httpcore.AsyncHTTPTransport):
         exc_value: BaseException = None,
         traceback: TracebackType = None,
     ) -> None:
-        await self._pool.__aexit__(exc_type, exc_value, traceback)
+        with map_httpcore_exceptions():
+            await self._pool.__aexit__(exc_type, exc_value, traceback)
 
-    async def arequest(
+    async def handle_async_request(
         self,
         method: bytes,
-        url: URL,
-        headers: Headers = None,
-        stream: httpcore.AsyncByteStream = None,
-        ext: dict = None,
-    ) -> typing.Tuple[int, Headers, httpcore.AsyncByteStream, dict]:
-        return await self._pool.arequest(
-            method, url, headers=headers, stream=stream, ext=ext
-        )
+        url: typing.Tuple[bytes, bytes, typing.Optional[int], bytes],
+        headers: typing.List[typing.Tuple[bytes, bytes]],
+        stream: AsyncByteStream,
+        extensions: dict,
+    ) -> typing.Tuple[
+        int, typing.List[typing.Tuple[bytes, bytes]], AsyncByteStream, dict
+    ]:
+        with map_httpcore_exceptions():
+            (
+                status_code,
+                headers,
+                byte_stream,
+                extensions,
+            ) = await self._pool.handle_async_request(
+                method=method,
+                url=url,
+                headers=headers,
+                stream=httpcore.AsyncIteratorByteStream(stream.__aiter__()),
+                extensions=extensions,
+            )
+
+        stream = AsyncResponseStream(byte_stream)
+
+        return status_code, headers, stream, extensions
 
     async def aclose(self) -> None:
         await self._pool.aclose()

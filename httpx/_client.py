@@ -2,38 +2,40 @@ import datetime
 import enum
 import typing
 import warnings
+from contextlib import contextmanager
 from types import TracebackType
-
-import httpcore
 
 from .__version__ import __version__
 from ._auth import Auth, BasicAuth, FunctionAuth
+from ._compat import asynccontextmanager
 from ._config import (
     DEFAULT_LIMITS,
     DEFAULT_MAX_REDIRECTS,
     DEFAULT_TIMEOUT_CONFIG,
-    UNSET,
     Limits,
     Proxy,
     Timeout,
-    UnsetType,
 )
 from ._decoders import SUPPORTED_DECODERS
 from ._exceptions import (
-    HTTPCORE_EXC_MAP,
     InvalidURL,
     RemoteProtocolError,
     TooManyRedirects,
-    map_exceptions,
+    request_context,
 )
 from ._models import URL, Cookies, Headers, QueryParams, Request, Response
 from ._status_codes import codes
 from ._transports.asgi import ASGITransport
+from ._transports.base import (
+    AsyncBaseTransport,
+    AsyncByteStream,
+    BaseTransport,
+    SyncByteStream,
+)
 from ._transports.default import AsyncHTTPTransport, HTTPTransport
 from ._transports.wsgi import WSGITransport
 from ._types import (
     AuthTypes,
-    ByteStream,
     CertTypes,
     CookieTypes,
     HeaderTypes,
@@ -53,13 +55,37 @@ from ._utils import (
     get_environment_proxies,
     get_logger,
     same_origin,
-    warn_deprecated,
 )
 
 # The type annotation for @classmethod and context managers here follows PEP 484
 # https://www.python.org/dev/peps/pep-0484/#annotating-instance-and-class-methods
 T = typing.TypeVar("T", bound="Client")
 U = typing.TypeVar("U", bound="AsyncClient")
+
+
+class UseClientDefault:
+    """
+    For some parameters such as `auth=...` and `timeout=...` we need to be able
+    to indicate the default "unset" state, in a way that is distinctly different
+    to using `None`.
+
+    The default "unset" state indicates that whatever default is set on the
+    client should be used. This is different to setting `None`, which
+    explicitly disables the parameter, possibly overriding a client default.
+
+    For example we use `timeout=USE_CLIENT_DEFAULT` in the `request()` signature.
+    Omitting the `timeout` parameter will send a request using whatever default
+    timeout has been configured on the client. Including `timeout=None` will
+    ensure no timeout is used.
+
+    Note that user code shouldn't need to use the `USE_CLIENT_DEFAULT` constant,
+    but it is used internally when a parameter is not included.
+    """
+
+    pass  # pragma: nocover
+
+
+USE_CLIENT_DEFAULT = UseClientDefault()
 
 
 logger = get_logger(__name__)
@@ -71,9 +97,63 @@ ACCEPT_ENCODING = ", ".join(
 
 
 class ClientState(enum.Enum):
+    # UNOPENED:
+    #   The client has been instantiated, but has not been used to send a request,
+    #   or been opened by entering the context of a `with` block.
     UNOPENED = 1
+    # OPENED:
+    #   The client has either sent a request, or is within a `with` block.
     OPENED = 2
+    # CLOSED:
+    #   The client has either exited the `with` block, or `close()` has
+    #   been called explicitly.
     CLOSED = 3
+
+
+class BoundSyncStream(SyncByteStream):
+    """
+    A byte stream that is bound to a given response instance, and that
+    ensures the `response.elapsed` is set once the response is closed.
+    """
+
+    def __init__(
+        self, stream: SyncByteStream, response: Response, timer: Timer
+    ) -> None:
+        self._stream = stream
+        self._response = response
+        self._timer = timer
+
+    def __iter__(self) -> typing.Iterator[bytes]:
+        for chunk in self._stream:
+            yield chunk
+
+    def close(self) -> None:
+        seconds = self._timer.sync_elapsed()
+        self._response.elapsed = datetime.timedelta(seconds=seconds)
+        self._stream.close()
+
+
+class BoundAsyncStream(AsyncByteStream):
+    """
+    An async byte stream that is bound to a given response instance, and that
+    ensures the `response.elapsed` is set once the response is closed.
+    """
+
+    def __init__(
+        self, stream: AsyncByteStream, response: Response, timer: Timer
+    ) -> None:
+        self._stream = stream
+        self._response = response
+        self._timer = timer
+
+    async def __aiter__(self) -> typing.AsyncIterator[bytes]:
+        async for chunk in self._stream:
+            yield chunk
+
+    async def aclose(self) -> None:
+        seconds = await self._timer.async_elapsed()
+        self._response.elapsed = datetime.timedelta(seconds=seconds)
+        await self._stream.aclose()
 
 
 class BaseClient:
@@ -233,51 +313,6 @@ class BaseClient:
     def params(self, params: QueryParamTypes) -> None:
         self._params = QueryParams(params)
 
-    def stream(
-        self,
-        method: str,
-        url: URLTypes,
-        *,
-        content: RequestContent = None,
-        data: RequestData = None,
-        files: RequestFiles = None,
-        json: typing.Any = None,
-        params: QueryParamTypes = None,
-        headers: HeaderTypes = None,
-        cookies: CookieTypes = None,
-        auth: typing.Union[AuthTypes, UnsetType] = UNSET,
-        allow_redirects: bool = True,
-        timeout: typing.Union[TimeoutTypes, UnsetType] = UNSET,
-    ) -> "StreamContextManager":
-        """
-        Alternative to `httpx.request()` that streams the response body
-        instead of loading it into memory at once.
-
-        **Parameters**: See `httpx.request`.
-
-        See also: [Streaming Responses][0]
-
-        [0]: /quickstart#streaming-responses
-        """
-        request = self.build_request(
-            method=method,
-            url=url,
-            content=content,
-            data=data,
-            files=files,
-            json=json,
-            params=params,
-            headers=headers,
-            cookies=cookies,
-        )
-        return StreamContextManager(
-            client=self,
-            request=request,
-            auth=auth,
-            allow_redirects=allow_redirects,
-            timeout=timeout,
-        )
-
     def build_request(
         self,
         method: str,
@@ -325,10 +360,19 @@ class BaseClient:
         """
         merge_url = URL(url)
         if merge_url.is_relative_url:
-            # We always ensure the base_url paths include the trailing '/',
-            # and always strip any leading '/' from the merge URL.
-            merge_url = merge_url.copy_with(raw_path=merge_url.raw_path.lstrip(b"/"))
-            return self.base_url.join(merge_url)
+            # To merge URLs we always append to the base URL. To get this
+            # behaviour correct we always ensure the base URL ends in a '/'
+            # seperator, and strip any leading '/' from the merge URL.
+            #
+            # So, eg...
+            #
+            # >>> client = Client(base_url="https://www.example.com/subpath")
+            # >>> client.base_url
+            # URL('https://www.example.com/subpath/')
+            # >>> client.build_request("GET", "/path").url
+            # URL('https://www.example.com/subpath/path')
+            merge_raw_path = self.base_url.raw_path + merge_url.raw_path.lstrip(b"/")
+            return self.base_url.copy_with(raw_path=merge_raw_path)
         return merge_url
 
     def _merge_cookies(
@@ -364,7 +408,7 @@ class BaseClient:
         """
         if params or self.params:
             merged_queryparams = QueryParams(self.params)
-            merged_queryparams.update(params)
+            merged_queryparams = merged_queryparams.merge(params)
             return merged_queryparams
         return params
 
@@ -381,9 +425,13 @@ class BaseClient:
             raise TypeError(f'Invalid "auth" argument: {auth!r}')
 
     def _build_request_auth(
-        self, request: Request, auth: typing.Union[AuthTypes, UnsetType] = UNSET
+        self,
+        request: Request,
+        auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
     ) -> Auth:
-        auth = self._auth if isinstance(auth, UnsetType) else self._build_auth(auth)
+        auth = (
+            self._auth if isinstance(auth, UseClientDefault) else self._build_auth(auth)
+        )
 
         if auth is not None:
             return auth
@@ -476,9 +524,8 @@ class BaseClient:
             # the origin.
             headers.pop("Authorization", None)
 
-            # Remove the Host header, so that a new one will be auto-populated on
-            # the request instance.
-            headers.pop("Host", None)
+            # Update the Host header.
+            headers["Host"] = url.netloc.decode("ascii")
 
         if method != request.method and method == "GET":
             # If we've switch to a 'GET' request, then strip any headers which
@@ -494,7 +541,7 @@ class BaseClient:
 
     def _redirect_stream(
         self, request: Request, method: str
-    ) -> typing.Optional[ByteStream]:
+    ) -> typing.Optional[typing.Union[SyncByteStream, AsyncByteStream]]:
         """
         Return the body that should be used for the redirect request.
         """
@@ -527,7 +574,8 @@ class Client(BaseClient):
     sending requests.
     * **verify** - *(optional)* SSL certificates (a.k.a CA bundle) used to
     verify the identity of requested hosts. Either `True` (default CA bundle),
-    a path to an SSL certificate file, or `False` (disable verification).
+    a path to an SSL certificate file, an `ssl.SSLContext`, or `False`
+    (which will disable verification).
     * **cert** - *(optional)* An SSL certificate used by the requested host
     to authenticate the client. Either a path to an SSL certificate file, or
     two-tuple of (certificate file, key file), or a three-tuple of (certificate
@@ -558,16 +606,16 @@ class Client(BaseClient):
         cookies: CookieTypes = None,
         verify: VerifyTypes = True,
         cert: CertTypes = None,
+        http1: bool = True,
         http2: bool = False,
         proxies: ProxiesTypes = None,
-        mounts: typing.Mapping[str, httpcore.SyncHTTPTransport] = None,
+        mounts: typing.Mapping[str, BaseTransport] = None,
         timeout: TimeoutTypes = DEFAULT_TIMEOUT_CONFIG,
         limits: Limits = DEFAULT_LIMITS,
-        pool_limits: Limits = None,
         max_redirects: int = DEFAULT_MAX_REDIRECTS,
         event_hooks: typing.Mapping[str, typing.List[typing.Callable]] = None,
         base_url: URLTypes = "",
-        transport: httpcore.SyncHTTPTransport = None,
+        transport: BaseTransport = None,
         app: typing.Callable = None,
         trust_env: bool = True,
     ):
@@ -592,34 +640,27 @@ class Client(BaseClient):
                     "Make sure to install httpx using `pip install httpx[http2]`."
                 ) from None
 
-        if pool_limits is not None:
-            warn_deprecated(
-                "Client(..., pool_limits=...) is deprecated and will raise "
-                "errors in the future. Use Client(..., limits=...) instead."
-            )
-            limits = pool_limits
-
         allow_env_proxies = trust_env and app is None and transport is None
         proxy_map = self._get_proxy_map(proxies, allow_env_proxies)
 
         self._transport = self._init_transport(
             verify=verify,
             cert=cert,
+            http1=http1,
             http2=http2,
             limits=limits,
             transport=transport,
             app=app,
             trust_env=trust_env,
         )
-        self._mounts: typing.Dict[
-            URLPattern, typing.Optional[httpcore.SyncHTTPTransport]
-        ] = {
+        self._mounts: typing.Dict[URLPattern, typing.Optional[BaseTransport]] = {
             URLPattern(key): None
             if proxy is None
             else self._init_proxy_transport(
                 proxy,
                 verify=verify,
                 cert=cert,
+                http1=http1,
                 http2=http2,
                 limits=limits,
                 trust_env=trust_env,
@@ -637,12 +678,13 @@ class Client(BaseClient):
         self,
         verify: VerifyTypes = True,
         cert: CertTypes = None,
+        http1: bool = True,
         http2: bool = False,
         limits: Limits = DEFAULT_LIMITS,
-        transport: httpcore.SyncHTTPTransport = None,
+        transport: BaseTransport = None,
         app: typing.Callable = None,
         trust_env: bool = True,
-    ) -> httpcore.SyncHTTPTransport:
+    ) -> BaseTransport:
         if transport is not None:
             return transport
 
@@ -650,7 +692,12 @@ class Client(BaseClient):
             return WSGITransport(app=app)
 
         return HTTPTransport(
-            verify=verify, cert=cert, http2=http2, limits=limits, trust_env=trust_env
+            verify=verify,
+            cert=cert,
+            http1=http1,
+            http2=http2,
+            limits=limits,
+            trust_env=trust_env,
         )
 
     def _init_proxy_transport(
@@ -658,20 +705,22 @@ class Client(BaseClient):
         proxy: Proxy,
         verify: VerifyTypes = True,
         cert: CertTypes = None,
+        http1: bool = True,
         http2: bool = False,
         limits: Limits = DEFAULT_LIMITS,
         trust_env: bool = True,
-    ) -> httpcore.SyncHTTPTransport:
+    ) -> BaseTransport:
         return HTTPTransport(
             verify=verify,
             cert=cert,
+            http1=http1,
             http2=http2,
             limits=limits,
             trust_env=trust_env,
             proxy=proxy,
         )
 
-    def _transport_for_url(self, url: URL) -> httpcore.SyncHTTPTransport:
+    def _transport_for_url(self, url: URL) -> BaseTransport:
         """
         Returns the transport instance that should be used for a given URL.
         This will either be the standard connection pool, or a proxy.
@@ -694,9 +743,9 @@ class Client(BaseClient):
         params: QueryParamTypes = None,
         headers: HeaderTypes = None,
         cookies: CookieTypes = None,
-        auth: typing.Union[AuthTypes, UnsetType] = UNSET,
+        auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         allow_redirects: bool = True,
-        timeout: typing.Union[TimeoutTypes, UnsetType] = UNSET,
+        timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
     ) -> Response:
         """
         Build and send a request.
@@ -714,6 +763,14 @@ class Client(BaseClient):
 
         [0]: /advanced/#merging-of-configuration
         """
+        if cookies is not None:
+            message = (
+                "Setting per-request cookies=<...> is being deprecated, because "
+                "the expected behaviour on cookie persistence is ambiguous. Set "
+                "cookies directly on the client instance instead."
+            )
+            warnings.warn(message, DeprecationWarning)
+
         request = self.build_request(
             method=method,
             url=url,
@@ -729,14 +786,64 @@ class Client(BaseClient):
             request, auth=auth, allow_redirects=allow_redirects, timeout=timeout
         )
 
+    @contextmanager
+    def stream(
+        self,
+        method: str,
+        url: URLTypes,
+        *,
+        content: RequestContent = None,
+        data: RequestData = None,
+        files: RequestFiles = None,
+        json: typing.Any = None,
+        params: QueryParamTypes = None,
+        headers: HeaderTypes = None,
+        cookies: CookieTypes = None,
+        auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        allow_redirects: bool = True,
+        timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+    ) -> typing.Iterator[Response]:
+        """
+        Alternative to `httpx.request()` that streams the response body
+        instead of loading it into memory at once.
+
+        **Parameters**: See `httpx.request`.
+
+        See also: [Streaming Responses][0]
+
+        [0]: /quickstart#streaming-responses
+        """
+        request = self.build_request(
+            method=method,
+            url=url,
+            content=content,
+            data=data,
+            files=files,
+            json=json,
+            params=params,
+            headers=headers,
+            cookies=cookies,
+        )
+        response = self.send(
+            request=request,
+            auth=auth,
+            allow_redirects=allow_redirects,
+            timeout=timeout,
+            stream=True,
+        )
+        try:
+            yield response
+        finally:
+            response.close()
+
     def send(
         self,
         request: Request,
         *,
         stream: bool = False,
-        auth: typing.Union[AuthTypes, UnsetType] = UNSET,
+        auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         allow_redirects: bool = True,
-        timeout: typing.Union[TimeoutTypes, UnsetType] = UNSET,
+        timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
     ) -> Response:
         """
         Send a request.
@@ -755,7 +862,9 @@ class Client(BaseClient):
             raise RuntimeError("Cannot send a request, as the client has been closed.")
 
         self._state = ClientState.OPENED
-        timeout = self.timeout if isinstance(timeout, UnsetType) else Timeout(timeout)
+        timeout = (
+            self.timeout if isinstance(timeout, UseClientDefault) else Timeout(timeout)
+        )
 
         auth = self._build_request_auth(request, auth)
 
@@ -766,21 +875,18 @@ class Client(BaseClient):
             allow_redirects=allow_redirects,
             history=[],
         )
-
-        if not stream:
-            try:
-                response.read()
-            finally:
-                response.close()
-
         try:
+            if not stream:
+                response.read()
+
             for hook in self._event_hooks["response"]:
                 hook(response)
-        except Exception:
-            response.close()
-            raise
 
-        return response
+            return response
+
+        except Exception as exc:
+            response.close()
+            raise exc
 
     def _send_handling_auth(
         self,
@@ -791,30 +897,35 @@ class Client(BaseClient):
         history: typing.List[Response],
     ) -> Response:
         auth_flow = auth.sync_auth_flow(request)
-        request = next(auth_flow)
+        try:
+            request = next(auth_flow)
 
-        for hook in self._event_hooks["request"]:
-            hook(request)
+            for hook in self._event_hooks["request"]:
+                hook(request)
 
-        while True:
-            response = self._send_handling_redirects(
-                request,
-                timeout=timeout,
-                allow_redirects=allow_redirects,
-                history=history,
-            )
-            try:
-                next_request = auth_flow.send(response)
-            except StopIteration:
-                return response
-            except BaseException as exc:
-                response.close()
-                raise exc from None
-            else:
-                response.history = list(history)
-                response.read()
-                request = next_request
-                history.append(response)
+            while True:
+                response = self._send_handling_redirects(
+                    request,
+                    timeout=timeout,
+                    allow_redirects=allow_redirects,
+                    history=history,
+                )
+                try:
+                    try:
+                        next_request = auth_flow.send(response)
+                    except StopIteration:
+                        return response
+
+                    response.history = list(history)
+                    response.read()
+                    request = next_request
+                    history.append(response)
+
+                except Exception as exc:
+                    response.close()
+                    raise exc
+        finally:
+            auth_flow.close()
 
     def _send_handling_redirects(
         self,
@@ -830,19 +941,24 @@ class Client(BaseClient):
                 )
 
             response = self._send_single_request(request, timeout)
-            response.history = list(history)
+            try:
+                response.history = list(history)
 
-            if not response.is_redirect:
-                return response
+                if not response.is_redirect:
+                    return response
 
-            if allow_redirects:
-                response.read()
-            request = self._build_redirect_request(request, response)
-            history = history + [response]
+                request = self._build_redirect_request(request, response)
+                history = history + [response]
 
-            if not allow_redirects:
-                response.next_request = request
-                return response
+                if allow_redirects:
+                    response.read()
+                else:
+                    response.next_request = request
+                    return response
+
+            except Exception as exc:
+                response.close()
+                raise exc
 
     def _send_single_request(self, request: Request, timeout: Timeout) -> Response:
         """
@@ -852,29 +968,29 @@ class Client(BaseClient):
         timer = Timer()
         timer.sync_start()
 
-        with map_exceptions(HTTPCORE_EXC_MAP, request=request):
-            (status_code, headers, stream, ext) = transport.request(
+        if not isinstance(request.stream, SyncByteStream):
+            raise RuntimeError(
+                "Attempted to send an async request with a sync Client instance."
+            )
+
+        with request_context(request=request):
+            (status_code, headers, stream, extensions) = transport.handle_request(
                 request.method.encode(),
                 request.url.raw,
                 headers=request.headers.raw,
-                stream=request.stream,  # type: ignore
-                ext={"timeout": timeout.as_dict()},
+                stream=request.stream,
+                extensions={"timeout": timeout.as_dict()},
             )
-
-        def on_close(response: Response) -> None:
-            response.elapsed = datetime.timedelta(seconds=timer.sync_elapsed())
-            if hasattr(stream, "close"):
-                stream.close()
 
         response = Response(
             status_code,
             headers=headers,
-            stream=stream,  # type: ignore
-            ext=ext,
+            stream=stream,
+            extensions=extensions,
             request=request,
-            on_close=on_close,
         )
 
+        response.stream = BoundSyncStream(stream, response=response, timer=timer)
         self.cookies.extract_cookies(response)
 
         status = f"{response.status_code} {response.reason_phrase}"
@@ -890,9 +1006,9 @@ class Client(BaseClient):
         params: QueryParamTypes = None,
         headers: HeaderTypes = None,
         cookies: CookieTypes = None,
-        auth: typing.Union[AuthTypes, UnsetType] = UNSET,
+        auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         allow_redirects: bool = True,
-        timeout: typing.Union[TimeoutTypes, UnsetType] = UNSET,
+        timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
     ) -> Response:
         """
         Send a `GET` request.
@@ -917,9 +1033,9 @@ class Client(BaseClient):
         params: QueryParamTypes = None,
         headers: HeaderTypes = None,
         cookies: CookieTypes = None,
-        auth: typing.Union[AuthTypes, UnsetType] = UNSET,
+        auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         allow_redirects: bool = True,
-        timeout: typing.Union[TimeoutTypes, UnsetType] = UNSET,
+        timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
     ) -> Response:
         """
         Send an `OPTIONS` request.
@@ -944,9 +1060,9 @@ class Client(BaseClient):
         params: QueryParamTypes = None,
         headers: HeaderTypes = None,
         cookies: CookieTypes = None,
-        auth: typing.Union[AuthTypes, UnsetType] = UNSET,
+        auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         allow_redirects: bool = True,
-        timeout: typing.Union[TimeoutTypes, UnsetType] = UNSET,
+        timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
     ) -> Response:
         """
         Send a `HEAD` request.
@@ -975,9 +1091,9 @@ class Client(BaseClient):
         params: QueryParamTypes = None,
         headers: HeaderTypes = None,
         cookies: CookieTypes = None,
-        auth: typing.Union[AuthTypes, UnsetType] = UNSET,
+        auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         allow_redirects: bool = True,
-        timeout: typing.Union[TimeoutTypes, UnsetType] = UNSET,
+        timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
     ) -> Response:
         """
         Send a `POST` request.
@@ -1010,9 +1126,9 @@ class Client(BaseClient):
         params: QueryParamTypes = None,
         headers: HeaderTypes = None,
         cookies: CookieTypes = None,
-        auth: typing.Union[AuthTypes, UnsetType] = UNSET,
+        auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         allow_redirects: bool = True,
-        timeout: typing.Union[TimeoutTypes, UnsetType] = UNSET,
+        timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
     ) -> Response:
         """
         Send a `PUT` request.
@@ -1045,9 +1161,9 @@ class Client(BaseClient):
         params: QueryParamTypes = None,
         headers: HeaderTypes = None,
         cookies: CookieTypes = None,
-        auth: typing.Union[AuthTypes, UnsetType] = UNSET,
+        auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         allow_redirects: bool = True,
-        timeout: typing.Union[TimeoutTypes, UnsetType] = UNSET,
+        timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
     ) -> Response:
         """
         Send a `PATCH` request.
@@ -1076,9 +1192,9 @@ class Client(BaseClient):
         params: QueryParamTypes = None,
         headers: HeaderTypes = None,
         cookies: CookieTypes = None,
-        auth: typing.Union[AuthTypes, UnsetType] = UNSET,
+        auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         allow_redirects: bool = True,
-        timeout: typing.Union[TimeoutTypes, UnsetType] = UNSET,
+        timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
     ) -> Response:
         """
         Send a `DELETE` request.
@@ -1131,7 +1247,11 @@ class Client(BaseClient):
                 transport.__exit__(exc_type, exc_value, traceback)
 
     def __del__(self) -> None:
-        self.close()
+        # We use 'getattr' here, to manage the case where '__del__()' is called
+        # on a partically initiallized instance that raised an exception during
+        # the call to '__init__()'.
+        if getattr(self, "_state", None) == ClientState.OPENED:  # noqa: B009
+            self.close()
 
 
 class AsyncClient(BaseClient):
@@ -1191,16 +1311,16 @@ class AsyncClient(BaseClient):
         cookies: CookieTypes = None,
         verify: VerifyTypes = True,
         cert: CertTypes = None,
+        http1: bool = True,
         http2: bool = False,
         proxies: ProxiesTypes = None,
-        mounts: typing.Mapping[str, httpcore.AsyncHTTPTransport] = None,
+        mounts: typing.Mapping[str, AsyncBaseTransport] = None,
         timeout: TimeoutTypes = DEFAULT_TIMEOUT_CONFIG,
         limits: Limits = DEFAULT_LIMITS,
-        pool_limits: Limits = None,
         max_redirects: int = DEFAULT_MAX_REDIRECTS,
         event_hooks: typing.Mapping[str, typing.List[typing.Callable]] = None,
         base_url: URLTypes = "",
-        transport: httpcore.AsyncHTTPTransport = None,
+        transport: AsyncBaseTransport = None,
         app: typing.Callable = None,
         trust_env: bool = True,
     ):
@@ -1225,19 +1345,13 @@ class AsyncClient(BaseClient):
                     "Make sure to install httpx using `pip install httpx[http2]`."
                 ) from None
 
-        if pool_limits is not None:
-            warn_deprecated(
-                "AsyncClient(..., pool_limits=...) is deprecated and will raise "
-                "errors in the future. Use AsyncClient(..., limits=...) instead."
-            )
-            limits = pool_limits
-
         allow_env_proxies = trust_env and app is None and transport is None
         proxy_map = self._get_proxy_map(proxies, allow_env_proxies)
 
         self._transport = self._init_transport(
             verify=verify,
             cert=cert,
+            http1=http1,
             http2=http2,
             limits=limits,
             transport=transport,
@@ -1245,15 +1359,14 @@ class AsyncClient(BaseClient):
             trust_env=trust_env,
         )
 
-        self._mounts: typing.Dict[
-            URLPattern, typing.Optional[httpcore.AsyncHTTPTransport]
-        ] = {
+        self._mounts: typing.Dict[URLPattern, typing.Optional[AsyncBaseTransport]] = {
             URLPattern(key): None
             if proxy is None
             else self._init_proxy_transport(
                 proxy,
                 verify=verify,
                 cert=cert,
+                http1=http1,
                 http2=http2,
                 limits=limits,
                 trust_env=trust_env,
@@ -1270,12 +1383,13 @@ class AsyncClient(BaseClient):
         self,
         verify: VerifyTypes = True,
         cert: CertTypes = None,
+        http1: bool = True,
         http2: bool = False,
         limits: Limits = DEFAULT_LIMITS,
-        transport: httpcore.AsyncHTTPTransport = None,
+        transport: AsyncBaseTransport = None,
         app: typing.Callable = None,
         trust_env: bool = True,
-    ) -> httpcore.AsyncHTTPTransport:
+    ) -> AsyncBaseTransport:
         if transport is not None:
             return transport
 
@@ -1283,7 +1397,12 @@ class AsyncClient(BaseClient):
             return ASGITransport(app=app)
 
         return AsyncHTTPTransport(
-            verify=verify, cert=cert, http2=http2, limits=limits, trust_env=trust_env
+            verify=verify,
+            cert=cert,
+            http1=http1,
+            http2=http2,
+            limits=limits,
+            trust_env=trust_env,
         )
 
     def _init_proxy_transport(
@@ -1291,10 +1410,11 @@ class AsyncClient(BaseClient):
         proxy: Proxy,
         verify: VerifyTypes = True,
         cert: CertTypes = None,
+        http1: bool = True,
         http2: bool = False,
         limits: Limits = DEFAULT_LIMITS,
         trust_env: bool = True,
-    ) -> httpcore.AsyncHTTPTransport:
+    ) -> AsyncBaseTransport:
         return AsyncHTTPTransport(
             verify=verify,
             cert=cert,
@@ -1304,7 +1424,7 @@ class AsyncClient(BaseClient):
             proxy=proxy,
         )
 
-    def _transport_for_url(self, url: URL) -> httpcore.AsyncHTTPTransport:
+    def _transport_for_url(self, url: URL) -> AsyncBaseTransport:
         """
         Returns the transport instance that should be used for a given URL.
         This will either be the standard connection pool, or a proxy.
@@ -1327,9 +1447,9 @@ class AsyncClient(BaseClient):
         params: QueryParamTypes = None,
         headers: HeaderTypes = None,
         cookies: CookieTypes = None,
-        auth: typing.Union[AuthTypes, UnsetType] = UNSET,
+        auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         allow_redirects: bool = True,
-        timeout: typing.Union[TimeoutTypes, UnsetType] = UNSET,
+        timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
     ) -> Response:
         """
         Build and send a request.
@@ -1363,14 +1483,64 @@ class AsyncClient(BaseClient):
         )
         return response
 
+    @asynccontextmanager
+    async def stream(
+        self,
+        method: str,
+        url: URLTypes,
+        *,
+        content: RequestContent = None,
+        data: RequestData = None,
+        files: RequestFiles = None,
+        json: typing.Any = None,
+        params: QueryParamTypes = None,
+        headers: HeaderTypes = None,
+        cookies: CookieTypes = None,
+        auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        allow_redirects: bool = True,
+        timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+    ) -> typing.AsyncIterator[Response]:
+        """
+        Alternative to `httpx.request()` that streams the response body
+        instead of loading it into memory at once.
+
+        **Parameters**: See `httpx.request`.
+
+        See also: [Streaming Responses][0]
+
+        [0]: /quickstart#streaming-responses
+        """
+        request = self.build_request(
+            method=method,
+            url=url,
+            content=content,
+            data=data,
+            files=files,
+            json=json,
+            params=params,
+            headers=headers,
+            cookies=cookies,
+        )
+        response = await self.send(
+            request=request,
+            auth=auth,
+            allow_redirects=allow_redirects,
+            timeout=timeout,
+            stream=True,
+        )
+        try:
+            yield response
+        finally:
+            await response.aclose()
+
     async def send(
         self,
         request: Request,
         *,
         stream: bool = False,
-        auth: typing.Union[AuthTypes, UnsetType] = UNSET,
+        auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         allow_redirects: bool = True,
-        timeout: typing.Union[TimeoutTypes, UnsetType] = UNSET,
+        timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
     ) -> Response:
         """
         Send a request.
@@ -1389,7 +1559,9 @@ class AsyncClient(BaseClient):
             raise RuntimeError("Cannot send a request, as the client has been closed.")
 
         self._state = ClientState.OPENED
-        timeout = self.timeout if isinstance(timeout, UnsetType) else Timeout(timeout)
+        timeout = (
+            self.timeout if isinstance(timeout, UseClientDefault) else Timeout(timeout)
+        )
 
         auth = self._build_request_auth(request, auth)
 
@@ -1400,21 +1572,18 @@ class AsyncClient(BaseClient):
             allow_redirects=allow_redirects,
             history=[],
         )
-
-        if not stream:
-            try:
-                await response.aread()
-            finally:
-                await response.aclose()
-
         try:
+            if not stream:
+                await response.aread()
+
             for hook in self._event_hooks["response"]:
                 await hook(response)
-        except Exception:
-            await response.aclose()
-            raise
 
-        return response
+            return response
+
+        except Exception as exc:
+            await response.aclose()
+            raise exc
 
     async def _send_handling_auth(
         self,
@@ -1425,30 +1594,35 @@ class AsyncClient(BaseClient):
         history: typing.List[Response],
     ) -> Response:
         auth_flow = auth.async_auth_flow(request)
-        request = await auth_flow.__anext__()
+        try:
+            request = await auth_flow.__anext__()
 
-        for hook in self._event_hooks["request"]:
-            await hook(request)
+            for hook in self._event_hooks["request"]:
+                await hook(request)
 
-        while True:
-            response = await self._send_handling_redirects(
-                request,
-                timeout=timeout,
-                allow_redirects=allow_redirects,
-                history=history,
-            )
-            try:
-                next_request = await auth_flow.asend(response)
-            except StopAsyncIteration:
-                return response
-            except BaseException as exc:
-                await response.aclose()
-                raise exc from None
-            else:
-                response.history = list(history)
-                await response.aread()
-                request = next_request
-                history.append(response)
+            while True:
+                response = await self._send_handling_redirects(
+                    request,
+                    timeout=timeout,
+                    allow_redirects=allow_redirects,
+                    history=history,
+                )
+                try:
+                    try:
+                        next_request = await auth_flow.asend(response)
+                    except StopAsyncIteration:
+                        return response
+
+                    response.history = list(history)
+                    await response.aread()
+                    request = next_request
+                    history.append(response)
+
+                except Exception as exc:
+                    await response.aclose()
+                    raise exc
+        finally:
+            await auth_flow.aclose()
 
     async def _send_handling_redirects(
         self,
@@ -1464,19 +1638,24 @@ class AsyncClient(BaseClient):
                 )
 
             response = await self._send_single_request(request, timeout)
-            response.history = list(history)
+            try:
+                response.history = list(history)
 
-            if not response.is_redirect:
-                return response
+                if not response.is_redirect:
+                    return response
 
-            if allow_redirects:
-                await response.aread()
-            request = self._build_redirect_request(request, response)
-            history = history + [response]
+                request = self._build_redirect_request(request, response)
+                history = history + [response]
 
-            if not allow_redirects:
-                response.next_request = request
-                return response
+                if allow_redirects:
+                    await response.aread()
+                else:
+                    response.next_request = request
+                    return response
+
+            except Exception as exc:
+                await response.aclose()
+                raise exc
 
     async def _send_single_request(
         self, request: Request, timeout: Timeout
@@ -1488,30 +1667,34 @@ class AsyncClient(BaseClient):
         timer = Timer()
         await timer.async_start()
 
-        with map_exceptions(HTTPCORE_EXC_MAP, request=request):
-            (status_code, headers, stream, ext) = await transport.arequest(
+        if not isinstance(request.stream, AsyncByteStream):
+            raise RuntimeError(
+                "Attempted to send an sync request with an AsyncClient instance."
+            )
+
+        with request_context(request=request):
+            (
+                status_code,
+                headers,
+                stream,
+                extensions,
+            ) = await transport.handle_async_request(
                 request.method.encode(),
                 request.url.raw,
                 headers=request.headers.raw,
-                stream=request.stream,  # type: ignore
-                ext={"timeout": timeout.as_dict()},
+                stream=request.stream,
+                extensions={"timeout": timeout.as_dict()},
             )
-
-        async def on_close(response: Response) -> None:
-            response.elapsed = datetime.timedelta(seconds=await timer.async_elapsed())
-            if hasattr(stream, "aclose"):
-                with map_exceptions(HTTPCORE_EXC_MAP, request=request):
-                    await stream.aclose()
 
         response = Response(
             status_code,
             headers=headers,
-            stream=stream,  # type: ignore
-            ext=ext,
+            stream=stream,
+            extensions=extensions,
             request=request,
-            on_close=on_close,
         )
 
+        response.stream = BoundAsyncStream(stream, response=response, timer=timer)
         self.cookies.extract_cookies(response)
 
         status = f"{response.status_code} {response.reason_phrase}"
@@ -1527,9 +1710,9 @@ class AsyncClient(BaseClient):
         params: QueryParamTypes = None,
         headers: HeaderTypes = None,
         cookies: CookieTypes = None,
-        auth: typing.Union[AuthTypes, UnsetType] = UNSET,
+        auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         allow_redirects: bool = True,
-        timeout: typing.Union[TimeoutTypes, UnsetType] = UNSET,
+        timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
     ) -> Response:
         """
         Send a `GET` request.
@@ -1554,9 +1737,9 @@ class AsyncClient(BaseClient):
         params: QueryParamTypes = None,
         headers: HeaderTypes = None,
         cookies: CookieTypes = None,
-        auth: typing.Union[AuthTypes, UnsetType] = UNSET,
+        auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         allow_redirects: bool = True,
-        timeout: typing.Union[TimeoutTypes, UnsetType] = UNSET,
+        timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
     ) -> Response:
         """
         Send an `OPTIONS` request.
@@ -1581,9 +1764,9 @@ class AsyncClient(BaseClient):
         params: QueryParamTypes = None,
         headers: HeaderTypes = None,
         cookies: CookieTypes = None,
-        auth: typing.Union[AuthTypes, UnsetType] = UNSET,
+        auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         allow_redirects: bool = True,
-        timeout: typing.Union[TimeoutTypes, UnsetType] = UNSET,
+        timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
     ) -> Response:
         """
         Send a `HEAD` request.
@@ -1612,9 +1795,9 @@ class AsyncClient(BaseClient):
         params: QueryParamTypes = None,
         headers: HeaderTypes = None,
         cookies: CookieTypes = None,
-        auth: typing.Union[AuthTypes, UnsetType] = UNSET,
+        auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         allow_redirects: bool = True,
-        timeout: typing.Union[TimeoutTypes, UnsetType] = UNSET,
+        timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
     ) -> Response:
         """
         Send a `POST` request.
@@ -1647,9 +1830,9 @@ class AsyncClient(BaseClient):
         params: QueryParamTypes = None,
         headers: HeaderTypes = None,
         cookies: CookieTypes = None,
-        auth: typing.Union[AuthTypes, UnsetType] = UNSET,
+        auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         allow_redirects: bool = True,
-        timeout: typing.Union[TimeoutTypes, UnsetType] = UNSET,
+        timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
     ) -> Response:
         """
         Send a `PUT` request.
@@ -1682,9 +1865,9 @@ class AsyncClient(BaseClient):
         params: QueryParamTypes = None,
         headers: HeaderTypes = None,
         cookies: CookieTypes = None,
-        auth: typing.Union[AuthTypes, UnsetType] = UNSET,
+        auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         allow_redirects: bool = True,
-        timeout: typing.Union[TimeoutTypes, UnsetType] = UNSET,
+        timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
     ) -> Response:
         """
         Send a `PATCH` request.
@@ -1713,9 +1896,9 @@ class AsyncClient(BaseClient):
         params: QueryParamTypes = None,
         headers: HeaderTypes = None,
         cookies: CookieTypes = None,
-        auth: typing.Union[AuthTypes, UnsetType] = UNSET,
+        auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         allow_redirects: bool = True,
-        timeout: typing.Union[TimeoutTypes, UnsetType] = UNSET,
+        timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
     ) -> Response:
         """
         Send a `DELETE` request.
@@ -1768,70 +1951,32 @@ class AsyncClient(BaseClient):
                 await proxy.__aexit__(exc_type, exc_value, traceback)
 
     def __del__(self) -> None:
-        if self._state == ClientState.OPENED:
+        # We use 'getattr' here, to manage the case where '__del__()' is called
+        # on a partically initiallized instance that raised an exception during
+        # the call to '__init__()'.
+        if getattr(self, "_state", None) == ClientState.OPENED:  # noqa: B009
+            # Unlike the sync case, we cannot silently close the client when
+            # it is garbage collected, because `.aclose()` is an async operation,
+            # but `__del__` is not.
+            #
+            # For this reason we require explicit close management for
+            # `AsyncClient`, and issue a warning on unclosed clients.
+            #
+            # The context managed style is usually preferable, because it neatly
+            # ensures proper resource cleanup:
+            #
+            #     async with httpx.AsyncClient() as client:
+            #         ...
+            #
+            # However, an explicit call to `aclose()` is also sufficient:
+            #
+            #    client = httpx.AsyncClient()
+            #    try:
+            #        ...
+            #    finally:
+            #        await client.aclose()
             warnings.warn(
                 f"Unclosed {self!r}. "
                 "See https://www.python-httpx.org/async/#opening-and-closing-clients "
                 "for details."
             )
-
-
-class StreamContextManager:
-    def __init__(
-        self,
-        client: BaseClient,
-        request: Request,
-        *,
-        auth: typing.Union[AuthTypes, UnsetType] = UNSET,
-        allow_redirects: bool = True,
-        timeout: typing.Union[TimeoutTypes, UnsetType] = UNSET,
-        close_client: bool = False,
-    ) -> None:
-        self.client = client
-        self.request = request
-        self.auth = auth
-        self.allow_redirects = allow_redirects
-        self.timeout = timeout
-        self.close_client = close_client
-
-    def __enter__(self) -> "Response":
-        assert isinstance(self.client, Client)
-        self.response = self.client.send(
-            request=self.request,
-            auth=self.auth,
-            allow_redirects=self.allow_redirects,
-            timeout=self.timeout,
-            stream=True,
-        )
-        return self.response
-
-    def __exit__(
-        self,
-        exc_type: typing.Type[BaseException] = None,
-        exc_value: BaseException = None,
-        traceback: TracebackType = None,
-    ) -> None:
-        assert isinstance(self.client, Client)
-        self.response.close()
-        if self.close_client:
-            self.client.close()
-
-    async def __aenter__(self) -> "Response":
-        assert isinstance(self.client, AsyncClient)
-        self.response = await self.client.send(
-            request=self.request,
-            auth=self.auth,
-            allow_redirects=self.allow_redirects,
-            timeout=self.timeout,
-            stream=True,
-        )
-        return self.response
-
-    async def __aexit__(
-        self,
-        exc_type: typing.Type[BaseException] = None,
-        exc_value: BaseException = None,
-        traceback: TracebackType = None,
-    ) -> None:
-        assert isinstance(self.client, AsyncClient)
-        await self.response.aclose()

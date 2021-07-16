@@ -27,14 +27,12 @@ Our exception hierarchy:
 * CookieConflict
 * StreamError
   x StreamConsumed
+  x StreamClosed
   x ResponseNotRead
   x RequestNotRead
-  x ResponseClosed
 """
 import contextlib
 import typing
-
-import httpcore
 
 if typing.TYPE_CHECKING:
     from ._models import Request, Response  # pragma: nocover
@@ -58,9 +56,8 @@ class HTTPError(Exception):
     ```
     """
 
-    def __init__(self, message: str, *, request: "Request") -> None:
+    def __init__(self, message: str) -> None:
         super().__init__(message)
-        self.request = request
 
 
 class RequestError(HTTPError):
@@ -68,15 +65,30 @@ class RequestError(HTTPError):
     Base class for all exceptions that may occur when issuing a `.request()`.
     """
 
-    def __init__(self, message: str, *, request: "Request") -> None:
-        super().__init__(message, request=request)
+    def __init__(self, message: str, *, request: "Request" = None) -> None:
+        super().__init__(message)
+        # At the point an exception is raised we won't typically have a request
+        # instance to associate it with.
+        #
+        # The 'request_context' context manager is used within the Client and
+        # Response methods in order to ensure that any raised exceptions
+        # have a `.request` property set on them.
+        self._request = request
+
+    @property
+    def request(self) -> "Request":
+        if self._request is None:
+            raise RuntimeError("The .request property has not been set.")
+        return self._request
+
+    @request.setter
+    def request(self, request: "Request") -> None:
+        self._request = request
 
 
 class TransportError(RequestError):
     """
     Base class for all exceptions that occur at the level of the Transport API.
-
-    All of these exceptions also have an equivelent mapping in `httpcore`.
     """
 
 
@@ -219,7 +231,8 @@ class HTTPStatusError(HTTPError):
     def __init__(
         self, message: str, *, request: "Request", response: "Response"
     ) -> None:
-        super().__init__(message, request=request)
+        super().__init__(message)
+        self.request = request
         self.response = response
 
 
@@ -249,7 +262,7 @@ class CookieConflict(Exception):
 # the request/response stream in an invalid manner.
 
 
-class StreamError(Exception):
+class StreamError(RuntimeError):
     """
     The base class for stream exceptions.
 
@@ -279,31 +292,7 @@ class StreamConsumed(StreamError):
         super().__init__(message)
 
 
-class ResponseNotRead(StreamError):
-    """
-    Attempted to access response content, without having called `read()`
-    after a streaming response.
-    """
-
-    def __init__(self) -> None:
-        message = (
-            "Attempted to access response content, without having called `read()` "
-            "after a streaming response."
-        )
-        super().__init__(message)
-
-
-class RequestNotRead(StreamError):
-    """
-    Attempted to access request content, without having called `read()`.
-    """
-
-    def __init__(self) -> None:
-        message = "Attempted to access request content, without having called `read()`."
-        super().__init__(message)
-
-
-class ResponseClosed(StreamError):
+class StreamClosed(StreamError):
     """
     Attempted to read or stream response content, but the request has been
     closed.
@@ -311,52 +300,40 @@ class ResponseClosed(StreamError):
 
     def __init__(self) -> None:
         message = (
-            "Attempted to read or stream response content, but the request has "
-            "been closed."
+            "Attempted to read or stream content, but the stream has " "been closed."
         )
         super().__init__(message)
 
 
+class ResponseNotRead(StreamError):
+    """
+    Attempted to access streaming response content, without having called `read()`.
+    """
+
+    def __init__(self) -> None:
+        message = "Attempted to access streaming response content, without having called `read()`."
+        super().__init__(message)
+
+
+class RequestNotRead(StreamError):
+    """
+    Attempted to access streaming request content, without having called `read()`.
+    """
+
+    def __init__(self) -> None:
+        message = "Attempted to access streaming request content, without having called `read()`."
+        super().__init__(message)
+
+
 @contextlib.contextmanager
-def map_exceptions(
-    mapping: typing.Mapping[typing.Type[Exception], typing.Type[Exception]],
-    **kwargs: typing.Any,
-) -> typing.Iterator[None]:
+def request_context(request: "Request" = None) -> typing.Iterator[None]:
+    """
+    A context manager that can be used to attach the given request context
+    to any `RequestError` exceptions that are raised within the block.
+    """
     try:
         yield
-    except Exception as exc:
-        mapped_exc = None
-
-        for from_exc, to_exc in mapping.items():
-            if not isinstance(exc, from_exc):
-                continue
-            # We want to map to the most specific exception we can find.
-            # Eg if `exc` is an `httpcore.ReadTimeout`, we want to map to
-            # `httpx.ReadTimeout`, not just `httpx.TimeoutException`.
-            if mapped_exc is None or issubclass(to_exc, mapped_exc):
-                mapped_exc = to_exc
-
-        if mapped_exc is None:
-            raise
-
-        message = str(exc)
-        raise mapped_exc(message, **kwargs) from exc  # type: ignore
-
-
-HTTPCORE_EXC_MAP = {
-    httpcore.TimeoutException: TimeoutException,
-    httpcore.ConnectTimeout: ConnectTimeout,
-    httpcore.ReadTimeout: ReadTimeout,
-    httpcore.WriteTimeout: WriteTimeout,
-    httpcore.PoolTimeout: PoolTimeout,
-    httpcore.NetworkError: NetworkError,
-    httpcore.ConnectError: ConnectError,
-    httpcore.ReadError: ReadError,
-    httpcore.WriteError: WriteError,
-    httpcore.CloseError: CloseError,
-    httpcore.ProxyError: ProxyError,
-    httpcore.UnsupportedProtocol: UnsupportedProtocol,
-    httpcore.ProtocolError: ProtocolError,
-    httpcore.LocalProtocolError: LocalProtocolError,
-    httpcore.RemoteProtocolError: RemoteProtocolError,
-}
+    except RequestError as exc:
+        if request is not None:
+            exc.request = request
+        raise exc

@@ -1,7 +1,6 @@
 import typing
 from datetime import timedelta
 
-import httpcore
 import pytest
 
 import httpx
@@ -95,8 +94,19 @@ async def test_stream_request(server):
         yield b"world!"
 
     async with httpx.AsyncClient() as client:
-        response = await client.request("POST", server.url, content=hello_world())
+        response = await client.post(server.url, content=hello_world())
     assert response.status_code == 200
+
+
+@pytest.mark.usefixtures("async_environment")
+async def test_cannot_stream_sync_request(server):
+    def hello_world():  # pragma: nocover
+        yield b"Hello, "
+        yield b"world!"
+
+    async with httpx.AsyncClient() as client:
+        with pytest.raises(RuntimeError):
+            await client.post(server.url, content=hello_world())
 
 
 @pytest.mark.usefixtures("async_environment")
@@ -169,12 +179,12 @@ async def test_100_continue(server):
 
 @pytest.mark.usefixtures("async_environment")
 async def test_context_managed_transport():
-    class Transport(httpcore.AsyncHTTPTransport):
+    class Transport(httpx.AsyncBaseTransport):
         def __init__(self):
             self.events = []
 
         async def aclose(self):
-            # The base implementation of httpcore.AsyncHTTPTransport just
+            # The base implementation of httpx.AsyncBaseTransport just
             # calls into `.aclose`, so simple transport cases can just override
             # this method for any cleanup, where more complex cases
             # might want to additionally override `__aenter__`/`__aexit__`.
@@ -201,13 +211,13 @@ async def test_context_managed_transport():
 
 @pytest.mark.usefixtures("async_environment")
 async def test_context_managed_transport_and_mount():
-    class Transport(httpcore.AsyncHTTPTransport):
+    class Transport(httpx.AsyncBaseTransport):
         def __init__(self, name: str):
             self.name: str = name
             self.events: typing.List[str] = []
 
         async def aclose(self):
-            # The base implementation of httpcore.AsyncHTTPTransport just
+            # The base implementation of httpx.AsyncBaseTransport just
             # calls into `.aclose`, so simple transport cases can just override
             # this method for any cleanup, where more complex cases
             # might want to additionally override `__aenter__`/`__aexit__`.
@@ -304,25 +314,6 @@ async def test_mounted_transport():
 
 
 @pytest.mark.usefixtures("async_environment")
-async def test_response_aclose_map_exceptions():
-    class BrokenStream:
-        async def __aiter__(self):
-            # so we're an AsyncIterator
-            pass  # pragma: nocover
-
-        async def aclose(self):
-            raise httpcore.CloseError(OSError(104, "Connection reset by peer"))
-
-    def handle(request: httpx.Request) -> httpx.Response:
-        return httpx.Response(200, stream=BrokenStream())
-
-    async with httpx.AsyncClient(transport=httpx.MockTransport(handle)) as client:
-        async with client.stream("GET", "http://example.com") as response:
-            with pytest.raises(httpx.CloseError):
-                await response.aclose()
-
-
-@pytest.mark.usefixtures("async_environment")
 async def test_async_mock_transport():
     async def hello_world(request):
         return httpx.Response(200, text="Hello, world!")
@@ -333,3 +324,12 @@ async def test_async_mock_transport():
         response = await client.get("https://www.example.com")
         assert response.status_code == 200
         assert response.text == "Hello, world!"
+
+
+@pytest.mark.usefixtures("async_environment")
+async def test_server_extensions(server):
+    url = server.url
+    async with httpx.AsyncClient(http2=True) as client:
+        response = await client.get(url)
+    assert response.status_code == 200
+    assert response.extensions["http_version"] == b"HTTP/1.1"
