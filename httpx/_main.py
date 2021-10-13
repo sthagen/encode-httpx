@@ -1,3 +1,4 @@
+import functools
 import json
 import sys
 import typing
@@ -60,7 +61,7 @@ def print_help() -> None:
         "--auth [cyan]<USER PASS>",
         "Username and password to include in the request. Specify '-' for the password to use "
         "a password prompt. Note that using --verbose/-v will expose the Authorization "
-        "header, including the password encoding in a trivially reverisible format.",
+        "header, including the password encoding in a trivially reversible format.",
     )
 
     table.add_row(
@@ -101,11 +102,14 @@ def get_lexer_for_response(response: Response) -> str:
     return ""  # pragma: nocover
 
 
-def format_request_headers(request: Request) -> str:
+def format_request_headers(request: Request, http2: bool = False) -> str:
+    version = "HTTP/2" if http2 else "HTTP/1.1"
+    headers = [
+        (name.lower() if http2 else name, value) for name, value in request.headers.raw
+    ]
     target = request.url.raw[-1].decode("ascii")
-    lines = [f"{request.method} {target} HTTP/1.1"] + [
-        f"{name.decode('ascii')}: {value.decode('ascii')}"
-        for name, value in request.headers.raw
+    lines = [f"{request.method} {target} {version}"] + [
+        f"{name.decode('ascii')}: {value.decode('ascii')}" for name, value in headers
     ]
     return "\n".join(lines)
 
@@ -120,9 +124,9 @@ def format_response_headers(response: Response) -> str:
     return "\n".join(lines)
 
 
-def print_request_headers(request: Request) -> None:
+def print_request_headers(request: Request, http2: bool = False) -> None:
     console = rich.console.Console()
-    http_text = format_request_headers(request)
+    http_text = format_request_headers(request, http2=http2)
     syntax = rich.syntax.Syntax(http_text, "http", theme="ansi_dark", word_wrap=True)
     console.print(syntax)
     syntax = rich.syntax.Syntax("", "http", theme="ansi_dark", word_wrap=True)
@@ -304,7 +308,7 @@ def handle_help(
         "Username and password to include in the request. "
         "Specify '-' for the password to use a password prompt. "
         "Note that using --verbose/-v will expose the Authorization header, "
-        "including the password encoding in a trivially reverisible format."
+        "including the password encoding in a trivially reversible format."
     ),
 )
 @click.option(
@@ -395,7 +399,7 @@ def main(
 
     event_hooks: typing.Dict[str, typing.List[typing.Callable]] = {}
     if verbose:
-        event_hooks["request"] = [print_request_headers]
+        event_hooks["request"] = [functools.partial(print_request_headers, http2=http2)]
     if follow_redirects:
         event_hooks["response"] = [print_redirects]
 
