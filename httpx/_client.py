@@ -79,8 +79,6 @@ class UseClientDefault:
     but it is used internally when a parameter is not included.
     """
 
-    pass  # pragma: nocover
-
 
 USE_CLIENT_DEFAULT = UseClientDefault()
 
@@ -325,6 +323,7 @@ class BaseClient:
         headers: HeaderTypes = None,
         cookies: CookieTypes = None,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: dict = None,
     ) -> Request:
         """
         Build and return a request instance.
@@ -341,9 +340,14 @@ class BaseClient:
         headers = self._merge_headers(headers)
         cookies = self._merge_cookies(cookies)
         params = self._merge_queryparams(params)
-        timeout = (
-            self.timeout if isinstance(timeout, UseClientDefault) else Timeout(timeout)
-        )
+        extensions = {} if extensions is None else extensions
+        if "timeout" not in extensions:
+            timeout = (
+                self.timeout
+                if isinstance(timeout, UseClientDefault)
+                else Timeout(timeout)
+            )
+            extensions["timeout"] = timeout.as_dict()
         return Request(
             method,
             url,
@@ -354,7 +358,7 @@ class BaseClient:
             params=params,
             headers=headers,
             cookies=cookies,
-            extensions={"timeout": timeout.as_dict()},
+            extensions=extensions,
         )
 
     def _merge_url(self, url: URLTypes) -> URL:
@@ -412,8 +416,7 @@ class BaseClient:
         """
         if params or self.params:
             merged_queryparams = QueryParams(self.params)
-            merged_queryparams = merged_queryparams.merge(params)
-            return merged_queryparams
+            return merged_queryparams.merge(params)
         return params
 
     def _build_auth(self, auth: AuthTypes) -> typing.Optional[Auth]:
@@ -462,7 +465,12 @@ class BaseClient:
         stream = self._redirect_stream(request, method)
         cookies = Cookies(self.cookies)
         return Request(
-            method=method, url=url, headers=headers, cookies=cookies, stream=stream
+            method=method,
+            url=url,
+            headers=headers,
+            cookies=cookies,
+            stream=stream,
+            extensions=request.extensions,
         )
 
     def _redirect_method(self, request: Request, response: Response) -> str:
@@ -752,6 +760,7 @@ class Client(BaseClient):
         auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: dict = None,
     ) -> Response:
         """
         Build and send a request.
@@ -788,6 +797,7 @@ class Client(BaseClient):
             headers=headers,
             cookies=cookies,
             timeout=timeout,
+            extensions=extensions,
         )
         return self.send(request, auth=auth, follow_redirects=follow_redirects)
 
@@ -807,6 +817,7 @@ class Client(BaseClient):
         auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: dict = None,
     ) -> typing.Iterator[Response]:
         """
         Alternative to `httpx.request()` that streams the response body
@@ -829,6 +840,7 @@ class Client(BaseClient):
             headers=headers,
             cookies=cookies,
             timeout=timeout,
+            extensions=extensions,
         )
         response = self.send(
             request=request,
@@ -987,7 +999,9 @@ class Client(BaseClient):
 
         status = f"{response.status_code} {response.reason_phrase}"
         response_line = f"{response.http_version} {status}"
-        logger.debug(f'HTTP Request: {request.method} {request.url} "{response_line}"')
+        logger.debug(
+            'HTTP Request: %s %s "%s"', request.method, request.url, response_line
+        )
 
         return response
 
@@ -1001,6 +1015,7 @@ class Client(BaseClient):
         auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: dict = None,
     ) -> Response:
         """
         Send a `GET` request.
@@ -1016,6 +1031,7 @@ class Client(BaseClient):
             auth=auth,
             follow_redirects=follow_redirects,
             timeout=timeout,
+            extensions=extensions,
         )
 
     def options(
@@ -1028,6 +1044,7 @@ class Client(BaseClient):
         auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: dict = None,
     ) -> Response:
         """
         Send an `OPTIONS` request.
@@ -1043,6 +1060,7 @@ class Client(BaseClient):
             auth=auth,
             follow_redirects=follow_redirects,
             timeout=timeout,
+            extensions=extensions,
         )
 
     def head(
@@ -1055,6 +1073,7 @@ class Client(BaseClient):
         auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: dict = None,
     ) -> Response:
         """
         Send a `HEAD` request.
@@ -1070,6 +1089,7 @@ class Client(BaseClient):
             auth=auth,
             follow_redirects=follow_redirects,
             timeout=timeout,
+            extensions=extensions,
         )
 
     def post(
@@ -1086,6 +1106,7 @@ class Client(BaseClient):
         auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: dict = None,
     ) -> Response:
         """
         Send a `POST` request.
@@ -1105,6 +1126,7 @@ class Client(BaseClient):
             auth=auth,
             follow_redirects=follow_redirects,
             timeout=timeout,
+            extensions=extensions,
         )
 
     def put(
@@ -1121,6 +1143,7 @@ class Client(BaseClient):
         auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: dict = None,
     ) -> Response:
         """
         Send a `PUT` request.
@@ -1140,6 +1163,7 @@ class Client(BaseClient):
             auth=auth,
             follow_redirects=follow_redirects,
             timeout=timeout,
+            extensions=extensions,
         )
 
     def patch(
@@ -1156,6 +1180,7 @@ class Client(BaseClient):
         auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: dict = None,
     ) -> Response:
         """
         Send a `PATCH` request.
@@ -1175,6 +1200,7 @@ class Client(BaseClient):
             auth=auth,
             follow_redirects=follow_redirects,
             timeout=timeout,
+            extensions=extensions,
         )
 
     def delete(
@@ -1187,6 +1213,7 @@ class Client(BaseClient):
         auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: dict = None,
     ) -> Response:
         """
         Send a `DELETE` request.
@@ -1202,6 +1229,7 @@ class Client(BaseClient):
             auth=auth,
             follow_redirects=follow_redirects,
             timeout=timeout,
+            extensions=extensions,
         )
 
     def close(self) -> None:
@@ -1451,6 +1479,7 @@ class AsyncClient(BaseClient):
         auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: dict = None,
     ) -> Response:
         """
         Build and send a request.
@@ -1479,11 +1508,9 @@ class AsyncClient(BaseClient):
             headers=headers,
             cookies=cookies,
             timeout=timeout,
+            extensions=extensions,
         )
-        response = await self.send(
-            request, auth=auth, follow_redirects=follow_redirects
-        )
-        return response
+        return await self.send(request, auth=auth, follow_redirects=follow_redirects)
 
     @asynccontextmanager
     async def stream(
@@ -1501,6 +1528,7 @@ class AsyncClient(BaseClient):
         auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: dict = None,
     ) -> typing.AsyncIterator[Response]:
         """
         Alternative to `httpx.request()` that streams the response body
@@ -1523,6 +1551,7 @@ class AsyncClient(BaseClient):
             headers=headers,
             cookies=cookies,
             timeout=timeout,
+            extensions=extensions,
         )
         response = await self.send(
             request=request,
@@ -1681,7 +1710,9 @@ class AsyncClient(BaseClient):
 
         status = f"{response.status_code} {response.reason_phrase}"
         response_line = f"{response.http_version} {status}"
-        logger.debug(f'HTTP Request: {request.method} {request.url} "{response_line}"')
+        logger.debug(
+            'HTTP Request: %s %s "%s"', request.method, request.url, response_line
+        )
 
         return response
 
@@ -1695,6 +1726,7 @@ class AsyncClient(BaseClient):
         auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: dict = None,
     ) -> Response:
         """
         Send a `GET` request.
@@ -1710,6 +1742,7 @@ class AsyncClient(BaseClient):
             auth=auth,
             follow_redirects=follow_redirects,
             timeout=timeout,
+            extensions=extensions,
         )
 
     async def options(
@@ -1722,6 +1755,7 @@ class AsyncClient(BaseClient):
         auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: dict = None,
     ) -> Response:
         """
         Send an `OPTIONS` request.
@@ -1737,6 +1771,7 @@ class AsyncClient(BaseClient):
             auth=auth,
             follow_redirects=follow_redirects,
             timeout=timeout,
+            extensions=extensions,
         )
 
     async def head(
@@ -1749,6 +1784,7 @@ class AsyncClient(BaseClient):
         auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: dict = None,
     ) -> Response:
         """
         Send a `HEAD` request.
@@ -1764,6 +1800,7 @@ class AsyncClient(BaseClient):
             auth=auth,
             follow_redirects=follow_redirects,
             timeout=timeout,
+            extensions=extensions,
         )
 
     async def post(
@@ -1780,6 +1817,7 @@ class AsyncClient(BaseClient):
         auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: dict = None,
     ) -> Response:
         """
         Send a `POST` request.
@@ -1799,6 +1837,7 @@ class AsyncClient(BaseClient):
             auth=auth,
             follow_redirects=follow_redirects,
             timeout=timeout,
+            extensions=extensions,
         )
 
     async def put(
@@ -1815,6 +1854,7 @@ class AsyncClient(BaseClient):
         auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: dict = None,
     ) -> Response:
         """
         Send a `PUT` request.
@@ -1834,6 +1874,7 @@ class AsyncClient(BaseClient):
             auth=auth,
             follow_redirects=follow_redirects,
             timeout=timeout,
+            extensions=extensions,
         )
 
     async def patch(
@@ -1850,6 +1891,7 @@ class AsyncClient(BaseClient):
         auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: dict = None,
     ) -> Response:
         """
         Send a `PATCH` request.
@@ -1869,6 +1911,7 @@ class AsyncClient(BaseClient):
             auth=auth,
             follow_redirects=follow_redirects,
             timeout=timeout,
+            extensions=extensions,
         )
 
     async def delete(
@@ -1881,6 +1924,7 @@ class AsyncClient(BaseClient):
         auth: typing.Union[AuthTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
         follow_redirects: typing.Union[bool, UseClientDefault] = USE_CLIENT_DEFAULT,
         timeout: typing.Union[TimeoutTypes, UseClientDefault] = USE_CLIENT_DEFAULT,
+        extensions: dict = None,
     ) -> Response:
         """
         Send a `DELETE` request.
@@ -1896,6 +1940,7 @@ class AsyncClient(BaseClient):
             auth=auth,
             follow_redirects=follow_redirects,
             timeout=timeout,
+            extensions=extensions,
         )
 
     async def aclose(self) -> None:
