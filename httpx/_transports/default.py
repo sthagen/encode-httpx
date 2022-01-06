@@ -9,7 +9,7 @@ The following additional keyword arguments are currently supported by httpcore..
 
 Example usages...
 
-# Disable HTTP/2 on a single specfic domain.
+# Disable HTTP/2 on a single specific domain.
 mounts = {
     "all://": httpx.HTTPTransport(http2=True),
     "all://*example.org": httpx.HTTPTransport()
@@ -138,19 +138,36 @@ class HTTPTransport(BaseTransport):
                 retries=retries,
             )
         else:
-            self._pool = httpcore.HTTPProxy(
-                proxy_url=httpcore.URL(
-                    scheme=proxy.url.raw_scheme,
-                    host=proxy.url.raw_host,
-                    port=proxy.url.port,
-                    target=proxy.url.raw_path,
-                ),
-                proxy_headers=proxy.headers.raw,
-                ssl_context=ssl_context,
-                max_connections=limits.max_connections,
-                max_keepalive_connections=limits.max_keepalive_connections,
-                keepalive_expiry=limits.keepalive_expiry,
-            )
+            try:
+                self._pool = httpcore.HTTPProxy(
+                    proxy_url=httpcore.URL(
+                        scheme=proxy.url.raw_scheme,
+                        host=proxy.url.raw_host,
+                        port=proxy.url.port,
+                        target=proxy.url.raw_path,
+                    ),
+                    proxy_headers=proxy.headers.raw,
+                    ssl_context=ssl_context,
+                    max_connections=limits.max_connections,
+                    max_keepalive_connections=limits.max_keepalive_connections,
+                    keepalive_expiry=limits.keepalive_expiry,
+                    http1=http1,
+                    http2=http2,
+                )
+            except TypeError:  # pragma: nocover
+                self._pool = httpcore.HTTPProxy(
+                    proxy_url=httpcore.URL(
+                        scheme=proxy.url.raw_scheme,
+                        host=proxy.url.raw_host,
+                        port=proxy.url.port,
+                        target=proxy.url.raw_path,
+                    ),
+                    proxy_headers=proxy.headers.raw,
+                    ssl_context=ssl_context,
+                    max_connections=limits.max_connections,
+                    max_keepalive_connections=limits.max_keepalive_connections,
+                    keepalive_expiry=limits.keepalive_expiry,
+                )
 
     def __enter__(self: T) -> T:  # Use generics for subclass support.
         self._pool.__enter__()
