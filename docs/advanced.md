@@ -670,10 +670,11 @@ response = client.get('http://example.com/')
 You can control the connection pool size using the `limits` keyword
 argument on the client. It takes instances of `httpx.Limits` which define:
 
-- `max_keepalive`, number of allowable keep-alive connections, or `None` to always
+- `max_keepalive_connections`, number of allowable keep-alive connections, or `None` to always
 allow. (Defaults 20)
-- `max_connections`, maximum number of allowable connections, or` None` for no limits.
+- `max_connections`, maximum number of allowable connections, or `None` for no limits.
 (Default 100)
+- `keepalive_expiry`, time limit on idle keep-alive connections in seconds, or `None` for no limits. (Default 5)
 
 ```python
 limits = httpx.Limits(max_keepalive_connections=5, max_connections=10)
@@ -762,7 +763,7 @@ class MyCustomAuth(httpx.Auth):
         yield request
 ```
 
-If the auth flow requires more that one request, you can issue multiple yields, and obtain the response in each case...
+If the auth flow requires more than one request, you can issue multiple yields, and obtain the response in each case...
 
 ```python
 class MyCustomAuth(httpx.Auth):
@@ -1051,10 +1052,8 @@ subclass `httpx.BaseTransport` to implement a transport to use with `Client`,
 or subclass `httpx.AsyncBaseTransport` to implement a transport to
 use with `AsyncClient`.
 
-At the layer of the transport API we're using plain primitives.
-No `Request` or `Response` models, no fancy `URL` or `Header` handling.
-This strict point of cut-off provides a clear design separation between the
-HTTPX API, and the low-level network handling.
+At the layer of the transport API we're using the familiar `Request` and
+`Response` models.
 
 See the `handle_request` and `handle_async_request` docstrings for more details
 on the specifics of the Transport API.
@@ -1071,13 +1070,12 @@ class HelloWorldTransport(httpx.BaseTransport):
     A mock transport that always returns a JSON "Hello, world!" response.
     """
 
-    def handle_request(self, method, url, headers, stream, extensions):
+    def handle_request(self, request):
         message = {"text": "Hello, world!"}
         content = json.dumps(message).encode("utf-8")
         stream = httpx.ByteStream(content)
         headers = [(b"content-type", b"application/json")]
-        extensions = {}
-        return 200, headers, stream, extensions
+        return httpx.Response(200, headers=headers, stream=stream)
 ```
 
 Which we can use in the same way:

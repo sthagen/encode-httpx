@@ -2,12 +2,11 @@ import datetime
 import enum
 import typing
 import warnings
-from contextlib import contextmanager
+from contextlib import asynccontextmanager, contextmanager
 from types import TracebackType
 
 from .__version__ import __version__
 from ._auth import Auth, BasicAuth, FunctionAuth
-from ._compat import asynccontextmanager
 from ._config import (
     DEFAULT_LIMITS,
     DEFAULT_MAX_REDIRECTS,
@@ -23,7 +22,7 @@ from ._exceptions import (
     TooManyRedirects,
     request_context,
 )
-from ._models import URL, Cookies, Headers, QueryParams, Request, Response
+from ._models import Cookies, Headers, Request, Response
 from ._status_codes import codes
 from ._transports.asgi import ASGITransport
 from ._transports.base import AsyncBaseTransport, BaseTransport
@@ -45,12 +44,14 @@ from ._types import (
     URLTypes,
     VerifyTypes,
 )
+from ._urls import URL, QueryParams
 from ._utils import (
     NetRCInfo,
     Timer,
     URLPattern,
     get_environment_proxies,
     get_logger,
+    is_https_redirect,
     same_origin,
 )
 
@@ -532,9 +533,10 @@ class BaseClient:
         headers = Headers(request.headers)
 
         if not same_origin(url, request.url):
-            # Strip Authorization headers when responses are redirected away from
-            # the origin.
-            headers.pop("Authorization", None)
+            if not is_https_redirect(request.url, url):
+                # Strip Authorization headers when responses are redirected
+                # away from the origin. (Except for direct HTTP to HTTPS redirects.)
+                headers.pop("Authorization", None)
 
             # Update the Host header.
             headers["Host"] = url.netloc.decode("ascii")
@@ -898,7 +900,7 @@ class Client(BaseClient):
 
             return response
 
-        except Exception as exc:
+        except BaseException as exc:
             response.close()
             raise exc
 
@@ -930,7 +932,7 @@ class Client(BaseClient):
                     request = next_request
                     history.append(response)
 
-                except Exception as exc:
+                except BaseException as exc:
                     response.close()
                     raise exc
         finally:
@@ -969,7 +971,7 @@ class Client(BaseClient):
                     response.next_request = request
                     return response
 
-            except Exception as exc:
+            except BaseException as exc:
                 response.close()
                 raise exc
 
@@ -1602,7 +1604,7 @@ class AsyncClient(BaseClient):
 
             return response
 
-        except Exception as exc:  # pragma: no cover
+        except BaseException as exc:  # pragma: no cover
             await response.aclose()
             raise exc
 
@@ -1634,7 +1636,7 @@ class AsyncClient(BaseClient):
                     request = next_request
                     history.append(response)
 
-                except Exception as exc:
+                except BaseException as exc:
                     await response.aclose()
                     raise exc
         finally:
@@ -1674,7 +1676,7 @@ class AsyncClient(BaseClient):
                     response.next_request = request
                     return response
 
-            except Exception as exc:
+            except BaseException as exc:
                 await response.aclose()
                 raise exc
 
