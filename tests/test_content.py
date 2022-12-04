@@ -63,17 +63,17 @@ async def test_bytesio_content():
 @pytest.mark.asyncio
 async def test_async_bytesio_content():
     class AsyncBytesIO:
-        def __init__(self, content):
+        def __init__(self, content: bytes) -> None:
             self._idx = 0
             self._content = content
 
-        async def aread(self, chunk_size: int):
+        async def aread(self, chunk_size: int) -> bytes:
             chunk = self._content[self._idx : self._idx + chunk_size]
             self._idx = self._idx + chunk_size
             return chunk
 
         async def __aiter__(self):
-            yield self._content  # pragma: nocover
+            yield self._content  # pragma: no cover
 
     headers, stream = encode_request(content=AsyncBytesIO(b"Hello, world!"))
     assert not isinstance(stream, typing.Iterable)
@@ -87,7 +87,7 @@ async def test_async_bytesio_content():
 
 @pytest.mark.asyncio
 async def test_iterator_content():
-    def hello_world():
+    def hello_world() -> typing.Iterator[bytes]:
         yield b"Hello, "
         yield b"world!"
 
@@ -117,7 +117,7 @@ async def test_iterator_content():
 
 @pytest.mark.asyncio
 async def test_aiterator_content():
-    async def hello_world():
+    async def hello_world() -> typing.AsyncIterator[bytes]:
         yield b"Hello, "
         yield b"world!"
 
@@ -409,7 +409,7 @@ async def test_response_bytes_content():
 
 @pytest.mark.asyncio
 async def test_response_iterator_content():
-    def hello_world():
+    def hello_world() -> typing.Iterator[bytes]:
         yield b"Hello, "
         yield b"world!"
 
@@ -428,7 +428,7 @@ async def test_response_iterator_content():
 
 @pytest.mark.asyncio
 async def test_response_aiterator_content():
-    async def hello_world():
+    async def hello_world() -> typing.AsyncIterator[bytes]:
         yield b"Hello, "
         yield b"world!"
 
