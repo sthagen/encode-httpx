@@ -22,7 +22,7 @@ coverage[toml]==7.4.1
 cryptography==42.0.2
 mypy==1.8.0
 pytest==8.0.0
-ruff==0.1.15
+ruff==0.2.0
 trio==0.24.0
 trio-typing==0.10.0
 trustme==1.1.0
